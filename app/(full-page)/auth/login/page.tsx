@@ -9,11 +9,11 @@ import { LayoutContext } from '../../../../layout/context/layoutcontext';
 import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
 import { loginValidationSchema } from '../register/ValidationSchema';
-import { login } from '@/demo/service/UserServices';
 import { Message } from 'primereact/message';
 import { Toast } from 'primereact/toast';
-import { useAuth } from '@/app/Authentication/AuthContext';
 import ForgotPasswordRequest from '../forgotPasswordRequest/page';
+import { signIn, useSession } from 'next-auth/react';
+import { ILogin, ILoginError } from '@/app/interfaces/interfaces';
 
 const LoginPage = () => {
     const [checked, setChecked] = useState(false);
@@ -23,23 +23,13 @@ const LoginPage = () => {
         password: ''
     };
 
-    interface IUserData {
-        email: string;
-        password: string;
-    }
-
-    interface IUserDataError {
-        email?: '';
-        password?: '';
-    }
-    const [userData, setUserData] = useState<IUserData>(initialState);
+    const [userData, setUserData] = useState<ILogin>(initialState);
     const [errorMessage, setErrorMessage] = useState('');
-    const [userDataError, setUserDataError] = useState<IUserDataError>();
+    const [userDataError, setUserDataError] = useState<ILoginError>();
     const [isLoading, setIsLoading] = useState(false);
     const [openResetPasswordDialog, setOpenResetPasswordDialog] = useState(false);
-
-    const { login: authLogin, user, logout, isAuthenticated } = useAuth();
-
+    const { data, status } = useSession();
+    
     const router = useRouter();
     const containerClassName = classNames('surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden', { 'p-input-filled': layoutConfig.inputStyle === 'filled' });
 
@@ -48,7 +38,7 @@ const LoginPage = () => {
         setErrorMessage('');
 
         const { name, value } = event.target;
-        console.log(name, value);
+
         setUserData((prevUserData) => {
             const updatedUserData = { ...prevUserData, [name]: value.trim() };
 
@@ -70,7 +60,6 @@ const LoginPage = () => {
             return updatedUserData;
         });
     };
-    console.log(userData);
 
     const resetform = () => {
         setUserData(initialState);
@@ -88,45 +77,34 @@ const LoginPage = () => {
             setErrorMessage('');
             setIsLoading(true);
 
-            // Call API if validation passes
-            const response = await login(userData);
-
-            const token = response.token;
-            console.log(token);
-
-            // Call login method from AuthContext to save token and set user
-            authLogin(token, (user) => {
-                const userRole = user.role; // Ensure `user` is updated
-                console.log(userRole);
-                switch (userRole) {
-                    case 'ROLE_ADMIN':
-                        router.push('/admin-dashboard');
-                        break;
-                    case 'ROLE_INSTRUCTOR':
-                        router.push('/instructorDashboard');
-                        break;
-                    case 'ROLE_USER':
-                        router.push('/user-dashboard');
-                        break;
-                    default:
-                        router.push('/');
-                }
+            const result = await signIn('credentials', {
+                redirect: false,
+                email: userData.email,
+                password: userData.password
             });
-            
+            console.log('SignIn Result:', result);
+
+            if (result?.error) {
+                setErrorMessage(result.error);
+                showError('Error', result.error);
+                setIsLoading(false);
+            }
+
+            if (result?.ok ) {
+                router.push('/');
+            }
+
             setIsLoading(false);
             resetform();
         } catch (error: any) {
             if (error.name === 'ValidationError') {
-                const errors: IUserDataError = {};
+                const errors: ILoginError = {};
                 error.inner.forEach((err: any) => {
                     if (err.path) {
-                        errors[err.path as keyof IUserDataError] = err.message;
+                        errors[err.path as keyof ILoginError] = err.message;
                     }
                 });
                 setUserDataError(errors);
-            } else {
-                setErrorMessage(error.message);
-                showError('Error', error.message);
             }
             setIsLoading(false);
         }

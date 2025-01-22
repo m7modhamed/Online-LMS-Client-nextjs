@@ -1,7 +1,6 @@
 'use client';
 import React, { useState, createContext } from 'react';
 import { LayoutState, ChildContainerProps, LayoutConfig, LayoutContextProps } from '@/types';
-import { AuthProvider } from '@/app/Authentication/AuthContext';
 export const LayoutContext = createContext({} as LayoutContextProps);
 
 export const LayoutProvider = ({ children }: ChildContainerProps) => {
@@ -57,8 +56,6 @@ export const LayoutProvider = ({ children }: ChildContainerProps) => {
     };
 
     return (
-        <AuthProvider>
             <LayoutContext.Provider value={value}>{children}</LayoutContext.Provider>
-        </AuthProvider>
     );
 };

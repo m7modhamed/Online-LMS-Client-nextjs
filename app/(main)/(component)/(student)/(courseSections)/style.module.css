@@ -1,0 +1,81 @@
+.section-container {
+  background-color: #fff;
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* Subtle shadow for better elevation */
+}
+
+.section-heading {
+  color: var(--primary-color);
+  font-weight: bold;
+  text-align: center;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.section-content {
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.lesson-container {
+  width: 100%;
+  height: 50px;
+  background-color: #f5f5f5;
+  /* Subtle background color */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #333;
+  /* Darker text color for contrast */
+  border-radius: 5px;
+  padding: 0 1rem;
+  border: 1px solid #ddd;
+  /* Light border for better structure */
+  transition: background-color 0.3s, transform 0.2s;
+  /* Smooth hover effects */
+}
+
+.lesson-container:hover {
+  background-color: #e0e0e0;
+  /* Slightly darker on hover */
+  transform: translateY(-2px);
+  /* Subtle lift effect */
+}
+
+.lesson-container p {
+  margin: 0;
+  /* Remove extra margin */
+  padding: 0 1rem;
+  font-size: 1rem;
+}
+
+
+
+.lessonInMenu {
+  background-color: #fff;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.lessonInMenuDark{
+  background-color: #111827;
+  transition: background-color 0.3s ease-in-out;
+
+}
+
+.lessonInMenuDark:hover {
+  background-color: #ebeaea92;
+  border-radius: 5px;
+}
+
+.lessonInMenu:hover {
+  background-color: #ebeaea92;
+  border-radius: 5px;
+}

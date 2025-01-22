@@ -1,5 +1,4 @@
 'use client';
-import { useRouter } from 'next/navigation';
 import React, { useContext, useRef, useState } from 'react';
 import { Button } from 'primereact/button';
 import { Password } from 'primereact/password';
@@ -12,28 +11,10 @@ import { SignupValidationSchema } from './ValidationSchema';
 import { signupStudentAccount } from '@/demo/service/UserServices';
 import { Message } from 'primereact/message';
 import { Toast } from 'primereact/toast';
-import { Messages } from 'primereact/messages';
+import { ISignup, ISignupError } from '@/app/interfaces/interfaces';
 
 const SignUpPage: React.FC = () => {
-    interface IFormData {
-        firstName: string;
-        lastName: string;
-        email: string;
-        password: string;
-        phoneNumber: string;
-        confirmPassword: string;
-    }
-
-    interface IFormDataError {
-        firstName?: string;
-        lastName?: string;
-        email?: string;
-        password?: string;
-        phoneNumber?: string;
-        confirmPassword?: string;
-    }
-
-    const initialState: IFormData = {
+    const initialState: ISignup = {
         firstName: '',
         lastName: '',
         email: '',
@@ -42,12 +23,11 @@ const SignUpPage: React.FC = () => {
         confirmPassword: ''
     };
 
-    const [formData, setFormData] = useState<IFormData>(initialState);
-    const [formDataError, setFormDataError] = useState<IFormDataError>(initialState);
+    const [formData, setFormData] = useState<ISignup>(initialState);
+    const [formDataError, setFormDataError] = useState<ISignupError>(initialState);
     const [errorMessage, setErrorMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const { layoutConfig } = useContext(LayoutContext);
-    const router = useRouter();
     const containerClassName = classNames('surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden', {
         'p-input-filled': layoutConfig.inputStyle === 'filled'
     });
@@ -56,14 +36,6 @@ const SignUpPage: React.FC = () => {
         setFormData(initialState);
         setErrorMessage('');
     };
-
-    // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     const { name, value } = e.target;
-    //     setFormData((prevData) => ({
-    //         ...prevData,
-    //         [name]: value
-    //     }));
-    // };
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         //reset error message
@@ -110,7 +82,7 @@ const SignUpPage: React.FC = () => {
             const response = await signupStudentAccount(formData);
 
             setIsLoading(false);
-            showSuccess('registeration success',response);
+            showSuccess('registeration success', response);
             resetform();
         } catch (error: any) {
             setIsLoading(false);
@@ -118,10 +90,10 @@ const SignUpPage: React.FC = () => {
 
             // If it's a Yup validation error
             if (error.name === 'ValidationError') {
-                const errors: IFormDataError = {};
+                const errors: ISignupError = {};
                 error.inner.forEach((err: any) => {
                     if (err.path) {
-                        errors[err.path as keyof IFormDataError] = err.message;
+                        errors[err.path as keyof ISignupError] = err.message;
                     }
                 });
                 setFormDataError(errors);
@@ -134,7 +106,7 @@ const SignUpPage: React.FC = () => {
                     }
                 } catch (parseError) {
                     setErrorMessage(error.message);
-                    showError('Error',error.message);
+                    showError('Error', error.message);
                 }
             }
         }
@@ -178,13 +150,11 @@ const SignUpPage: React.FC = () => {
                             <span className="text-600 font-medium">Sign up to get started</span>
                         </div>
 
-                        <div>
-                        
-                        </div>
+                        <div></div>
                         {/* Form Container */}
                         <div className={styles.formContainer}>
                             {/* First Name */}
-                            <div className="mb-1" style={{ display: 'flex', flexDirection: 'column' , maxWidth: '30rem' }}>
+                            <div className="mb-1" style={{ display: 'flex', flexDirection: 'column', maxWidth: '30rem' }}>
                                 <label htmlFor="firstName" className="block text-900 text-xl font-medium mb-2">
                                     First Name
                                 </label>
@@ -201,7 +171,7 @@ const SignUpPage: React.FC = () => {
                             </div>
 
                             {/* Last Name */}
-                            <div className="mb-1" style={{ display: 'flex', flexDirection: 'column' , maxWidth: '30rem' }}>
+                            <div className="mb-1" style={{ display: 'flex', flexDirection: 'column', maxWidth: '30rem' }}>
                                 <label htmlFor="lastName" className="block text-900 text-xl font-medium mb-2">
                                     Last Name
                                 </label>
@@ -218,7 +188,7 @@ const SignUpPage: React.FC = () => {
                             </div>
 
                             {/* Email */}
-                            <div className="mb-1" style={{ display: 'flex', flexDirection: 'column' , maxWidth: '30rem' }}>
+                            <div className="mb-1" style={{ display: 'flex', flexDirection: 'column', maxWidth: '30rem' }}>
                                 <label htmlFor="email" className="block text-900 text-xl font-medium mb-2">
                                     Email
                                 </label>
@@ -235,7 +205,7 @@ const SignUpPage: React.FC = () => {
                             </div>
 
                             {/* Phone Number */}
-                            <div className="mb-1" style={{ display: 'flex', flexDirection: 'column' , maxWidth: '30rem' }}>
+                            <div className="mb-1" style={{ display: 'flex', flexDirection: 'column', maxWidth: '30rem' }}>
                                 <label htmlFor="phoneNumber" className="block text-900 text-xl font-medium mb-2">
                                     Phone Number
                                 </label>
@@ -252,7 +222,7 @@ const SignUpPage: React.FC = () => {
                             </div>
 
                             {/* Password */}
-                            <div className="mb-1" style={{ display: 'flex', flexDirection: 'column' , maxWidth: '30rem' }}>
+                            <div className="mb-1" style={{ display: 'flex', flexDirection: 'column', maxWidth: '30rem' }}>
                                 <label htmlFor="password" className="block text-900 font-medium text-xl mb-2">
                                     Password
                                 </label>
@@ -270,7 +240,7 @@ const SignUpPage: React.FC = () => {
                             </div>
 
                             {/* Confirm Password */}
-                            <div className="mb-1" style={{ display: 'flex', flexDirection: 'column' , maxWidth: '30rem' }}>
+                            <div className="mb-1" style={{ display: 'flex', flexDirection: 'column', maxWidth: '30rem' }}>
                                 <label htmlFor="confirmPassword" className="block text-900 font-medium text-xl mb-2">
                                     Confirm Password
                                 </label>

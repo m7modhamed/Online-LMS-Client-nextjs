@@ -4,7 +4,7 @@ export interface Instructor {
     firstName: string;
     lastName: string;
     email: string;
-    profileImage: string | null;
+    profileImage: Image;
     phoneNumber: string;
     specialization: string;
     aboutMe: string;
@@ -23,6 +23,36 @@ export interface Instructor {
     description: string;
   }
   
+
+  export interface ISignup {
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    phoneNumber: string;
+    confirmPassword: string;
+}
+
+export interface ISignupError {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  password?: string;
+  phoneNumber?: string;
+  confirmPassword?: string;
+}
+
+export interface ILogin {
+  email: string;
+  password: string;
+}
+
+
+export interface ILoginError {
+  email?: '';
+  password?: '';
+}
+
   // Define Course type
   export interface Course {
     id: number;
@@ -38,8 +68,8 @@ export interface Instructor {
     lastUpdate: string;
     enrolledStudentsNumber : Number;
     coverImage : Image;
-    totalHour : Number;
-    totalMinute : Number;
+    duration : Number
+
   }
 
   export interface Image{
@@ -57,12 +87,20 @@ export interface Instructor {
     lessons? : Lesson[],
   }
   
-
   export interface Lesson{
     id? : Number,
     title: string,
     position : Number,
     fileResource? : any[],
     video? : any,
+
+  }
+
+  export interface Content{
+    id? : Number,
+    url : string
+  }
+  export interface Video extends Content{
+    duration : Number
 
   }
