@@ -1,8 +1,11 @@
 'use client';
+import { CustomSession } from '@/app/interfaces/customSession';
 import Loading from '@/app/loading';
+import { getRouteBasedRole } from '@/app/utility/utilities';
 import { LayoutContext } from '@/layout/context/layoutcontext';
 import { NodeRef } from '@/types';
 import { signOut, useSession } from 'next-auth/react';
+import { revalidatePath } from 'next/cache';
 import Link from 'next/link';
 import { Avatar } from 'primereact/avatar';
 import { Button } from 'primereact/button';
@@ -19,27 +22,10 @@ const MainNavbar = () => {
         setIsHidden((prevState) => !prevState);
     };
 
-    const { data, status } = useSession();
-
-    if(status === 'loading'){
-        return (
-            <Loading/>
-        )
+    const { data, status } = useSession() as { data: CustomSession; status: string };
+    if (status === 'loading') {
+        return <Loading />;
     }
-    const routeBasedRole = () => {
-        const userRole = data?.user?.role;
-
-        switch (userRole) {
-            case 'ROLE_ADMIN':
-                return '/dashboard/admin';
-            case 'ROLE_INSTRUCTOR':
-                return '/dashboard/instructor';
-            case 'ROLE_STUDENT':
-                return '/dashboard/student';
-            default:
-                return '/';
-        }
-    };
 
     const handleLogout = () => {
         signOut({ callbackUrl: '/auth/login' });
@@ -47,9 +33,11 @@ const MainNavbar = () => {
 
     return (
         <div className="py-4 px-4 mx-0 md:mx-6 lg:mx-8 lg:px-8 flex align-items-center justify-content-between relative lg:static">
-            <Link href="/" className="flex align-items-center">
-                <img src={`/layout/images/${layoutConfig.colorScheme === 'light' ? 'logo-dark' : 'logo-white'}.svg`} alt="Sakai Logo" height="50" className="mr-0 lg:mr-2" />
-                <span className="text-900 font-medium text-2xl line-height-3 mr-8">SAKAI</span>
+            <Link href="/">
+                <div className="flex align-items-center w-96">
+                    <img src={`/layout/images/${layoutConfig.colorScheme === 'light' ? 'logo-dark' : 'logo-white'}.svg`} alt="Sakai Logo" height="50" className="mr-0 lg:mr-2" />
+                    <span className="text-900 font-medium text-2xl line-height-3 mr-8 ">Online Learning</span>
+                </div>
             </Link>
             <StyleClass nodeRef={menuRef as NodeRef} selector="@next" enterClassName="hidden" leaveToClassName="hidden" hideOnOutsideClick>
                 <i ref={menuRef} className="pi pi-bars text-4xl cursor-pointer block lg:hidden text-700"></i>
@@ -62,31 +50,29 @@ const MainNavbar = () => {
                             <Ripple />
                         </a>
                     </li>
-                    <li>
-                        <a href="#features" onClick={toggleMenuItemClick} className="p-ripple flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3">
-                            <span>Features</span>
-                            <Ripple />
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#highlights" onClick={toggleMenuItemClick} className="p-ripple flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3">
-                            <span>Highlights</span>
-                            <Ripple />
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#pricing" onClick={toggleMenuItemClick} className="p-ripple flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3">
-                            <span>Pricing</span>
-                            <Ripple />
-                        </a>
-                    </li>
+                    {data && (
+                        <li>
+                            <Link href={getRouteBasedRole(data?.user?.role) + '/courses'} onClick={toggleMenuItemClick} className="p-ripple flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3">
+                                <span>Courses</span>
+                                <Ripple />
+                            </Link>
+                        </li>
+                    )}
+                    {data && (
+                        <li>
+                            <Link href={getRouteBasedRole(data?.user?.role) + ''} onClick={toggleMenuItemClick} className="p-ripple flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3">
+                                <span>Dashboard</span>
+                                <Ripple />
+                            </Link>
+                        </li>
+                    )}
                 </ul>
                 <div className="flex items-center justify-center">
                     {/* Check if user data exists */}
                     {data ? (
                         <div style={{ alignItems: 'center', gap: '5px' }} className="flex items-center justify-between space-x-4">
                             {/* User Info Section */}
-                            <Link href={routeBasedRole()}>
+                            <Link href={getRouteBasedRole(data?.user?.role)}>
                                 <div style={{ alignItems: 'center' }} className="flex items-center p-3 rounded-lg  transition duration-800 cursor-pointer">
                                     {/* User Avatar */}
                                     <Avatar image={data.user?.image || 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541'} size="large" shape="circle" className="shadow-md" />
@@ -104,13 +90,13 @@ const MainNavbar = () => {
                         <div className="flex items-center space-x-4">
                             {/* Login & Register Buttons */}
                             <Link href={'/auth/login'}>
-                                <Button label="Login" rounded className="bg-blue-500 text-white p-button-sm font-light" />
+                                <Button label="Login" className="bg-blue-500 text-white p-button-sm font-light" />
                             </Link>
-                            <Link href={'/auth/register'}>
-                                <Button label="Register" text rounded className="text-blue-500 p-button-sm font-light" />
+                            <Link href={'/auth/signup'}>
+                                <Button label="Sign up" text className="text-blue-500 p-button-sm font-light" />
                             </Link>
-                            <Link href={'/auth/businessRegister'}>
-                                <Button label="Business Register" text rounded className="text-blue-500 p-button-sm font-light" />
+                            <Link href={'/auth/businessSignup'}>
+                                <Button label="Business Sign up" text className="text-blue-500 p-button-sm font-light" />
                             </Link>
                         </div>
                     )}

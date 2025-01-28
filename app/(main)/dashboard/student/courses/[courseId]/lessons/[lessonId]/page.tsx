@@ -1,24 +1,50 @@
 import LessonsSection from '@/app/(main)/(component)/(student)/(lessonsSections)/LessonsSection';
 import StudentVideoSection from '@/app/(main)/(component)/(student)/StudentVideoSection';
+import { API_ROUTES } from '@/app/api/apiRoutes';
 import { Course } from '@/app/interfaces/interfaces';
 import { authOptions } from '@/app/lib/nextAuth';
-import { getEnrolledStudentCourse } from '@/demo/service/CourseServices';
 import { getServerSession } from 'next-auth';
 import React from 'react';
 
-const studentLesson = async ({ params }: { params: { lessonId: Number; courseId: Number } }) => {
-    const lessonId = params.lessonId;
-    const courseId = params.courseId;
+const studentLesson = async ({ params }: { params: { lessonId: string; courseId: string } }) => {
+    const { courseId, lessonId } = params;
     const session = await getServerSession(authOptions);
     const user = session?.user;
 
-    let course: Course;
+    let course: Course | null = null;
+    let errorMessage: string | null = null;
+
     try {
-        course = await getEnrolledStudentCourse(user?.id, courseId);
+        const userId = user?.id;
+        const res = await fetch(API_ROUTES.COURSES.GET_ENROLLED_COURSE_FRO_STUDENT_BY_ID(userId, courseId), {
+            headers: {
+                Authorization: `Bearer ${session?.accessToken}`
+            },
+            cache: 'no-store'
+        });
+
+        if (!res.ok) {
+            const error = await res.json();
+            throw new Error(error.message);
+        }
+
+        course = await res.json();
     } catch (err: any) {
+        errorMessage = err.message || 'An error occurred while fetching course data.';
+    }
+
+    if (errorMessage) {
         return (
-            <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
-                <h5 style={{ color: 'red' }}>{err?.message}</h5>
+            <div
+                className="card"
+                style={{
+                    padding: '20px',
+                    maxWidth: '800px',
+                    margin: '0 auto',
+                    textAlign: 'center'
+                }}
+            >
+                <h5 style={{ color: 'red' }}>{errorMessage}</h5>
             </div>
         );
     }
@@ -30,14 +56,12 @@ const studentLesson = async ({ params }: { params: { lessonId: Number; courseId:
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '20px' }}>
-                {/* Column 1: Video Section */}
-                <div style={{}}>
+                <div>
                     <StudentVideoSection studentId={user?.id} lessonId={lessonId} />
                 </div>
 
-                {/* Column 2: Lessons Section */}
                 <div style={{ minHeight: '100vh' }}>
-                    <LessonsSection course={course} />
+                    <LessonsSection course={course!} />
                 </div>
             </div>
         </div>

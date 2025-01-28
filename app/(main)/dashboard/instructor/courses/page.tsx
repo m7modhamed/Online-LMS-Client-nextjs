@@ -2,24 +2,24 @@ import React from 'react';
 import { getInstructorCourses } from '@/demo/service/CourseServices';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/lib/nextAuth';
-import dynamic from 'next/dynamic';
 import InstructorCourseList from '../../../(component)/(instructor)/InstructorCourseList';
-
-// Lazy load the CourseList component
-const CourseList = dynamic(() => import('../../../(component)/(instructor)/InstructorCourseList'), {
-    loading: () => <p>Loading courses...</p> // Optional fallback
-});
+import { API_ROUTES } from '@/app/api/apiRoutes';
+import { Course } from '@/app/interfaces/interfaces';
 
 export default async function MyCourses() {
-    let session;
+    const session = await getServerSession(authOptions);
+    let courses: Course[] = [];
     try {
-        session = await getServerSession(authOptions);
+        const userId = session?.user?.id;
+        const res = await fetch(API_ROUTES.COURSES.GET_INSTRUCTOR_COURSES(userId), {
+            headers: {
+                Authorization: `Bearer ${session.accessToken}`
+            }
+        });
+        courses = await res.json();
     } catch (err) {
-        console.error('Error fetching session:', err);
+        console.error('', err);
     }
-
-    const userId = session?.user?.id;
-    const courses = await getInstructorCourses(userId);
 
     if (!courses || courses.length === 0) {
         return (

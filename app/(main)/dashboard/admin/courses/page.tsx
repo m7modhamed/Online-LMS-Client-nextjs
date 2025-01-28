@@ -1,11 +1,27 @@
 import AdminCourseList from '@/app/(main)/(component)/(admin)/AdminCourseList';
-import { getAdminCourses } from '@/demo/service/CourseServices';
-import React from 'react';
+import { API_ROUTES } from '@/app/api/apiRoutes';
+import { Course } from '@/app/interfaces/interfaces';
+import { authOptions } from '@/app/lib/nextAuth';
+import { getServerSession } from 'next-auth';
+import React, { Suspense } from 'react';
 
 const CoursesPage = async () => {
-    let courses;
+    const session = await getServerSession(authOptions);
+    let courses: Course[] = [];
     try {
-        courses = await getAdminCourses();
+        const res = await fetch(API_ROUTES.COURSES.GET_ALL_COURSES_FOR_ADMIN, {
+            headers: {
+                Authorization: `Bearer ${session.accessToken}`
+            },
+            cache: 'no-store'
+        });
+
+        if (!res.ok) {
+            throw new Error('Failed to fetch courses');
+        }
+
+        courses = await res.json();
+        console.log('courses from admins: ', courses);
     } catch (err) {
         console.log('admin fetch error : ', err);
     }

@@ -5,3 +5,17 @@ export function convertSecondsToHoursAndMinutes(seconds: number): string {
 
     return `${hours}h ${minutes}m ${remainingSeconds}s`;
 }
+
+export const getRouteBasedRole = (userRole: string | undefined) => {
+
+    switch (userRole) {
+        case 'ROLE_ADMIN':
+            return '/dashboard/admin';
+        case 'ROLE_INSTRUCTOR':
+            return '/dashboard/instructor';
+        case 'ROLE_STUDENT':
+            return '/dashboard/student';
+        default:
+            return '/';
+    }
+};

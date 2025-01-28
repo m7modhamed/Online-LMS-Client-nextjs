@@ -4,64 +4,88 @@ import { Box, Typography, IconButton, List, ListItem, ListItemText, Paper, Divid
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { Lesson } from '@/app/interfaces/interfaces';
 import { Tooltip } from 'primereact/tooltip';
-import { getStudentLesson } from '@/demo/service/CourseServices';
+import { API_ROUTES } from '@/app/api/apiRoutes';
+import { useSession } from 'next-auth/react';
+import Loading from '@/app/loading';
+import { CustomSession } from '@/app/interfaces/customSession';
 
-const StudentVideoSection = ({ lessonId, studentId }: { lessonId: Number; studentId: Number }) => {
+const StudentVideoSection = ({ lessonId, studentId }: { lessonId: string; studentId: string }) => {
     const [videoPreview, setVideoPreview] = useState<string | null>(null);
-    const [additionalFiles, setAdditionalFiles] = useState<File[]>([]);
-    const [error, setError] = useState<string | null>(null); // State to track errors
+    const [additionalFiles, setAdditionalFiles] = useState<{ name: string; url: string }[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const { data, status } = useSession() as { data: CustomSession; status: string };
 
     useEffect(() => {
         const fetchLesson = async () => {
-            if (lessonId) {
-                try {
-                    const lessonData: Lesson = await getStudentLesson(studentId, Number(lessonId));
+            setLoading(true);
+            setError(null);
 
-                    // Check if the lesson has a video URL and update the videoPreview state
-                    if (lessonData.video?.url) {
-                        setVideoPreview(lessonData.video.url);
+            try {
+                const res = await fetch(API_ROUTES.LESSONS.GET_STUDENT_LESSON(lessonId, studentId), {
+                    headers: {
+                        Authorization: `Bearer ${data?.accessToken}`
                     }
+                });
 
-                    // Set file resources from the fetched lesson data
-                    if (lessonData.fileResource) {
-                        const formattedFiles = lessonData.fileResource.map((file) => ({
-                            ...file,
-                            url: file.url.replace(/\\/g, '/')
-                        }));
-                        setAdditionalFiles(formattedFiles);
-                    }
-
-                    setError(null); // Clear any previous error
-                } catch (err: any) {
-                    console.error('Error fetching lesson:', err.message);
-                    setError(err?.message || 'Failed to fetch lesson'); // Set error state
+                if (!res.ok) {
+                    const errorData = await res.json();
+                    throw new Error(errorData.message || 'Failed to fetch lesson data.');
                 }
+
+                const lessonData: Lesson = await res.json();
+
+                if (lessonData.video?.url) {
+                    setVideoPreview(lessonData.video.url);
+                }
+
+                if (lessonData.fileResource) {
+                    const formattedFiles = lessonData.fileResource.map((file) => ({
+                        name: file.name,
+                        url: file.url.replace(/\\/g, '/')
+                    }));
+                    setAdditionalFiles(formattedFiles);
+                }
+            } catch (err: any) {
+                setError(err.message || 'An unknown error occurred.');
+            } finally {
+                setLoading(false);
             }
         };
-        fetchLesson();
-    }, [lessonId]);
 
-    // Render error message if an error occurred
+        if (data?.accessToken) {
+            fetchLesson();
+        }
+    }, [lessonId, studentId, data?.accessToken]);
+
+    if (loading || status === 'loading') {
+        return <Loading />;
+    }
+
     if (error) {
         return (
-            <div className='card' sx={{ padding: '20px', textAlign: 'center' }}>
-                <Typography variant="h6" color="error">
+            <Box
+                sx={{
+                    padding: '20px',
+                    maxWidth: '800px',
+                    margin: '0 auto',
+                    textAlign: 'center'
+                }}
+            >
+                <Typography variant="h5" color="error">
                     {error}
                 </Typography>
-            </div>
+            </Box>
         );
     }
 
-    // Render the main content
     return (
-        <Box sx={{}}>
-            {/* Video Upload Section */}
+        <Box>
             <Paper elevation={3} sx={{ padding: 4, borderRadius: 2, marginBottom: 4 }}>
                 <Typography variant="h5" gutterBottom>
                     Lesson Video
                 </Typography>
 
-                {/* If a video is previewed, show video preview */}
                 {videoPreview && (
                     <Box sx={{ marginTop: 2 }}>
                         <Typography variant="body1" color="textSecondary" sx={{ marginBottom: 1, fontStyle: 'italic' }}>
@@ -81,7 +105,6 @@ const StudentVideoSection = ({ lessonId, studentId }: { lessonId: Number; studen
                 )}
             </Paper>
 
-            {/* Additional Files Upload Section */}
             <Paper elevation={3} sx={{ padding: 4, borderRadius: 2 }}>
                 <Typography variant="h5" gutterBottom>
                     Download Files
@@ -89,7 +112,6 @@ const StudentVideoSection = ({ lessonId, studentId }: { lessonId: Number; studen
 
                 <Divider sx={{ marginY: 2 }} />
 
-                {/* Display the files fetched from the lesson */}
                 <List>
                     {additionalFiles.map((file, index) => (
                         <ListItem

@@ -1,9 +1,10 @@
+'use client';
 import { Course } from '@/app/interfaces/interfaces';
 import { convertSecondsToHoursAndMinutes } from '@/app/utility/utilities';
 import { Button } from 'primereact/button';
 import { Chip } from 'primereact/chip';
 import { Tag } from 'primereact/tag';
-import React from 'react';
+import React, { useState } from 'react';
 
 const EditableCourseInfoForAdmin = ({ course }: { course: Course | undefined }) => {
     return (
@@ -18,7 +19,6 @@ const EditableCourseInfoForAdmin = ({ course }: { course: Course | undefined }) 
                                 <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
                                     <div className="text-500 w-6 md:w-2 font-medium">Description</div>
                                     <div className="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">{course?.description.toUpperCase()}</div>
-                                    
                                 </li>
                                 <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
                                     <div className="text-500 w-6 md:w-2 font-medium">prerequisites</div>
@@ -27,7 +27,6 @@ const EditableCourseInfoForAdmin = ({ course }: { course: Course | undefined }) 
                                             <Chip label={prerequisite.toUpperCase()} className="mr-2" />
                                         ))}
                                     </div>
-                                    
                                 </li>
                                 <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
                                     <div className="text-500 w-6 md:w-2 font-medium">Status</div>
@@ -50,22 +49,18 @@ const EditableCourseInfoForAdmin = ({ course }: { course: Course | undefined }) 
                                             value={course?.status?.toUpperCase()}
                                         />
                                     </div>
-                                    
                                 </li>
                                 <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
                                     <div className="text-500 w-6 md:w-2 font-medium">Category</div>
                                     <div className="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">{course?.category.name.toUpperCase()}</div>
-                                    
                                 </li>
                                 <li className="flex align-items-center py-3 px-2 border-top-1 border-bottom-1 border-300 flex-wrap">
                                     <div className="text-500 w-6 md:w-2 font-medium">Language</div>
                                     <div className="text-900 w-full md:w-8 md:flex-order-0 flex-order-1 line-height-3">{course?.language.toUpperCase()}</div>
-                                    
                                 </li>
                                 <li className="flex align-items-center py-3 px-2 border-top-1 border-bottom-1 border-300 flex-wrap">
                                     <div className="text-500 w-6 md:w-2 font-medium">Duration</div>
                                     <div className="text-900 w-full md:w-8 md:flex-order-0 flex-order-1 line-height-3">{course?.duration?.toString() === '0' ? '00 : 00' : convertSecondsToHoursAndMinutes(Number(course?.duration))}</div>
-                                    
                                 </li>
                                 {}
                             </ul>

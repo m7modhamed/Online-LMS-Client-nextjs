@@ -7,12 +7,15 @@ import AttachFileIcon from '@mui/icons-material/AttachFile';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { addFiles, addVideo, getLesson, deleteVideo, deleteFile } from '@/demo/service/CourseServices';
 import { Lesson } from '@/app/interfaces/interfaces';
-import { Toast } from 'primereact/toast';
 import { DeleteDialog } from '@/app/(main)/(component)/DeleteDialog';
 import { Tooltip } from 'primereact/tooltip';
+import Loading from '@/app/loading';
+import { API_ROUTES } from '@/app/api/apiRoutes';
+import { Toast } from 'primereact/toast';
+import { useSession } from 'next-auth/react';
 
 const LessonContent = () => {
-    const param = useParams();
+    const { lessonId } = useParams();
     const [videoFile, setVideoFile] = useState<File | null>(null);
     const [videoPreview, setVideoPreview] = useState<string | null>(null);
     const [additionalFiles, setAdditionalFiles] = useState<File[]>([]);
@@ -22,35 +25,46 @@ const LessonContent = () => {
     const [isVideoUploaded, setIsVideoUploaded] = useState<boolean>(false);
     const [fileToDelete, setFileToDelete] = useState<File | null>(null);
     const [displayConfirmation, setDisplayConfirmation] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const toast = useRef<Toast>();
+    const { data, status } = useSession();
+
+    const fetchLesson = async () => {
+        if (status !== 'authenticated' || !data?.accessToken) return;
+        setLoading(true);
+        try {
+            const response = await fetch(API_ROUTES.LESSONS.GET_LESSON(lessonId), {
+                headers: { Authorization: `Bearer ${data.accessToken}` }
+            });
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message);
+            }
+            const fetchedLesson = await response.json();
+            setLesson(fetchedLesson);
+            setVideoPreview(fetchedLesson.video?.url || null);
+            setAdditionalFiles(fetchedLesson.fileResource || []);
+        } catch (error: any) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchLesson = async () => {
-            if (param.lessonId) {
-                try {
-                    const lessonData: Lesson = await getLesson(Number(param.lessonId));
-                    setLesson(lessonData);
-
-                    // Check if the lesson has a video URL and update the videoPreview state
-                    if (lessonData.video?.url) {
-                        setVideoPreview(lessonData.video.url);
-                        setIsVideoUploaded(true); // Video has been fetched, so mark it as uploaded
-                    }
-
-                    // Set file resources from the fetched lesson data
-                    if (lessonData.fileResource) {
-                        const formattedFiles = lessonData.fileResource.map((file) => ({
-                            ...file,
-                            url: file.url.replace(/\\/g, '/')
-                        }));
-                        setAdditionalFiles(formattedFiles);
-                    }
-                } catch (error) {
-                    console.error('Error fetching lesson:', error);
-                }
-            }
-        };
         fetchLesson();
-    }, [param.lessonId]);
+    }, [lessonId, data]);
+
+    if (loading) {
+        return <Loading />;
+    }
+    if (!lesson) {
+        return (
+            <div className="card">
+                <h5>No lesson found</h5>
+            </div>
+        );
+    }
 
     // Handle video upload
     const handleVideoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -136,8 +150,6 @@ const LessonContent = () => {
         setDisplayConfirmation(false);
     };
 
-    const toast = useRef<Toast>(null);
-
     const showError = (title: string, desc: string) => {
         toast.current?.show({
             severity: 'error',
@@ -167,7 +179,7 @@ const LessonContent = () => {
             setFileToDelete(null); // Clear the file to delete
             setDisplayConfirmation(false); // Hide the confirmation dialog
             if (fileToDelete.id) {
-                deleteFile(Number(param.lessonId), fileToDelete?.id);
+                deleteFile(Number(param.lessonId), fileToDelete.id);
             }
         }
     };

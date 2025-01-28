@@ -10,21 +10,22 @@ import { isStudentEnrolled } from '@/demo/service/CourseServices';
 import Link from 'next/link';
 import { convertSecondsToHoursAndMinutes } from '@/app/utility/utilities';
 import { LayoutContext } from '@/layout/context/layoutcontext';
+import { CustomSession } from '@/app/interfaces/customSession';
 
 export default function LessonsSection({ course }: { course: Course | undefined }) {
     const [sections, setSections] = useState<Section[]>([]);
     const param = useParams();
-    const { data, status } = useSession();
+    const { data, status } = useSession() as { data: CustomSession; status: string };
     const user = data?.user;
     const { layoutConfig } = useContext(LayoutContext);
 
     if (status === 'loading') {
-        return null; // Optionally show a loading spinner
+        return null;
     }
 
     useEffect(() => {
         const fetchCourseData = () => {
-            setSections(course?.sections || []); // Set sections if course data is available
+            setSections(course?.sections || []);
         };
         fetchCourseData();
     }, [param.courseId, user?.id, course]);

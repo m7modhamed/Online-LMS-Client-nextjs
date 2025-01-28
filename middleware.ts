@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 import { decodeToken, isTokenValid } from './app/lib/jwtDecode';
+import { revalidatePath } from 'next/cache';
+import { cookies } from 'next/dist/client/components/headers';
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -31,19 +33,22 @@ export async function middleware(request: NextRequest) {
   const session = await getToken({ req: request });
   const token = session?.accessToken as string;
   const isValidToken = isTokenValid(token);
-console.log('session in middleware is :' , session)
-  
+  console.log('session in middleware is :', session)
+
   if (!isValidToken && !isAuthRoute) {
     console.log('Invalid token detected. Redirecting to /auth/login.');
 
     const response = NextResponse.redirect(new URL('/auth/login', request.url));
-    response.cookies.delete('next-auth.session-token'); // Adjust cookie names if necessary
+
+    response.cookies.delete('next-auth.session-token');
+    response.cookies.delete('__Secure-next-auth.session-token');
     response.cookies.delete('next-auth.csrf-token');
+    response.cookies.delete('next-auth.callback-url');
     return response;
   }
 
 
-  // Check authentication and role
+
   if (!session && isProtectedRoute) {
     console.log('User not authenticated. Redirecting to /auth/login.');
     return NextResponse.redirect(new URL('/auth/login', request.url));
@@ -53,12 +58,12 @@ console.log('session in middleware is :' , session)
 
   const userRole = decodedToken?.role || null;
 
-  // Redirect authenticated users based on role
+
   if (session && isAuthRoute) {
     return handleAuthRouteRedirection(userRole, request);
   }
 
-  // Enforce role-based access control
+
   if (session) {
     const isAuthorized = validateRoleAccess(userRole, pathname, {
       isAdminRoute,
@@ -74,18 +79,16 @@ console.log('session in middleware is :' , session)
     }
   }
 
-  // Allow the request to proceed if all conditions are met
+
   return NextResponse.next();
 }
 
-/**
- * Redirect authenticated users trying to access login or auth routes.
- */
+
 function handleAuthRouteRedirection(role: string | null, request: NextRequest) {
   const redirectionMap: { [key: string]: string } = {
     ROLE_ADMIN: '/dashboard/admin',
     ROLE_INSTRUCTOR: '/dashboard/instructor',
-    ROLE_STUDENT: '/student',
+    ROLE_STUDENT: 'dashboard/student',
   };
 
   const redirectPath = redirectionMap[role];
@@ -97,9 +100,7 @@ function handleAuthRouteRedirection(role: string | null, request: NextRequest) {
   return NextResponse.next();
 }
 
-/**
- * Validate if a user has access to the requested route based on their role.
- */
+
 function validateRoleAccess(
   role: string | null,
   pathname: string,

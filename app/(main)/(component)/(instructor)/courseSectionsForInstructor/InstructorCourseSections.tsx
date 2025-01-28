@@ -13,6 +13,8 @@ import AddSectionDialog from '../../AddSectionDialog/AddSectionDialog';
 import AddLessonDialog from '../../AddLessonDialog';
 import Link from 'next/link';
 import { LayoutContext } from '@/layout/context/layoutcontext';
+import { CustomSession } from '@/app/interfaces/customSession';
+import Loading from '@/app/loading';
 
 export function InstructorCourseSections({ course }: { course: Course | undefined }) {
     const [openSectionDialog, setOpenSectionDialog] = React.useState(false);
@@ -23,17 +25,21 @@ export function InstructorCourseSections({ course }: { course: Course | undefine
     const { data, status } = useSession();
     const user = data?.user;
     const { layoutConfig } = useContext(LayoutContext);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchCourseData = async () => {
             setSections(course?.sections || []); // Load sections when course is available
+            setLoading(false);
         };
 
         fetchCourseData();
     }, [param.courseId, user?.id, course]);
 
+    if (loading || status === 'loading') {
+        return <Loading />;
+    }
     const handleAddSection = () => setOpenSectionDialog(true);
- 
 
     const addSection = async (newSection: Section) => {
         try {
@@ -77,12 +83,8 @@ export function InstructorCourseSections({ course }: { course: Course | undefine
                               <div className={layoutConfig.colorScheme !== 'dark' ? styles.lessonInMenu : styles.lessonInMenuDark}>
                                   <Link href={`/dashboard/instructor/courses/${course?.id}/lessons/${lesson.id}`}>
                                       <div className="flex justify-content-between px-2">
-                                          <h6 className="m-2">
-                                              {lesson?.title}
-                                          </h6>
-                                          <h6 className="m-2" >
-                                              {lesson.video ? convertSecondsToHoursAndMinutes(lesson?.video?.duration) : '00:00'}
-                                          </h6>
+                                          <h6 className="m-2">{lesson?.title}</h6>
+                                          <h6 className="m-2">{lesson.video ? convertSecondsToHoursAndMinutes(lesson?.video?.duration) : '00:00'}</h6>
                                       </div>
                                   </Link>
                               </div>

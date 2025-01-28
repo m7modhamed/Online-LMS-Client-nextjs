@@ -2,15 +2,14 @@
 'use client';
 import { Button } from 'primereact/button';
 import { Chart } from 'primereact/chart';
-import { Column } from 'primereact/column';
-import { DataTable } from 'primereact/datatable';
 import { Menu } from 'primereact/menu';
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { ProductService } from '../../../../demo/service/ProductService';
 import { LayoutContext } from '../../../../layout/context/layoutcontext';
-import Link from 'next/link';
-import { Demo } from '@/types';
 import { ChartData, ChartOptions } from 'chart.js';
+import { API_ROUTES } from '@/app/api/apiRoutes';
+import { useSession } from 'next-auth/react';
+import { CustomSession } from '@/app/interfaces/customSession';
+import { IDashboardInfo } from '@/app/interfaces/interfaces';
 
 const lineData: ChartData = {
     labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
@@ -35,12 +34,12 @@ const lineData: ChartData = {
 };
 
 const adminDashboard = () => {
-    const [products, setProducts] = useState<Demo.Product[]>([]);
     const menu1 = useRef<Menu>(null);
     const menu2 = useRef<Menu>(null);
     const [lineOptions, setLineOptions] = useState<ChartOptions>({});
     const { layoutConfig } = useContext(LayoutContext);
-
+    const { data, status } = useSession() as { data: CustomSession; status: string };
+    adminDashboard;
     const applyLightTheme = () => {
         const lineOptions: ChartOptions = {
             plugins: {
@@ -106,10 +105,6 @@ const adminDashboard = () => {
     };
 
     useEffect(() => {
-        ProductService.getProductsSmall().then((data) => setProducts(data));
-    }, []);
-
-    useEffect(() => {
         if (layoutConfig.colorScheme === 'light') {
             applyLightTheme();
         } else {
@@ -117,94 +112,50 @@ const adminDashboard = () => {
         }
     }, [layoutConfig.colorScheme]);
 
-    const formatCurrency = (value: number) => {
-        return value?.toLocaleString('en-US', {
-            style: 'currency',
-            currency: 'USD'
-        });
-    };
+    const [dashboardInfo, setDashboardInfo] = useState<IDashboardInfo>();
+    useEffect(() => {
+        const getDashboardInfo = async () => {
+            try {
+                let coursesInfo;
+                if (status === 'authenticated' && data?.accessToken && data?.user?.id) {
+                    const res = await fetch(API_ROUTES.COURSES.GET_STUDENT_DASHBOARD_INFO(data?.user?.id), {
+                        headers: {
+                            Authorization: `Bearer ${data.accessToken}`
+                        },
+                        cache: 'no-store'
+                    });
+                    coursesInfo = await res.json();
+                }
+
+                setDashboardInfo(coursesInfo);
+            } catch (err) {
+                console.log('err', err);
+            }
+        };
+        getDashboardInfo();
+    }, [data]);
 
     return (
         <div className="grid">
-            <div className="col-12 lg:col-6 xl:col-3">
+            <div className="col-12 lg:col-6 xl:col-12">
                 <div className="card mb-0">
                     <div className="flex justify-content-between mb-3">
                         <div>
-                            <span className="block text-500 font-medium mb-3">Orders</span>
-                            <div className="text-900 font-medium text-xl">152</div>
+                            <span className="block text-500 font-medium mb-3">Total Learning Courses</span>
+                            <div className="text-900 font-medium text-xl">
+                                {dashboardInfo?.coursesCount} <span className="text-500 text-sm">courses</span>
+                            </div>
                         </div>
                         <div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-                            <i className="pi pi-shopping-cart text-blue-500 text-xl" />
+                            <i className="pi pi-book text-blue-500 text-xl" />
                         </div>
                     </div>
-                    <span className="text-green-500 font-medium">24 new </span>
-                    <span className="text-500">since last visit</span>
-                </div>
-            </div>
-            <div className="col-12 lg:col-6 xl:col-3">
-                <div className="card mb-0">
-                    <div className="flex justify-content-between mb-3">
-                        <div>
-                            <span className="block text-500 font-medium mb-3">Revenue</span>
-                            <div className="text-900 font-medium text-xl">$2.100</div>
-                        </div>
-                        <div className="flex align-items-center justify-content-center bg-orange-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-                            <i className="pi pi-map-marker text-orange-500 text-xl" />
-                        </div>
-                    </div>
-                    <span className="text-green-500 font-medium">%52+ </span>
-                    <span className="text-500">since last week</span>
-                </div>
-            </div>
-            <div className="col-12 lg:col-6 xl:col-3">
-                <div className="card mb-0">
-                    <div className="flex justify-content-between mb-3">
-                        <div>
-                            <span className="block text-500 font-medium mb-3">Customers</span>
-                            <div className="text-900 font-medium text-xl">28441</div>
-                        </div>
-                        <div className="flex align-items-center justify-content-center bg-cyan-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-                            <i className="pi pi-inbox text-cyan-500 text-xl" />
-                        </div>
-                    </div>
-                    <span className="text-green-500 font-medium">520 </span>
-                    <span className="text-500">newly registered</span>
-                </div>
-            </div>
-            <div className="col-12 lg:col-6 xl:col-3">
-                <div className="card mb-0">
-                    <div className="flex justify-content-between mb-3">
-                        <div>
-                            <span className="block text-500 font-medium mb-3">Comments</span>
-                            <div className="text-900 font-medium text-xl">152 Unread</div>
-                        </div>
-                        <div className="flex align-items-center justify-content-center bg-purple-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-                            <i className="pi pi-comment text-purple-500 text-xl" />
-                        </div>
-                    </div>
-                    <span className="text-green-500 font-medium">85 </span>
-                    <span className="text-500">responded</span>
+                    <span className="text-green-500 font-medium">{dashboardInfo?.lastWeekCoursesCount} new </span>
+                    <span className="text-500">added this week</span>
                 </div>
             </div>
 
             <div className="col-12 xl:col-6">
-                <div className="card">
-                    <h5>Recent Sales</h5>
-                    <DataTable value={products} rows={5} paginator responsiveLayout="scroll">
-                        <Column header="Image" body={(data) => <img className="shadow-2" src={`/demo/images/product/${data.image}`} alt={data.image} width="50" />} />
-                        <Column field="name" header="Name" sortable style={{ width: '35%' }} />
-                        <Column field="price" header="Price" sortable style={{ width: '35%' }} body={(data) => formatCurrency(data.price)} />
-                        <Column
-                            header="View"
-                            style={{ width: '15%' }}
-                            body={() => (
-                                <>
-                                    <Button icon="pi pi-search" text />
-                                </>
-                            )}
-                        />
-                    </DataTable>
-                </div>
                 <div className="card">
                     <div className="flex justify-content-between align-items-center mb-5">
                         <h5>Best Selling Products</h5>
@@ -328,7 +279,6 @@ const adminDashboard = () => {
                             <span className="text-900 line-height-3">
                                 Richard Jones
                                 <span className="text-700">
-                                    {' '}
                                     has purchased a blue t-shirt for <span className="text-blue-500">79$</span>
                                 </span>
                             </span>
@@ -367,23 +317,6 @@ const adminDashboard = () => {
                             </span>
                         </li>
                     </ul>
-                </div>
-                <div
-                    className="px-4 py-5 shadow-2 flex flex-column md:flex-row md:align-items-center justify-content-between mb-3"
-                    style={{
-                        borderRadius: '1rem',
-                        background: 'linear-gradient(0deg, rgba(0, 123, 255, 0.5), rgba(0, 123, 255, 0.5)), linear-gradient(92.54deg, #1C80CF 47.88%, #FFFFFF 100.01%)'
-                    }}
-                >
-                    <div>
-                        <div className="text-blue-100 font-medium text-xl mt-2 mb-3">TAKE THE NEXT STEP</div>
-                        <div className="text-white font-medium text-5xl">Try PrimeBlocks</div>
-                    </div>
-                    <div className="mt-4 mr-auto md:mt-0 md:mr-0">
-                        <Link href="https://blocks.primereact.org" className="p-button font-bold px-5 py-3 p-button-warning p-button-rounded p-button-raised">
-                            Get Started
-                        </Link>
-                    </div>
                 </div>
             </div>
         </div>

@@ -8,12 +8,13 @@ import { Password } from 'primereact/password';
 import { LayoutContext } from '../../../../layout/context/layoutcontext';
 import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
-import { loginValidationSchema } from '../register/ValidationSchema';
+import { loginValidationSchema } from '../signup/ValidationSchema';
 import { Message } from 'primereact/message';
 import { Toast } from 'primereact/toast';
 import ForgotPasswordRequest from '../forgotPasswordRequest/page';
 import { signIn, useSession } from 'next-auth/react';
 import { ILogin, ILoginError } from '@/app/interfaces/interfaces';
+import Link from 'next/link';
 
 const LoginPage = () => {
     const [checked, setChecked] = useState(false);
@@ -28,8 +29,7 @@ const LoginPage = () => {
     const [userDataError, setUserDataError] = useState<ILoginError>();
     const [isLoading, setIsLoading] = useState(false);
     const [openResetPasswordDialog, setOpenResetPasswordDialog] = useState(false);
-    const { data, status } = useSession();
-    
+
     const router = useRouter();
     const containerClassName = classNames('surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden', { 'p-input-filled': layoutConfig.inputStyle === 'filled' });
 
@@ -90,7 +90,7 @@ const LoginPage = () => {
                 setIsLoading(false);
             }
 
-            if (result?.ok ) {
+            if (result?.ok) {
                 router.push('/');
             }
 
@@ -167,10 +167,17 @@ const LoginPage = () => {
                                 {userDataError?.password && <Message severity="error" text={userDataError.password} />}
                             </div>
                             <div className="flex align-items-center justify-content-between mb-5 gap-5">
-                                <div className="flex align-items-center">
+                                {/* <div className="flex align-items-center">
                                     <Checkbox inputId="rememberme1" checked={checked} onChange={(e) => setChecked(e.checked ?? false)} className="mr-2"></Checkbox>
                                     <label htmlFor="rememberme1">Remember me</label>
-                                </div>
+                                </div> */}
+
+                                <Link href={'/auth/signup'}>
+                                    <div className="font-medium no-underline ml-2 text-right cursor-pointer" style={{ color: 'var(--primary-color)' }}>
+                                        sign up now!
+                                    </div>
+                                </Link>
+
                                 <a
                                     onClick={() => {
                                         setOpenResetPasswordDialog(true);

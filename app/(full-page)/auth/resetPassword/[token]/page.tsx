@@ -9,7 +9,7 @@ import { Toast } from 'primereact/toast';
 import { classNames } from 'primereact/utils';
 import { resetPassword } from '@/demo/service/UserServices'; // Import your password reset API call
 import { LayoutContext } from '@/layout/context/layoutcontext';
-import { SignupValidationSchema } from '../../register/ValidationSchema';
+import { SignupValidationSchema } from '../../signup/ValidationSchema';
 
 const ResetPassword = () => {
     const { token } = useParams(); // Extract token from the URL

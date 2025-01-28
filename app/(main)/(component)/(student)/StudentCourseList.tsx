@@ -8,6 +8,7 @@ import { Course, Image } from '@/app/interfaces/interfaces';
 import Link from 'next/link';
 import { convertSecondsToHoursAndMinutes } from '@/app/utility/utilities';
 import { useSession } from 'next-auth/react';
+import Loading from '@/app/loading';
 
 const StudentCourseList = ({ courses }: { courses: Course[] }) => {
     const [dataViewValue, setDataViewValue] = useState<Course[]>([]);
@@ -17,6 +18,7 @@ const StudentCourseList = ({ courses }: { courses: Course[] }) => {
     const [sortKey, setSortKey] = useState(null);
     const [sortOrder, setSortOrder] = useState<0 | 1 | -1 | null>(null);
     const [sortField, setSortField] = useState('');
+    const [loading, setLoading] = useState(true);
 
     const sortOptions = [
         { label: 'Enrolled Students: High to Low', value: '!enrolledStudentsNumber' },
@@ -27,8 +29,12 @@ const StudentCourseList = ({ courses }: { courses: Course[] }) => {
     const user = data?.user;
     useEffect(() => {
         setDataViewValue(courses);
-    }, [user]); // The useEffect will only run when 'user' changes
+        setLoading(false);
+    }, [user]);
 
+    if (loading || status == 'loading') {
+        return <Loading />;
+    }
     const onFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setGlobalFilterValue(value);
@@ -82,35 +88,29 @@ const StudentCourseList = ({ courses }: { courses: Course[] }) => {
         return (
             <div className="col-12">
                 <div className="flex flex-column md:flex-row align-items-center p-3 w-full">
-                    {/* Course Image */}
                     <div>
                         <img src={getUrlImage(coverImage)} alt={name} className="my-4 md:my-0 w-9 md:w-10rem shadow-2 mr-5" style={{ objectFit: 'cover', height: '150px' }} />
                     </div>
 
-                    {/* Course Details */}
                     <div className="flex-1 flex flex-column align-items-center text-center md:text-left">
-                        <div className="font-bold text-2xl mb-4">{name}</div> {/* Course name */}
-                        <div className="mb-2">{description}</div> {/* Course description */}
-                        {/* Language and Instructor */}
+                        <div className="font-bold text-2xl mb-4">{name}</div>
+                        <div style={{ wordBreak: 'break-all' }} className="mb-2">{description}</div>
+
                         <div className="flex align-items-center mt-3">
                             <i className="pi pi-book mr-2" />
-                            <span className="font-semibold">{language?.toUpperCase()}</span> {/* Course language */}
+                            <span className="font-semibold">{language?.toUpperCase()}</span>
                         </div>
                     </div>
 
-                    {/* Right Section - Enrolled Students, Add to Cart, Duration */}
                     <div style={{ gap: '10px', flexWrap: 'wrap' }} className="flex flex-row md:flex-column justify-content-between w-full md:w-auto align-items-center md:align-items-end mt-5 md:mt-0">
                         <span className="text-2xl font-semibold mb-2 align-self-center md:align-self-end">{enrolledStudentsNumber.toString()} Students</span>
 
-                        {/* Duration */}
                         <div className="flex align-items-center mb-2">
                             <i className="pi pi-clock" style={{ fontSize: '1.5rem' }}></i>
                             <span className="text-1xl font-semibold ml-2">{convertSecondsToHoursAndMinutes(Number(course.duration))}</span>
                         </div>
 
-                        {/* Button to open */}
                         <Link href={`/dashboard/student/courses/${course.id}`}>
-                            {/* <Button icon="pi pi-play" /> */}
                             <Button icon="pi pi-play" label="Open To Enroll" size="small" className="mb-2" />
                         </Link>
                     </div>
@@ -126,30 +126,27 @@ const StudentCourseList = ({ courses }: { courses: Course[] }) => {
                     <div className="flex flex-wrap gap-2 align-items-center justify-content-between mb-4">
                         <div className="flex align-items-center">
                             <i className="pi pi-book mr-2" />
-                            <span className="font-semibold">{course.language.toUpperCase()}</span> {/* Display course language */}
+                            <span className="font-semibold">{course?.language.toUpperCase()}</span>
                         </div>
                         <span className={`course-badge status-available`}>{course?.enrolledStudentsNumber?.toString()} students</span> {/* Course status */}
                     </div>
                     <div className="flex flex-column align-items-center text-center mb-3">
-                        {/* Image container with fixed height */}
                         <div className="image-container w-12 h-12 flex align-items-center justify-content-center overflow-hidden" style={{ height: '250px' }}>
-                            <img src={getUrlImage(course.coverImage)} alt={course.name} className="w-full h-full" style={{ objectFit: 'cover' }} />
+                            <img src={getUrlImage(course?.coverImage)} alt={course?.name} className="w-full h-full" style={{ objectFit: 'cover' }} />
                         </div>
-                        <div className="text-2xl font-bold mt-2">{course.name}</div> {/* Course name */}
-                        <div className="mb-3 mt-3">{`${course.instructor.firstName} ${course.instructor.lastName}`}</div> {/* Instructor name */}
-                        <div className="">{course.description}</div> {/* Course description */}
+                        <div className="text-2xl font-bold mt-2">{course?.name}</div>
+                        <div className="mb-3 mt-3">{`${course?.instructor?.firstName} ${course?.instructor?.lastName}`}</div> {/* Instructor name */}
+                        <div style={{ wordBreak: 'break-all' }} className="">{course.description}</div>
                     </div>
                     <div className="flex align-items-center justify-content-between mt-2" style={{ flexWrap: 'wrap', gap: '20px' }}>
                         <div className="flex align-items-center" style={{ gap: '8px' }}>
                             <i className="pi pi-clock " style={{ fontSize: '1.5rem' }}></i>
 
-                            <span className="text-1xl font-semibold">{convertSecondsToHoursAndMinutes(Number(course.duration))}</span>
+                            <span className="text-1xl font-semibold">{convertSecondsToHoursAndMinutes(Number(course?.duration))}</span>
                         </div>
                         <Link href={`/dashboard/student/courses/${course.id}`}>
-                            {/* <Button icon="pi pi-play" /> */}
                             <Button icon="pi pi-play" label="Open To Enroll" size="small" />
                         </Link>
-                        {/* Button to start the course */}
                     </div>
                 </div>
             </div>

@@ -1,26 +1,76 @@
 'use client';
+import { useState, useEffect } from 'react';
 import { Box, Typography, IconButton, List, ListItem, ListItemText, Paper, Divider } from '@mui/material';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-import { getAdminCourse, getLesson } from '@/demo/service/CourseServices';
-import { Course, Lesson } from '@/app/interfaces/interfaces';
+import { API_ROUTES } from '@/app/api/apiRoutes';
+import { useSession } from 'next-auth/react';
 import { Tooltip } from 'primereact/tooltip';
+import Loading from '@/app/loading';
 
-const LessonContent = async ({ params }: { params: {courseId : string , lessonId: string } }) => {
-    const lesson: Lesson = await getLesson(Number(params.lessonId));
+const LessonContent = ({ params }: { params: { courseId: string; lessonId: string } }) => {
+    const { data, status } = useSession();
+    const [lesson, setLesson] = useState<any>(null);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string>('');
+
+    useEffect(() => {
+        if (status === 'loading') {
+            return;
+        }
+
+        const fetchLesson = async () => {
+            try {
+                const res = await fetch(API_ROUTES.LESSONS.GET_LESSON(params.lessonId), {
+                    headers: {
+                        Authorization: `Bearer ${data?.accessToken}`
+                    },
+                    cache: 'no-store'
+                });
+
+                if (!res.ok) {
+                    throw new Error('Failed to fetch lesson');
+                }
+
+                const lessonData = await res.json();
+                setLesson(lessonData);
+            } catch (err) {
+                setError('Failed to fetch lesson');
+                console.log('Error fetching lesson:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchLesson();
+    }, [status, data, params.lessonId]);
+
+    if (loading || status === 'loading') {
+        return <Loading />;
+    }
+
+    if (error) {
+        return <Typography color="error">{error}</Typography>;
+    }
+
+    if (!lesson) {
+        return <Typography>No lesson data found.</Typography>;
+    }
+
     let additionalFiles;
-    if (lesson.fileResource) {
-        const formattedFiles = lesson.fileResource.map((file) => ({
+    if (lesson && lesson.fileResource) {
+        const formattedFiles = lesson.fileResource.map((file: any) => ({
             ...file,
             url: file.url.replace(/\\/g, '/')
         }));
         additionalFiles = formattedFiles;
     }
-    const videoPreview = lesson.video.url;
+
+    const videoPreview = lesson?.video?.url;
 
     const handleDownload = (url: string, fileName: string) => {
         const link = document.createElement('a');
         link.href = url;
-        link.download = fileName;  // File will be downloaded with the specified file name
+        link.download = fileName; // File will be downloaded with the specified file name
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -71,9 +121,9 @@ const LessonContent = async ({ params }: { params: {courseId : string , lessonId
                 <List className="mx-4">
                     {additionalFiles?.map((file, index) => (
                         <a
-                            href={file?.url} 
-                            target="_blank"  // Opens the file in a new tab
-                            rel="noopener noreferrer"  // Security measure for opening links in new tab
+                            href={file?.url}
+                            target="_blank" // Opens the file in a new tab
+                            rel="noopener noreferrer" // Security measure for opening links in new tab
                             key={index}
                             className="target-icon"
                             data-pr-tooltip="download"
@@ -90,11 +140,11 @@ const LessonContent = async ({ params }: { params: {courseId : string , lessonId
                                         <Tooltip target=".target-icon" />
 
                                         {/* Button to trigger file download */}
-                                        <IconButton 
-                                            edge="end" 
+                                        <IconButton
+                                            edge="end"
                                             onClick={(e) => {
-                                                e.preventDefault();  // Prevents the link from opening
-                                                handleDownload(file.url, file.name);  // Triggers the download
+                                                e.preventDefault(); // Prevents the link from opening
+                                                handleDownload(file.url, file.name); // Triggers the download
                                             }}
                                         >
                                             <AttachFileIcon color="primary" />
@@ -108,7 +158,6 @@ const LessonContent = async ({ params }: { params: {courseId : string , lessonId
                     ))}
                 </List>
             </Paper>
-
         </Box>
     );
 };

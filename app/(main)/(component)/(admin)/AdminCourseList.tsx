@@ -9,6 +9,8 @@ import Link from 'next/link';
 import { convertSecondsToHoursAndMinutes } from '@/app/utility/utilities';
 import { useSession } from 'next-auth/react';
 import { Tag } from 'primereact/tag';
+import { CustomSession } from '@/app/interfaces/customSession';
+import Loading from '@/app/loading';
 
 const AdminCourseList = ({ courses }: { courses: Course[] }) => {
     const [dataViewValue, setDataViewValue] = useState<Course[]>([]);
@@ -18,17 +20,22 @@ const AdminCourseList = ({ courses }: { courses: Course[] }) => {
     const [sortKey, setSortKey] = useState(null);
     const [sortOrder, setSortOrder] = useState<0 | 1 | -1 | null>(null);
     const [sortField, setSortField] = useState('');
-
+    const [loading, setLoading] = useState(true);
     const sortOptions = [
         { label: 'Enrolled Students: High to Low', value: '!enrolledStudentsNumber' },
         { label: 'Enrolled Students: Low to High', value: 'enrolledStudentsNumber' }
     ];
 
-    const { data, status } = useSession();
+    const { data, status } = useSession() as { data: CustomSession; status: string };
     const user = data?.user;
     useEffect(() => {
         setDataViewValue(courses);
-    }, [user]); // The useEffect will only run when 'user' changes
+        setLoading(false);
+    }, [user, dataViewValue]);
+
+    if (loading) {
+        return <Loading />;
+    }
 
     const onFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -172,7 +179,7 @@ const AdminCourseList = ({ courses }: { courses: Course[] }) => {
                             <img src={getUrlImage(course.coverImage)} alt={course.name} className="w-full h-full" style={{ objectFit: 'cover' }} />
                         </div>
                         <div className="text-2xl font-bold mt-2">{course.name}</div> {/* Course name */}
-                        <div className="mb-3 mt-3">{`${course.instructor.firstName} ${course.instructor.lastName}`}</div> {/* Instructor name */}
+                        <div className="mb-3 mt-3">{`${course?.instructor?.firstName} ${course?.instructor?.lastName}`}</div> {/* Instructor name */}
                         <div className="">{course.description}</div> {/* Course description */}
                     </div>
                     <div className="flex align-items-center justify-content-between mt-2" style={{ flexWrap: 'wrap', gap: '20px' }}>

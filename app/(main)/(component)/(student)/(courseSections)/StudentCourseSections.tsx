@@ -11,38 +11,55 @@ import { isStudentEnrolled } from '@/demo/service/CourseServices';
 import Link from 'next/link';
 import { convertSecondsToHoursAndMinutes } from '@/app/utility/utilities';
 import { LayoutContext } from '@/layout/context/layoutcontext';
+import { CustomSession } from '@/app/interfaces/customSession';
+import Loading from '@/app/loading';
+import { API_ROUTES } from '@/app/api/apiRoutes';
 
 export default function StudentCourseSections({ course }: { course: Course | undefined }) {
     const [sections, setSections] = useState<Section[]>([]);
     const param = useParams();
-    const { data, status } = useSession();
+    const { data, status } = useSession() as { data: CustomSession; status: string };
     const user = data?.user;
     const [isEnrolled, setIsEnrolled] = useState(true);
     const router = useRouter();
     const { layoutConfig } = useContext(LayoutContext);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const checkEnrollment = async () => {
             if (course && user?.id) {
                 try {
-                    const isEnroll = await isStudentEnrolled(course.id, user.id);
+                    const res = await fetch(API_ROUTES.COURSES.CHECK_IS_ENROLL(user.id, course.id.toString()), {
+                        headers: {
+                            Authorization: `Bearer ${data?.accessToken}`
+                        }
+                    });
+                    if (!res.ok) {
+                        const error = await res.json();
+                        throw new Error(error.message);
+                    }
+                    const isEnroll = await res.json();
                     setIsEnrolled(isEnroll);
                 } catch (err: any) {
                     console.error('Error checking enrollment:', err?.message);
                 }
             }
+            setLoading(false);
         };
-    
+
         checkEnrollment();
-    }, [course, user?.id]); // Only runs when `course` or `user.id` changes
-    
+    }, [course, user?.id]);
+
     useEffect(() => {
         if (course) {
-            setSections(course.sections || []); // Set sections if `course` data is available
+            setSections(course.sections || []);
         }
-    }, [course]); // Only runs when `course` changes
-    
+        setLoading(false);
+    }, [course]);
 
+    if (loading || status === 'loading') {
+        return <Loading />;
+    }
     const panelMenuItems = sections.map((section) => ({
         label: section.title,
         icon: 'pi pi-folder',

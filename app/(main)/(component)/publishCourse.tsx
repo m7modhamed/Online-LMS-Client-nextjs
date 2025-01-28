@@ -3,16 +3,19 @@ import React, { useRef, useState } from 'react';
 import { DeleteDialog } from './DeleteDialog';
 import { Toast } from 'primereact/toast';
 import { Course } from '@/app/interfaces/interfaces';
-import { archiveCourse, deleteCourse, publishRequest } from '@/demo/service/CourseServices';
 import { useRouter } from 'next/navigation';
 import { Button } from 'primereact/button';
+import { API_ROUTES } from '@/app/api/apiRoutes';
+import { useSession } from 'next-auth/react';
+import { CustomSession } from '@/app/interfaces/customSession';
+import Loading from '@/app/loading';
 
 const PublishCourse = ({ course }: { course: Course | undefined }) => {
     const [loading, setLoading] = useState(false);
     const [displayConfirmation, setDisplayConfirmation] = useState(false);
     const router = useRouter();
     const toast = useRef<Toast>(null);
-
+    const { data, status } = useSession() as { data: CustomSession; status: string };
     const showSuccess = (title: string, desc: string) => {
         toast.current?.show({
             severity: 'success',
@@ -21,6 +24,10 @@ const PublishCourse = ({ course }: { course: Course | undefined }) => {
             life: 5000
         });
     };
+
+    if (status === 'loading') {
+        return <Loading />;
+    }
 
     const showError = (title: string, desc: string) => {
         toast.current?.show({
@@ -31,58 +38,88 @@ const PublishCourse = ({ course }: { course: Course | undefined }) => {
         });
     };
 
-    const handlePublish = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    const handlePublish = async (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
         setLoading(true);
-        const response = publishRequest(Number(course?.id));
 
-        response
-            .then((res) => {
-                showSuccess('Success', res);
-                router.refresh();
-            })
-            .catch((err) => {
-                showError('Error', err.message);
-            })
-            .finally(() => {
-                setLoading(false);
+        try {
+            setLoading(true);
+
+            const res = await fetch(API_ROUTES.COURSES.PUBLISH_COURSE_REQUEST(String(course?.id)), {
+                headers: {
+                    Authorization: `Bearer ${data.accessToken}`
+                }
             });
+
+            if (!res.ok) {
+                const error = await res.json();
+                console.log(error);
+                throw new Error(error.message);
+            }
+
+            const result = await res.json();
+            showSuccess('Success', result);
+            router.refresh();
+        } catch (err: any) {
+            showError('Error', err?.message);
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const handleArchive = () => {
+    const handleArchive = async () => {
         setLoading(true);
-        const response = archiveCourse(Number(course?.id));
 
-        response
-            .then((res) => {
-                showSuccess('Success', res);
-                router.refresh();
-            })
-            .catch((err) => {
-                showError('Error', err.message);
-            })
-            .finally(() => {
-                setLoading(false);
+        try {
+            setLoading(true);
+
+            const res = await fetch(API_ROUTES.COURSES.ARCHIVE_COURSE(String(course?.id)), {
+                headers: {
+                    Authorization: `Bearer ${data.accessToken}`
+                }
             });
+
+            if (!res.ok) {
+                const error = await res.json();
+                console.log(error);
+                throw new Error(error.message);
+            }
+
+            const result = await res.text();
+
+            showSuccess('Success', result);
+            router.refresh();
+        } catch (err: any) {
+            showError('Error', err?.message);
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const handleDelete = () => {
-        setLoading(true);
-        const response = deleteCourse(Number(course?.id));
-
-        response
-            .then((res) => {
-                showSuccess('Success', res);
-                router.refresh();
-
-                //router.push('/dashboard/instructor/courses')
-            })
-            .catch((err) => {
-                showError('Error', err.message);
-            })
-            .finally(() => {
-                setLoading(false);
-                setDisplayConfirmation(false);
+    const handleDelete = async () => {
+        try {
+            setLoading(true);
+            const res = await fetch(API_ROUTES.COURSES.DELETE_COURSE(String(course?.id)), {
+                headers: {
+                    Authorization: `Bearer ${data.accessToken}`
+                },
+                method: 'DELETE'
             });
+            console.log('res', res);
+            if (!res.ok) {
+                const error = await res.json();
+                console.log(error);
+                throw new Error(error.message);
+            }
+
+            const result = await res.text();
+            showSuccess('Success', result);
+            router.push('/dashboard/instructor/courses');
+        } catch (err: any) {
+            showError('Error', err?.message);
+        } finally {
+            setLoading(false);
+            setDisplayConfirmation(false);
+        }
     };
 
     return (
@@ -93,21 +130,10 @@ const PublishCourse = ({ course }: { course: Course | undefined }) => {
                 <h4 className="mb-4">After uploading the lessons and content, you can request to publish your course:</h4>
 
                 <div className="flex gap-3 mb-4 justify-content-between">
-                    {/* Render "Publish" button only if course status is 'DRAFT' */}
-                   <>
-                    {course?.status === 'DRAFT' && (
-                        <Button
-                            label="Publish"
-                            icon="pi pi-upload"
-                            onClick={handlePublish}
-                            loading={loading}
-                            severity="success"
-                            className="w-16rem" // Adjust width as per your design requirements
-                        />
-                    )}
+                    <>
+                        {course?.status === 'DRAFT' && <Button label="Publish" icon="pi pi-upload" onClick={handlePublish} loading={loading} severity="success" className="w-16rem" />}
 
-                    {/* Render "Archive" and "Delete" buttons based on course status */}
-                    {course?.status === 'PUBLISHED' && <Button label="Archive" icon="pi pi-home" onClick={handleArchive} loading={loading} severity="help" className="w-16rem" />}
+                        {course?.status === 'PUBLISHED' && <Button label="Archive" icon="pi pi-home" onClick={handleArchive} loading={loading} severity="help" className="w-16rem" />}
                     </>
                     {<Button label="Delete" icon="pi pi-trash" onClick={() => setDisplayConfirmation(true)} loading={loading} severity="danger" className="w-16rem" />}
                 </div>

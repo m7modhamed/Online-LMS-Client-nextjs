@@ -2,32 +2,44 @@
 import React, { useRef, useState } from 'react';
 import { Button } from 'primereact/button';
 import { Course } from '@/app/interfaces/interfaces';
-import { ApprovePublishRequest } from '@/demo/service/CourseServices';
 import { useRouter } from 'next/navigation';
 import { Toast } from 'primereact/toast';
+import { API_ROUTES } from '@/app/api/apiRoutes';
+import { useSession } from 'next-auth/react';
+import { CustomSession } from '@/app/interfaces/customSession';
 
 const PublishSection = ({ course }: { course: Course }) => {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
-    const handlePublish = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-        setLoading(true);
-        const response = ApprovePublishRequest(Number(course?.id));
+    const { data, status } = useSession() as { data: CustomSession; status: string };
 
-        response
-            .then((res) => {
-                //showSuccess('Success', res);
-                showSuccess('Success', res);
-                setTimeout(() => {
-                    router.refresh();
-                }, 3000);
-            })
-            .catch((err) => {
-                showError('Error', err.message);
-                // showError('Error', err.message);
-            })
-            .finally(() => {
-                setLoading(false);
+    const handlePublish = async (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+        try {
+            setLoading(true);
+
+            const res = await fetch(API_ROUTES.COURSES.PUBLISH_COURSE(String(course?.id)), {
+                headers: {
+                    Authorization: `Bearer ${data.accessToken}`
+                }
             });
+
+            if (!res.ok) {
+                const error = await res.json();
+                console.log(error);
+                throw new Error(error.message);
+            }
+
+            const result = await res.text();
+            showSuccess('Success', result);
+            router.refresh();
+            setTimeout(() => {
+                router.push('/dashboard/admin/courses');
+            }, 1000);
+        } catch (err: any) {
+            showError('Error', err?.message);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const toast = useRef<Toast>(null);
@@ -39,7 +51,6 @@ const PublishSection = ({ course }: { course: Course }) => {
             detail: desc,
             life: 5000
         });
-        
     };
 
     const showError = (title: string, desc: string) => {

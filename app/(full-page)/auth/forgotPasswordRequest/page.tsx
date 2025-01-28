@@ -4,7 +4,7 @@ import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
-import { SignupValidationSchema } from '../register/ValidationSchema';
+import { SignupValidationSchema } from '../signup/ValidationSchema';
 import { Message } from 'primereact/message';
 import { forgotPasswordRequest } from '@/demo/service/UserServices';
 

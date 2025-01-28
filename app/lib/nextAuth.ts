@@ -1,7 +1,9 @@
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { decodeToken } from './jwtDecode';
+import { API_ROUTES } from '../api/apiRoutes';
 
 export const authOptions = {
+
     providers: [
         CredentialsProvider({
             name: 'Credentials',
@@ -10,8 +12,8 @@ export const authOptions = {
                 password: { label: 'Password', type: 'password' }
             },
             async authorize(credentials) {
-                // Call your Spring Boot API
-                const res = await fetch('http://localhost:8080/login', {
+
+                const res = await fetch(API_ROUTES.USERS.LOGIN, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(credentials)
@@ -20,10 +22,10 @@ export const authOptions = {
                 const data = await res.json();
 
                 console.log('data', data);
-                console.log('token', data.token);
                 if (res.ok && data.token) {
                     return { token: data.token };
                 } else {
+
                     throw new Error(data.message || 'Login failed');
                 }
             }
@@ -40,11 +42,11 @@ export const authOptions = {
             const decodedToken = decodeToken(token.accessToken);
             session.accessToken = token.accessToken;
             session.user = decodedToken;
-                        
+
             return session;
         }
     },
-    pages : {
-        signIn : '/auth/login'
-    }
+    pages: {
+        signIn: '/auth/login'
+    },
 };

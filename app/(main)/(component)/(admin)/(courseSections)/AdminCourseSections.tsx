@@ -1,69 +1,37 @@
-'use client'
-import React, { useEffect, useState } from 'react';
+'use client';
+import React, { useContext, useEffect, useState } from 'react';
 import { PanelMenu } from 'primereact/panelmenu';
-import { Box, Button, Tooltip, Typography } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
+import { Box, Typography } from '@mui/material';
 import { useParams } from 'next/navigation';
-import AddLessonDialog from '../../AddLessonDialog';
-import AddSectionDialog from '../../AddSectionDialog/AddSectionDialog';
-import { addNewLesson, addNewSection } from '@/demo/service/CourseServices';
 import styles from './style.module.css';
-import { Course, Lesson, Section } from '@/app/interfaces/interfaces';
-import { convertSecondsToHoursAndMinutes } from '@/app/utility/utilities';
+import { Course, Section } from '@/app/interfaces/interfaces';
 import { useSession } from 'next-auth/react';
+import { CustomSession } from '@/app/interfaces/customSession';
+import Link from 'next/link';
+import { convertSecondsToHoursAndMinutes } from '@/app/utility/utilities';
+import { LayoutContext } from '@/layout/context/layoutcontext';
+import Loading from '@/app/loading';
 
-export default function AdminCourseSections({ course }: { course: Course | undefined; }) {
-    const [openSectionDialog, setOpenSectionDialog] = React.useState(false);
-    const [openLessonDialog, setOpenLessonDialog] = React.useState(false);
-    const [sectionId, setSectionId] = useState<Number>(0); // For associating lessons with a section
+export default function AdminCourseSections({ course }: { course: Course | undefined }) {
     const [sections, setSections] = useState<Section[]>([]);
     const param = useParams();
-    const { data, status } = useSession();
+    const { layoutConfig } = useContext(LayoutContext);
+    const { data, status } = useSession() as { data: CustomSession; status: string };
     const user = data?.user;
-
-
+    const [loading, setLoading] = useState(true);
     useEffect(() => {
         const fetchCourseData = async () => {
-            setSections(course?.sections || []); // Load sections when course is available
+            setSections(course?.sections || []);
+            setLoading(false);
         };
 
         fetchCourseData();
     }, [param.courseId, user?.id, course]);
 
-    const handleAddSection = () => setOpenSectionDialog(true);
-    const handleAddLesson = (sectionId: Number) => {
-        setSectionId(sectionId);
-        setOpenLessonDialog(true);
-    };
-
-    const addSection = async (newSection: Section) => {
-        try {
-            newSection.position = sections.length > 0 ? Number(sections[sections.length - 1].position) + 1 : 1;
-
-            const response = await addNewSection(Number(param.courseId), newSection);
-            setSections((prevSections) => [...prevSections, response]);
-        } catch (error) {
-            console.error('Error adding section:', error);
-        }
-    };
-
-    const addLesson = async (newLesson: Lesson, sectionId: Number) => {
-        try {
-            const targetSection = sections.find((section) => section.id === sectionId);
-            if (!targetSection) return;
-
-            const sectionLessons = targetSection.lessons || []; // Default to an empty array if lessons are undefined
-
-            newLesson.position = sectionLessons.length > 0 ? Number(sectionLessons[sectionLessons.length - 1].position) + 1 : 1;
-
-            const response = await addNewLesson(sectionId, newLesson);
-
-            setSections((prevSections) => prevSections.map((section) => (section.id === sectionId ? { ...section, lessons: [...sectionLessons, response] } : section)));
-        } catch (error) {
-            console.error('Error adding lesson:', error);
-        }
-    };
-
+    if (loading) {
+        return <Loading />;
+    }
+    
     const panelMenuItems = sections.map((section) => ({
         label: section.title,
         icon: 'pi pi-folder',
@@ -71,17 +39,22 @@ export default function AdminCourseSections({ course }: { course: Course | undef
             // Sort the lessons by their position before mapping
             ...(section.lessons
                 ? section.lessons
-                    .sort((a, b) => Number(a.position) - Number(b.position)) // Explicit conversion to number
-                    .map((lesson) => ({
-                        label: lesson.title,
-                        description: 'descdescdescdesc',
-                        icon: 'pi pi-file',
-                        command: () => {
-                            // Navigate to the lesson
-                            window.location.href = `/dashboard/admin/courses/${course?.id}/lessons/${lesson.id}`;
-                        }
-                    }))
-                : []),
+                      .sort((a, b) => Number(a.position) - Number(b.position)) // Explicit conversion to number
+                      .map((lesson) => ({
+                          label: lesson.title,
+                          template: (
+                              <div className={layoutConfig.colorScheme !== 'dark' ? styles.lessonInMenu : styles.lessonInMenuDark}>
+                                  <Link href={`/dashboard/admin/courses/${course?.id}/lessons/${lesson.id}`}>
+                                      <div className="flex justify-content-between px-2">
+                                          <h6 className="m-2">{lesson?.title}</h6>
+                                          <h6 className="m-2">{lesson.video ? convertSecondsToHoursAndMinutes(lesson?.video?.duration) : '00:00'}</h6>
+                                      </div>
+                                  </Link>
+                              </div>
+                          ),
+                          icon: 'pi pi-file'
+                      }))
+                : [])
         ]
     }));
 

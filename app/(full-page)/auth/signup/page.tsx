@@ -28,6 +28,8 @@ const SignUpPage: React.FC = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const { layoutConfig } = useContext(LayoutContext);
+    const toast = useRef<Toast>(null);
+
     const containerClassName = classNames('surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden', {
         'p-input-filled': layoutConfig.inputStyle === 'filled'
     });
@@ -111,7 +113,6 @@ const SignUpPage: React.FC = () => {
             }
         }
     };
-    const toast = useRef<Toast>(null);
 
     const showSuccess = (title: string, desc: string) => {
         toast.current?.show({
@@ -143,9 +144,9 @@ const SignUpPage: React.FC = () => {
                         background: 'linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%)'
                     }}
                 >
-                    <div className="w-full surface-card py-8 px-5 sm:px-8" style={{ borderRadius: '53px' }}>
+                    <div className="w-full surface-card py-6 px-5 sm:px-8" style={{ borderRadius: '53px' }}>
                         <div className="text-center mb-5">
-                            <img src={`/layout/images/logo-${layoutConfig.colorScheme === 'light' ? 'dark' : 'white'}.svg`} alt="Sakai logo" className="mb-5 w-6rem flex-shrink-0" />
+                            <img src={`/layout/images/logo-${layoutConfig.colorScheme === 'light' ? 'dark' : 'white'}.svg`} alt="Sakai logo" className="mb-2 w-6rem flex-shrink-0" />
                             <div className="text-900 text-3xl font-medium mb-3">Create Your Account</div>
                             <span className="text-600 font-medium">Sign up to get started</span>
                         </div>

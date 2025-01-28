@@ -1,4 +1,5 @@
 'use client';
+import { CustomSession } from '@/app/interfaces/customSession';
 import { enrollCourse } from '@/demo/service/CourseServices';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -7,7 +8,7 @@ import { Toast } from 'primereact/toast';
 import React, { useRef, useState } from 'react';
 
 const EnrollCourse = ({ courseId }: { courseId: Number }) => {
-    const { data, status } = useSession();
+    const { data, status } = useSession() as { data: CustomSession; status: string };
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     console.log('data here : ', data);
@@ -17,7 +18,7 @@ const EnrollCourse = ({ courseId }: { courseId: Number }) => {
     const handleEnrollButton = async () => {
         try {
             setLoading(true);
-            const response = await enrollCourse(courseId, data?.user?.id);
+            const response = await enrollCourse(courseId, Number(data?.user?.id));
 
             showSuccess('Success', response);
 

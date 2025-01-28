@@ -11,7 +11,7 @@ import styles from './styles.module.css';
 import { signupInstructorAccount } from '@/demo/service/UserServices';
 import { Message } from 'primereact/message';
 import { Toast } from 'primereact/toast';
-import { BusinessSignupValidationSchema } from '../register/ValidationSchema';
+import { BusinessSignupValidationSchema } from '../signup/ValidationSchema';
 
 const SignUpPage: React.FC = () => {
     interface IFormData {
@@ -172,10 +172,10 @@ const SignUpPage: React.FC = () => {
 
             <div className="flex flex-column align-items-center justify-content-center">
                 <div style={{ marginTop: '15px', borderRadius: '56px', padding: '0.3rem', background: 'linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%)' }}>
-                    <div className="w-full surface-card py-8 px-5 sm:px-8" style={{ borderRadius: '53px' }}>
+                    <div className="w-full surface-card py-6 px-5 sm:px-8" style={{ borderRadius: '53px' }}>
                         <div className="text-center mb-5">
-                            <img src={`/layout/images/logo-${layoutConfig.colorScheme === 'light' ? 'dark' : 'white'}.svg`} alt="Sakai logo" className="mb-5 w-6rem flex-shrink-0" />
-                            <div className="text-900 text-3xl font-medium mb-3">Create Your Account</div>
+                        <img src={`/layout/images/logo-${layoutConfig.colorScheme === 'light' ? 'dark' : 'white'}.svg`} alt="Sakai logo" className="mb-2 w-6rem flex-shrink-0" />
+                        <div className="text-900 text-3xl font-medium mb-3">Create Your Account</div>
                             <span className="text-600 font-medium">Sign up to get started</span>
                         </div>
 
