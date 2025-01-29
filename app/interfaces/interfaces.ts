@@ -91,7 +91,7 @@ export interface Lesson {
   id?: Number,
   title: string,
   position: Number,
-  fileResource?: any[],
+  fileResource?: IFile[],
   video?: any,
 
 }
@@ -103,6 +103,11 @@ export interface Content {
 export interface Video extends Content {
   duration: Number
 
+}
+
+export interface IFile extends Content {
+  name: string,
+  type: string,
 }
 
 export interface IUser {

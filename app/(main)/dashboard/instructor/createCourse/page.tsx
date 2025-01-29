@@ -14,8 +14,6 @@ import { API_ROUTES } from '@/app/api/apiRoutes';
 import { useSession } from 'next-auth/react';
 import { CustomSession } from '@/app/interfaces/customSession';
 import { Category, Course } from '@/app/interfaces/interfaces';
-import Loading from '@/app/loading';
-import { revalidatePath } from 'next/cache';
 
 interface ICourseData {
     name: string;
@@ -129,7 +127,8 @@ const CreateCourse: React.FC = () => {
                 const res = await fetch(API_ROUTES.CATEGORIES.GET_CATEGORY, {
                     headers: {
                         Authorization: `Bearer ${data.accessToken}`
-                    }
+                    },
+                    cache: 'no-store'
                 });
                 if (!res.ok) {
                     const error = await res.json();
@@ -173,7 +172,7 @@ const CreateCourse: React.FC = () => {
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setCourseData((prevCourseData) => {
-            const updatedCourseData = { ...prevCourseData, [name]: value.trim() };
+            const updatedCourseData = { ...prevCourseData, [name]: value };
 
             createCourseValidationSchema
                 .validateAt(name, updatedCourseData)
@@ -201,7 +200,7 @@ const CreateCourse: React.FC = () => {
                     Authorization: `Bearer ${data.accessToken}`
                 },
                 body: formData,
-                method: 'post'
+                method: 'POST'
             });
             if (!res.ok) {
                 const error = await res.json();
@@ -243,7 +242,6 @@ const CreateCourse: React.FC = () => {
             setTimeout(() => {
                 router.push(`/dashboard/instructor/courses/${createdCourse.id}`);
             }, 1000);
-            revalidatePath('/dashboard/instructor/courses');
             setIsLoading(false);
         } catch (error: any) {
             setIsLoading(false);

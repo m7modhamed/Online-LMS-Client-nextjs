@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 import { decodeToken, isTokenValid } from './app/lib/jwtDecode';
-import { revalidatePath } from 'next/cache';
-import { cookies } from 'next/dist/client/components/headers';
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;

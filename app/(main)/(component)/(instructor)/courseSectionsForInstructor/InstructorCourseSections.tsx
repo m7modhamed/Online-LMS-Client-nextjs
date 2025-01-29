@@ -1,10 +1,7 @@
 'use client';
 import React, { useContext, useEffect, useState } from 'react';
 import { PanelMenu } from 'primereact/panelmenu';
-import { Box, Button, Tooltip, Typography } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
 import { useParams } from 'next/navigation';
-import { addNewLesson, addNewSection } from '@/demo/service/CourseServices';
 import styles from './style.module.css';
 import { Course, Lesson, Section } from '@/app/interfaces/interfaces';
 import { convertSecondsToHoursAndMinutes } from '@/app/utility/utilities';
@@ -15,26 +12,28 @@ import Link from 'next/link';
 import { LayoutContext } from '@/layout/context/layoutcontext';
 import { CustomSession } from '@/app/interfaces/customSession';
 import Loading from '@/app/loading';
+import { API_ROUTES } from '@/app/api/apiRoutes';
+import { Button } from 'primereact/button';
 
 export function InstructorCourseSections({ course }: { course: Course | undefined }) {
     const [openSectionDialog, setOpenSectionDialog] = React.useState(false);
     const [openLessonDialog, setOpenLessonDialog] = React.useState(false);
-    const [sectionId, setSectionId] = useState<Number>(0); // For associating lessons with a section
+    const [sectionId, setSectionId] = useState<Number>(0);
     const [sections, setSections] = useState<Section[]>([]);
-    const param = useParams();
-    const { data, status } = useSession();
+    const { data, status } = useSession() as { data: CustomSession, status: string };
     const user = data?.user;
     const { layoutConfig } = useContext(LayoutContext);
     const [loading, setLoading] = useState(true);
+    const { courseId }: { courseId: string } = useParams();
 
     useEffect(() => {
         const fetchCourseData = async () => {
-            setSections(course?.sections || []); // Load sections when course is available
+            setSections(course?.sections || []);
             setLoading(false);
         };
 
         fetchCourseData();
-    }, [param.courseId, user?.id, course]);
+    }, [courseId, user?.id, course]);
 
     if (loading || status === 'loading') {
         return <Loading />;
@@ -45,7 +44,19 @@ export function InstructorCourseSections({ course }: { course: Course | undefine
         try {
             newSection.position = sections.length > 0 ? Number(sections[sections.length - 1].position) + 1 : 1;
 
-            const response = await addNewSection(Number(param.courseId), newSection);
+            const res = await fetch(API_ROUTES.SECTIONS.ADD_NEW_SECTION(courseId), {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${data.accessToken}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newSection)
+            })
+            if (!res.ok) {
+                const error = await res.json()
+                throw new Error(error.message);
+            }
+            const response = await res.json();
             setSections((prevSections) => [...prevSections, response]);
         } catch (error) {
             console.error('Error adding section:', error);
@@ -54,14 +65,31 @@ export function InstructorCourseSections({ course }: { course: Course | undefine
 
     const addLesson = async (newLesson: Lesson, sectionId: Number) => {
         try {
+            console.log(newLesson)
+            console.log(sectionId)
             const targetSection = sections.find((section) => section.id === sectionId);
             if (!targetSection) return;
 
-            const sectionLessons = targetSection.lessons || []; // Default to an empty array if lessons are undefined
+            const sectionLessons = targetSection.lessons || [];
 
             newLesson.position = sectionLessons.length > 0 ? Number(sectionLessons[sectionLessons.length - 1].position) + 1 : 1;
 
-            const response = await addNewLesson(sectionId, newLesson);
+            const res = await fetch(API_ROUTES.LESSONS.ADD_NEW_LESSON(sectionId.toString()), {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${data.accessToken}`,
+                    'Content-Type': 'application/json',
+
+                },
+                body: JSON.stringify(newLesson),
+            })
+
+            if (!res.ok) {
+                const error = await res.json()
+                throw new Error(error.message);
+            }
+            const response = await res.json();
+
 
             setSections((prevSections) => prevSections.map((section) => (section.id === sectionId ? { ...section, lessons: [...sectionLessons, response] } : section)));
         } catch (error) {
@@ -73,25 +101,46 @@ export function InstructorCourseSections({ course }: { course: Course | undefine
         label: section.title,
         icon: 'pi pi-folder',
         items: [
-            // Sort the lessons by their position before mapping
+
             ...(section.lessons
                 ? section.lessons
-                      .sort((a, b) => Number(a.position) - Number(b.position)) // Explicit conversion to number
-                      .map((lesson) => ({
-                          label: lesson.title,
-                          template: (
-                              <div className={layoutConfig.colorScheme !== 'dark' ? styles.lessonInMenu : styles.lessonInMenuDark}>
-                                  <Link href={`/dashboard/instructor/courses/${course?.id}/lessons/${lesson.id}`}>
-                                      <div className="flex justify-content-between px-2">
-                                          <h6 className="m-2">{lesson?.title}</h6>
-                                          <h6 className="m-2">{lesson.video ? convertSecondsToHoursAndMinutes(lesson?.video?.duration) : '00:00'}</h6>
-                                      </div>
-                                  </Link>
-                              </div>
-                          ),
-                          icon: 'pi pi-file'
-                      }))
-                : [])
+                    .sort((a, b) => Number(a.position) - Number(b.position))
+                    .map((lesson) => ({
+                        label: lesson.title,
+                        template: (
+                            <div className={styles.lessonInMenu}>
+                                <Link href={`/dashboard/instructor/courses/${course?.id}/lessons/${lesson.id}`}>
+                                    <div className="flex justify-content-between px-2">
+                                        <h6 className="m-2">{lesson?.title}</h6>
+                                        <h6 className="m-2">{lesson.video ? convertSecondsToHoursAndMinutes(lesson?.video?.duration) : '00:00'}</h6>
+                                    </div>
+                                </Link>
+
+                            </div>
+                        ),
+
+                        icon: 'pi pi-file'
+                    }))
+
+                : []),
+            {
+                template: (
+                    <div className="flex justify-content-center">
+                        <button
+                            className="p-button p-button-outlined"
+                            onClick={() => {
+                                setOpenLessonDialog(true);
+                                setSectionId(Number(section.id));
+                            }}
+                        >
+                            Add New Lesson
+                        </button>
+                    </div>
+                )
+            }
+
+
+
         ]
     }));
 
@@ -99,10 +148,10 @@ export function InstructorCourseSections({ course }: { course: Course | undefine
         <div className="col-12">
             <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '10px' }}>
                 <div className="card">
-                    <Box className={styles.sectionContainer}>
-                        <Typography className={styles.sectionHeading} variant="h6" gutterBottom>
+                    <div className={styles.sectionContainer}>
+                        <h6 className={styles.sectionHeading}  >
                             Sections
-                        </Typography>
+                        </h6>
                         <PanelMenu model={panelMenuItems} style={{ width: '100%' }} />
 
                         <div
@@ -112,14 +161,13 @@ export function InstructorCourseSections({ course }: { course: Course | undefine
                                 justifyContent: 'center'
                             }}
                         >
-                            <Button variant="contained" color="info" onClick={handleAddSection} startIcon={<AddIcon />}>
-                                Add New Section
-                            </Button>
+                            <Button color="info" label='Add New Section' onClick={handleAddSection} icon="pi pi-plus" />
+
                         </div>
 
                         {openSectionDialog && <AddSectionDialog open={openSectionDialog} handleClickOpen={() => setOpenSectionDialog(true)} handleClose={() => setOpenSectionDialog(false)} addSection={addSection} />}
                         {openLessonDialog && <AddLessonDialog open={openLessonDialog} handleClickOpen={() => setOpenLessonDialog(true)} handleClose={() => setOpenLessonDialog(false)} addLesson={addLesson} sectionId={sectionId} />}
-                    </Box>
+                    </div>
                 </div>
             </div>
         </div>

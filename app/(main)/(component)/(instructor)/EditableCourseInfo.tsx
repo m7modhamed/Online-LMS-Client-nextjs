@@ -25,7 +25,7 @@ const EditableCourseInfo = ({ course }: { course: Course | undefined }) => {
                             <div className="text-500 w-6 md:w-2 font-medium">prerequisites</div>
                             <div className="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
                                 {course?.prerequisites?.map((prerequisite, index) => (
-                                    <Chip label={prerequisite.toUpperCase()} className="mr-2" />
+                                    <Chip key={index} label={prerequisite.toUpperCase()} className="mr-2" />
                                 ))}
                             </div>
                             <div className="w-6 md:w-2 flex justify-content-end">
