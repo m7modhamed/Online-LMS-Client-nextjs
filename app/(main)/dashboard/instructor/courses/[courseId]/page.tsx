@@ -11,7 +11,7 @@ import { CustomSession } from '@/app/interfaces/customSession';
 import { useParams } from 'next/navigation';
 
 //{params} : {params : Promise<{courseId : string}>}
-const InstructorCourse = async () => {
+const InstructorCourse =  () => {
     const { data, status } = useSession() as { data: CustomSession, status: string };
     const [course, setCourse] = useState<Course | null>(null);
     const [loading, setLoading] = useState(true);
