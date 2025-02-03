@@ -9,3 +9,118 @@
 @import "./_responsive";
 @import "./_utils";
 @import "./_typography";
+
+
+
+html[lang="ar"] {
+
+    body {
+        font-size: medium;
+    }
+
+    span{
+        margin-left: 5px;
+    }
+
+    .layout-main-container {
+        padding: 7rem 4rem 2rem 2rem;
+    }
+
+    .layout-sidebar {
+        right: 2rem;
+        /* Other styles specific to English */
+        padding: 0.5rem 1.5rem;
+
+        transition: transform $transitionDuration,
+            right $transitionDuration;
+    }
+
+    .layout-wrapper {
+        &.layout-overlay {
+            .layout-sidebar {
+                transform: translateX(100%);
+                right: 0;
+            }
+
+            &.layout-overlay-active {
+                .layout-sidebar {
+                    transform: translateX(0);
+                }
+            }
+        }
+
+        &.layout-static {
+            .layout-main-container {
+                margin-right: 300px;
+                margin-left: 0;
+            }
+
+
+
+            &.layout-static-inactive {
+                .layout-sidebar {
+                    transform: translateX(100%);
+                    right: 0;
+                }
+
+                .layout-main-container {
+                    margin-right: 0;
+                    padding-right: 5rem;
+
+                }
+
+
+            }
+        }
+
+
+    }
+
+    .layout-config-sidebar {
+        &.p-sidebar {
+            .p-sidebar-content {
+                padding-right: 2rem;
+                padding-left: 2rem;
+
+            }
+        }
+    }
+
+
+    .layout-topbar-menu {
+        margin: 0 auto 0 30px;
+
+
+        .layout-topbar-button {
+            margin-right: 1rem;
+        }
+    }
+
+
+
+    .layout-menu {
+
+        ul {
+            a {
+                .layout-menuitem-icon {
+                    margin-left: 0.5rem;
+                }
+            }
+        }
+    }
+
+    .addPrerequisitesButton {
+        border-top-left-radius: 6px;
+        border-bottom-left-radius: 6px;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .prerequisitesInputText {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        border-top-right-radius: 6px;
+        border-bottom-right-radius: 6px;
+
+    }
+}

@@ -1,0 +1,208 @@
+{
+    "LocaleSwitcher": {
+        "locale": "{locale, select, ar {Arabic} en {English} other {Unknown}}"
+    },
+    "LandingPage": {
+        "websiteName": "Online Learning",
+        "title": "Learn Anytime, Anywhere",
+        "subtitle": "Join Our Online Learning Platform",
+        "description": "Access a wide range of courses designed to help you achieve your goals. Whether you're upskilling for your career or exploring a new passion, we've got you covered.",
+        "dashboardButton": "Go To Dashborad",
+        "Footer": {
+            "Company": "Company",
+            "AboutUs": "About Us",
+            "News": "News",
+            "InvestorRelations": "Investor Relations",
+            "Careers": "Careers",
+            "MediaKit": "Media Kit",
+            "Resources": "Resources",
+            "GetStarted": "Get Started",
+            "Learn": "Learn",
+            "CaseStudies": "Case Studies",
+            "Community": "Community",
+            "Discord": "Discord",
+            "Events": "Events",
+            "FAQ": "FAQ",
+            "Blog": "Blog",
+            "Legal": "Legal",
+            "BrandPolicy": "Brand Policy",
+            "PrivacyPolicy": "Privacy Policy",
+            "TermsOfService": "Terms of Service"
+        },
+        "signup": "sign up"
+    },
+    "MainNavbar": {
+        "websiteName": "Online Learning",
+        "NavList": {
+            "home": "home",
+            "courses": "courses",
+            "dashboard": "dashboard"
+        },
+        "authButton": {
+            "login": "login",
+            "logout": "logout",
+            "signup": "sign up",
+            "businessSignup": "business Signup"
+        }
+    },
+    "businessSignup": {
+        "title": "Create Your Account",
+        "signUp": "Sign up to get started",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email",
+        "phoneNumber": "Phone Number",
+        "specialization": "Specialization",
+        "aboutMe": "About Me",
+        "linkedinUrl": "LinkedIn URL",
+        "githubUrl": "GitHub URL",
+        "facebookUrl": "Facebook URL",
+        "twitterUrl": "Twitter URL",
+        "password": "Password",
+        "confirmPassword": "Confirm Password",
+        "createAccount": "Create Account",
+        "alreadyHaveAccount": "Already have an account? Log in"
+    },
+    "signup": {
+        "createAccount": "Create Your Account",
+        "signUpMessage": "Sign up to get started",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email",
+        "phoneNumber": "Phone Number",
+        "password": "Password",
+        "confirmPassword": "Confirm Password",
+        "alreadyHaveAccount": "Already have an account?",
+        "signup": "Sign Up"
+    },
+    "login": {
+        "welcomeMessage": "You Are Welcome",
+        "signInToContinue": "Sign in to continue",
+        "sessionExpired": "Your session expired. Please log in again.",
+        "email": "Email",
+        "emailPlaceholder": "Email address",
+        "password": "Password",
+        "passwordPlaceholder": "Enter your password",
+        "signUpNow": "Sign up now!",
+        "forgotPassword": "Forgot password?",
+        "signIn": "Sign In"
+    },
+    "appTopbar": {
+        "websiteName": "Online Learning"
+    },
+    "topbarMenu": {
+        "setting": "Setting",
+        "profile": "My Profile",
+        "logout": "Logout"
+    },
+    "sidebar": {
+        "home": "Home",
+        "dashboard": "Dashboard",
+        "courses": "Courses",
+        "coursesForReview": "Courses for Review",
+        "students": "Students",
+        "instructors": "Instructors",
+        "createCourse": "Create Course",
+        "myCourses": "My Courses"
+    },
+    "appFooter": {
+        "by": "by"
+    },
+    "statisticsDashboard": {
+        "totalCourses": "Total Courses",
+        "coursesText": "courses",
+        "newThisWeek": "new",
+        "addedThisWeek": "added this week",
+        "draftCourses": "Draft Courses",
+        "coursesPendingReview": "Courses Pending Review",
+        "coursesAwaitingReview": "Courses awaiting review",
+        "publishedCourses": "Published Courses",
+        "coursesPublished": "Courses published",
+        "archivedCourses": "Archived Courses",
+        "coursesNotPublished": "Courses not published",
+        "deletedCourses": "Deleted Courses",
+        "coursesMarkedAsDeleted": "Courses marked as deleted",
+        "totalLearningCourses": "Total Learning Courses"
+    },
+    "coursesPage": {
+        "getStartedWithCourses": "Get Started with Courses",
+        "exploreCoursesToStartLearning": "Explore our wide range of courses to kickstart your learning journey.",
+        "noContentFound": "No Content Found",
+        "noContentMessage": "It seems like no content has been created yet. Start creating content and share your knowledge with others!"
+    },
+    "courseList": {
+        "sort": {
+            "highToLow": "Enrolled Students: High to Low",
+            "lowToHigh": "Enrolled Students: Low to High",
+            "placeholder": "Sort By Enrolled Students"
+        },
+        "search": {
+            "placeholder": "Search by Name"
+        },
+        "students": "students",
+        "openToEnroll": "Open",
+        "courses": "Courses"
+    },
+    "instructorCoursesPage": {
+        "title": "My Courses",
+        "description": "All the training courses I have designed and created.",
+        "noCoursesTitle": "No courses found",
+        "noCoursesMessage": "It looks like you have not created any courses yet."
+    },
+    "createCoursePage": {
+        "title": "Create Course",
+        "description": "Use this page to create a new course by filling out the form below.",
+        "courseDetails": "Course Details",
+        "courseName": "Course Name",
+        "category": "Category",
+        "language": "Language",
+        "prerequisites": "Prerequisites",
+        "add": "Add",
+        "enterPrerequisite": "Enter prerequisites",
+        "descriptionLabel": "Description",
+        "descriptionPlaceholder": "Provide a brief course description",
+        "coursePhoto": "Course Photo",
+        "uploadInstructions": "Drag & drop an image here, or click to select one",
+        "submit": "Submit",
+        "success": "Success",
+        "courseAdded": "Course added successfully",
+        "error": "Error"
+    },
+    "editableCoursePage": {
+        "description": "Description",
+        "prerequisites": "Prerequisites",
+        "status": "Status",
+        "category": "Category",
+        "language": "Language",
+        "duration": "Duration",
+        "edit": "Edit"
+      },
+      "instructorCourseSections" : {
+        "addNewLesson" : "Add New Lesson",
+        "addNewSection" : "Add New Section",
+        "sections" : "Sections"
+      },
+      "publishCoursePage": {
+        "afterUploadMessage": "After uploading the lessons and content, you can request to publish your course:",
+        "publishButton": "Publish",
+        "archiveButton": "Archive",
+        "deleteButton": "Delete",
+        "success": "Success",
+        "error": "Error"
+      },
+      "instructorLesson" : {
+        "uploadLessonContent": "Upload Lesson Content",
+        "uploadVideo": "Upload Video",
+        "videoPreview": "Video Preview",
+        "deleteVideo": "Delete Video",
+        "selectVideo": "Select Video",
+        "saveVideo": "Save Video",
+        "uploadAdditionalFiles": "Upload Additional Files",
+        "selectFiles": "Select Files",
+        "saveFiles": "Save Files",
+        "type" : "File Type"
+      }
+   
+    
+    
+}

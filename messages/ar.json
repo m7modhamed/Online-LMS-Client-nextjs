@@ -1,0 +1,205 @@
+{
+    "LocaleSwitcher": {
+        "locale": "{locale, select, ar {اللغة العربية} en {اللغة الانجليزية} other {Unknown}}"
+    },
+    "LandingPage": {
+        "websiteName": "منصة تعليمية",
+        "title": "تعلم في أي وقت ومن أي مكان",
+        "subtitle": "انضم إلى منصتنا التعليمية عبر الإنترنت",
+        "description": "استمتع بمجموعة واسعة من الدورات المصممة لمساعدتك على تحقيق أهدافك. سواء كنت تسعى لتطوير مهاراتك المهنية أو استكشاف شغف جديد، نحن هنا من أجلك.",
+        "dashboardButton": "اذهب الى لوحة التحكم",
+        "Footer": {
+            "Company": "الشركة",
+            "AboutUs": "معلومات عنا",
+            "News": "الأخبار",
+            "InvestorRelations": "علاقات المستثمرين",
+            "Careers": "الوظائف",
+            "MediaKit": "مجموعة الوسائط",
+            "Resources": "الموارد",
+            "GetStarted": "ابدأ",
+            "Learn": "تعلم",
+            "CaseStudies": "دراسات الحالة",
+            "Community": "المجتمع",
+            "Discord": "ديسكورد",
+            "Events": "الفعاليات",
+            "FAQ": "الأسئلة الشائعة",
+            "Blog": "المدونة",
+            "Legal": "الشؤون القانونية",
+            "BrandPolicy": "سياسة العلامة التجارية",
+            "PrivacyPolicy": "سياسة الخصوصية",
+            "TermsOfService": "شروط الخدمة"
+        },
+        "signup": "انشاء حساب"
+    },
+    "MainNavbar": {
+        "websiteName": "منصة تعليمية",
+        "NavList": {
+            "home": "الرئيسية",
+            "courses": "الكورسات",
+            "dashboard": "لوحة التحكم"
+        },
+        "authButton": {
+            "login": "تسجيل دخول",
+            "logout": "تسجيل خروج",
+            "signup": "انشاء حساب",
+            "businessSignup": "انشاء حساب اعمال"
+        }
+    },
+    "businessSignup": {
+        "title": "إنشاء حسابك",
+        "signUp": "اشترك للبدء",
+        "firstName": "الاسم الأول",
+        "lastName": "اسم العائلة",
+        "email": "البريد الإلكتروني",
+        "phoneNumber": "رقم الهاتف",
+        "specialization": "التخصص",
+        "aboutMe": "عنّي",
+        "linkedinUrl": "رابط لينكد إن",
+        "githubUrl": "رابط جيت هاب",
+        "facebookUrl": "رابط فيسبوك",
+        "twitterUrl": "رابط تويتر",
+        "password": "كلمة المرور",
+        "confirmPassword": "تأكيد كلمة المرور",
+        "createAccount": "إنشاء حساب",
+        "alreadyHaveAccount": "هل لديك حساب؟ تسجيل الدخول"
+    },
+    "signup": {
+        "createAccount": "إنشاء حسابك",
+        "signUpMessage": "سجل للبدء",
+        "firstName": "الاسم الأول",
+        "lastName": "اسم العائلة",
+        "email": "البريد الإلكتروني",
+        "phoneNumber": "رقم الهاتف",
+        "password": "كلمة المرور",
+        "confirmPassword": "تأكيد كلمة المرور",
+        "alreadyHaveAccount": "هل لديك حساب؟",
+        "signup": "تسجيل"
+    },
+    "login": {
+        "welcomeMessage": "مرحبًا بك",
+        "signInToContinue": "قم بتسجيل الدخول للمتابعة",
+        "sessionExpired": "انتهت صلاحية جلستك. الرجاء تسجيل الدخول مرة أخرى.",
+        "email": "البريد الإلكتروني",
+        "emailPlaceholder": "عنوان البريد الإلكتروني",
+        "password": "كلمة المرور",
+        "passwordPlaceholder": "أدخل كلمة المرور",
+        "signUpNow": "سجل الآن!",
+        "forgotPassword": "هل نسيت كلمة المرور؟",
+        "signIn": "تسجيل الدخول"
+    },
+    "appTopbar": {
+        "websiteName": "منصة تعليمية"
+    },
+    "topbarMenu": {
+        "setting": "الاعدادات",
+        "profile": "الملف الشخصي",
+        "logout": "تسجيل الخروج"
+    },
+    "sidebar": {
+        "home": "الرئيسية",
+        "dashboard": "لوحة التحكم",
+        "courses": "الدورات",
+        "coursesForReview": "الدورات للمراجعة",
+        "students": "الطلاب",
+        "instructors": "المعلمين",
+        "createCourse": "انشاء دورة جديدة",
+        "myCourses": "دوراتي"
+    },
+    "appFooter": {
+        "by": "بواسطة"
+    },
+    "statisticsDashboard": {
+        "totalCourses": "إجمالي الدورات",
+        "coursesText": "دورات",
+        "newThisWeek": "دورات جديدة",
+        "addedThisWeek": "تمت إضافته هذا الأسبوع",
+        "draftCourses": "الدورات في المسودة",
+        "coursesPendingReview": "الدورات قيد المراجعة",
+        "coursesAwaitingReview": "الدورات التي في انتظار المراجعة",
+        "publishedCourses": "الدورات المنشورة",
+        "coursesPublished": "الدورات المنشورة",
+        "archivedCourses": "الدورات المؤرشفة",
+        "coursesNotPublished": "الدورات غير المنشورة",
+        "deletedCourses": "الدورات المحذوفة",
+        "coursesMarkedAsDeleted": "الدورات التي تم حذفها",
+        "totalLearningCourses": "اجمالي الدورات المسجلة"
+    },
+    "coursesPage": {
+        "getStartedWithCourses": "ابدأ مع الدورات التدريبية",
+        "exploreCoursesToStartLearning": "استكشف مجموعة واسعة من الدورات التدريبية لبدء رحلة تعلمك.",
+        "noContentFound": "لم يتم العثور على محتوى",
+        "noContentMessage": "يبدو أنه لم يتم إنشاء أي محتوى بعد. ابدأ في إنشاء المحتوى وشارك معرفتك مع الآخرين!"
+    },
+    "courseList": {
+        "sort": {
+            "highToLow": "الطلاب المسجلين: من الأعلى إلى الأدنى",
+            "lowToHigh": "الطلاب المسجلين: من الأدنى إلى الأعلى",
+            "placeholder": "ترتيب حسب عدد الطلاب المسجلين"
+        },
+        "search": {
+            "placeholder": "البحث بالاسم"
+        },
+        "students": "طلاب",
+        "openToEnroll": "افتح",
+        "courses": "الدورات"
+    },
+    "instructorCoursesPage": {
+        "title": "دوراتي",
+        "description": "جميع الدورات التدريبية التي قمت بإعدادها وإنشائها.",
+        "noCoursesTitle": "لم يتم العثور على دورات",
+        "noCoursesMessage": "يبدو أنك لم تنشئ أي دورات بعد."
+    },
+    "createCoursePage": {
+        "title": "إنشاء دورة",
+        "description": "استخدم هذه الصفحة لإنشاء دورة جديدة عن طريق ملء النموذج أدناه.",
+        "courseDetails": "تفاصيل الدورة",
+        "courseName": "اسم الدورة",
+        "category": "التصنيف",
+        "language": "اللغة",
+        "prerequisites": "المتطلبات الأساسية",
+        "add": "إضافة",
+        "enterPrerequisite": "أدخل المتطلبات الأساسية",
+        "descriptionLabel": "الوصف",
+        "descriptionPlaceholder": "قم بتقديم وصف موجز للدورة",
+        "coursePhoto": "صورة الدورة",
+        "uploadInstructions": "قم بسحب وإفلات صورة هنا، أو انقر لتحديد واحدة",
+        "submit": "إرسال",
+        "success": "نجاح",
+        "courseAdded": "تمت إضافة الدورة بنجاح",
+        "error": "خطأ"
+    },
+    "editableCoursePage": {
+        "description": "الوصف",
+        "prerequisites": "المتطلبات الأساسية",
+        "status": "الحالة",
+        "category": "الفئة",
+        "language": "اللغة",
+        "duration": "المدة",
+        "edit": "تعديل"
+    },
+    "instructorCourseSections": {
+        "addNewLesson": "اضافة درس جديد",
+        "addNewSection": "اضافة قسم جديد",
+        "sections": "الاقسام"
+    },
+    "publishCoursePage": {
+        "afterUploadMessage": "بعد تحميل الدروس والمحتوى، يمكنك طلب نشر دورتك:",
+        "publishButton": "نشر",
+        "archiveButton": "أرشيف",
+        "deleteButton": "حذف",
+        "success": "نجاح",
+        "error": "خطأ"
+    },
+    "instructorLesson": {
+        "uploadLessonContent": "تحميل محتوى الدرس",
+        "uploadVideo": "تحميل الفيديو",
+        "videoPreview": "معاينة الفيديو",
+        "deleteVideo": "حذف الفيديو",
+        "selectVideo": "اختيار الفيديو",
+        "saveVideo": "حفظ الفيديو",
+        "uploadAdditionalFiles": "تحميل الملفات الإضافية",
+        "selectFiles": "اختيار الملفات",
+        "saveFiles": "حفظ الملفات",
+        "type": "نوع الملف"
+    }
+}

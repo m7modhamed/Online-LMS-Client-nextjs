@@ -6,23 +6,25 @@ import { LayoutContext } from './context/layoutcontext';
 import { MenuProvider } from './context/menucontext';
 import Link from 'next/link';
 import { AppMenuItem } from '@/types';
+import { useTranslations } from 'use-intl';
 
 const AppMenuForStudent = () => {
-    const { layoutConfig ,onMenuToggle } = useContext(LayoutContext);
+    const { layoutConfig, onMenuToggle } = useContext(LayoutContext);
+    const t = useTranslations('sidebar');
 
     const model: AppMenuItem[] = [
         {
-            label: 'Home',
-            items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/dashboard/student' }]
+            label: t('home'),
+            items: [{ label: t('dashboard'), icon: 'pi pi-fw pi-home', to: '/dashboard/student' }]
         },
         {
-            label: 'Courses',
+            label: t('courses'),
             items: [
-                { label: 'Courses', icon: 'pi pi-fw pi-id-card', to: '/dashboard/student/courses' },
-                { label: 'My Learning', icon: 'pi pi-fw pi-check-square', to: '/dashboard/student/learningCourses' },
+                { label: t('courses'), icon: 'pi pi-fw pi-id-card', to: '/dashboard/student/courses' },
+                { label: t('myCourses'), icon: 'pi pi-fw pi-check-square', to: '/dashboard/student/learningCourses' },
             ]
         },
-        
+
     ];
 
     return (
@@ -31,10 +33,6 @@ const AppMenuForStudent = () => {
                 {model.map((item, i) => {
                     return !item?.seperator ? <AppMenuitem item={item} root={true} index={i} key={item.label} /> : <li className="menu-separator"></li>;
                 })}
-
-                {/* <Link href="https://blocks.primereact.org" target="_blank" style={{ cursor: 'pointer' }}>
-                    <img alt="Prime Blocks" className="w-full mt-3" src={`/layout/images/banner-primeblocks${layoutConfig.colorScheme === 'light' ? '' : '-dark'}.png`} />
-                </Link> */}
             </ul>
         </MenuProvider>
     );

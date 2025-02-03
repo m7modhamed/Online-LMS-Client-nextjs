@@ -1,8 +1,9 @@
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { decodeToken } from './jwtDecode';
 import { API_ROUTES } from '../api/apiRoutes';
+import { AuthOptions } from 'next-auth';
 
-export const authOptions = {
+export const authOptions: AuthOptions = {
 
     providers: [
         CredentialsProvider({
@@ -19,11 +20,16 @@ export const authOptions = {
                     body: JSON.stringify(credentials)
                 });
 
+
                 const data = await res.json();
 
-                console.log('data', data);
+                console.log('data in next auth : ', data);
                 if (res.ok && data.token) {
-                    return { token: data.token };
+                    return {
+                        id: '',
+                        email: '',
+                        token: data.token, // Include the token
+                    };
                 } else {
 
                     throw new Error(data.message || 'Login failed');
@@ -35,6 +41,7 @@ export const authOptions = {
         async jwt({ token, user }: any) {
             if (user) {
                 token.accessToken = user.token;
+                token.sub = decodeToken(token.accessToken)?.exp;
             }
             return token;
         },

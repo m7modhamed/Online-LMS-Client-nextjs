@@ -5,22 +5,23 @@ import AppMenuitem from './AppMenuitem';
 import { LayoutContext } from './context/layoutcontext';
 import { MenuProvider } from './context/menucontext';
 import { AppMenuItem } from '@/types';
+import { useTranslations } from 'use-intl';
 
 const AppMenuForAdmin = () => {
     const { layoutConfig } = useContext(LayoutContext);
-
+    const t = useTranslations('sidebar');
     const model: AppMenuItem[] = [
         {
-            label: 'Home',
-            items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/dashboard/admin' }]
+            label: t('home'),
+            items: [{ label: t('dashboard'), icon: 'pi pi-fw pi-home', to: '/dashboard/admin' }]
         },
         {
-            label: 'Courses',
+            label: t('courses'),
             items: [
-                { label: 'Courses', icon: 'pi pi-fw pi-id-card', to: '/dashboard/admin/courses' },
-                { label: 'Courses for Review', icon: 'pi pi-fw pi-check-square', to: '/dashboard/admin/reviewCourses' },
-                { label: 'Students', icon: 'pi pi-users', to: '/dashboard/admin/students' },
-                { label: 'Instructors', icon: 'pi pi-users', to: '/dashboard/admin/Instructors' }
+                { label: t('courses'), icon: 'pi pi-fw pi-id-card', to: '/dashboard/admin/courses' },
+                { label: t('coursesForReview'), icon: 'pi pi-fw pi-check-square', to: '/dashboard/admin/reviewCourses' },
+                { label: t('students'), icon: 'pi pi-users', to: '/dashboard/admin/students' },
+                { label: t('instructors'), icon: 'pi pi-users', to: '/dashboard/admin/Instructors' }
             ]
         }
     ];

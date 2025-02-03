@@ -117,7 +117,8 @@ export interface IUser {
   role: string,
   isActive: boolean,
   isBlocked: boolean,
-  image: string
+  image: string,
+  exp : any
 }
 
 export interface IDashboardInfo {

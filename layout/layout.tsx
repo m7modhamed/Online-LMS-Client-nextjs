@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
-import { useEventListener, useMountEffect, useUnmountEffect } from 'primereact/hooks';
-import React, { Suspense, useContext, useEffect, useRef } from 'react';
+import { useEventListener,  useUnmountEffect } from 'primereact/hooks';
+import React, { useContext, useEffect, useRef } from 'react';
 import { classNames } from 'primereact/utils';
 import AppFooter from './AppFooter';
 import AppTopbar from './AppTopbar';
@@ -12,12 +12,14 @@ import { PrimeReactContext } from 'primereact/api';
 import { ChildContainerProps, LayoutState, AppTopbarRef } from '@/types';
 import { usePathname, useSearchParams } from 'next/navigation';
 import AppSidebar from './AppSidebar';
+import { useLocale } from 'use-intl';
 
 const Layout = ({ children }: ChildContainerProps) => {
     const { layoutConfig, layoutState, setLayoutState } = useContext(LayoutContext);
     const { setRipple } = useContext(PrimeReactContext);
     const topbarRef = useRef<AppTopbarRef>(null);
     const sidebarRef = useRef<HTMLDivElement>(null);
+    const local = useLocale();
     const [bindMenuOutsideClickListener, unbindMenuOutsideClickListener] = useEventListener({
         type: 'click',
         listener: (event) => {
@@ -128,7 +130,7 @@ const Layout = ({ children }: ChildContainerProps) => {
                 <div ref={sidebarRef} className="layout-sidebar">
                     <AppSidebar />
                 </div>
-                <div className="layout-main-container">
+                <div className={"layout-main-container"}>
                     <div className="layout-main">{children}</div>
                     <AppFooter />
                 </div>

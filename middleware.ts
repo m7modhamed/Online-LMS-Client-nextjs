@@ -1,42 +1,47 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 import { decodeToken, isTokenValid } from './app/lib/jwtDecode';
+import createMiddleware from 'next-intl/middleware';
+import { routing } from './i18n/routing';
+
+// Create intl middleware
+const intlMiddleware = createMiddleware(routing);
 
 export async function middleware(request: NextRequest) {
+  // Run the internationalization middleware first
+  const intlResponse = intlMiddleware(request);
+
+
   const { pathname } = request.nextUrl;
 
+  // Extract language prefix (e.g., 'ar' or 'en')
+  const langMatch = pathname.match(/^\/(ar|en)(\/|$)/);
+  const langPrefix = langMatch ? langMatch[1] : 'ar'; // Default to 'ar'
 
+  // Define protected routes based on language
   const routes = {
-    admin: ['/dashboard/admin'],
-    instructor: ['/dashboard/instructor'],
-    student: ['/dashboard/student'],
+    admin: [`/${langPrefix}/dashboard/admin`],
+    instructor: [`/${langPrefix}/dashboard/instructor`],
+    student: [`/${langPrefix}/dashboard/student`],
   };
 
-  const protectedRoutes = [
-    ...routes.admin,
-    ...routes.instructor,
-    ...routes.student,
-  ];
+  const protectedRoutes = [...routes.admin, ...routes.instructor, ...routes.student];
 
-
-  const isAuthRoute = pathname.startsWith('/auth') && !pathname.startsWith('/auth/access');
-  const isAccessPage = pathname === '/auth/access';
+  // Authentication-related routes
+  const isAuthRoute = pathname.startsWith(`/${langPrefix}/auth`) && !pathname.startsWith(`/${langPrefix}/auth/access`);
   const isProtectedRoute = protectedRoutes.some((route) => pathname.startsWith(route));
 
-  const isAdminRoute = routes.admin.some((route) => pathname.startsWith(route));
-  const isInstructorRoute = routes.instructor.some((route) => pathname.startsWith(route));
-  const isStudentRoute = routes.student.some((route) => pathname.startsWith(route));
-
-
+  // Get session from next-auth
   const session = await getToken({ req: request });
   const token = session?.accessToken as string;
   const isValidToken = isTokenValid(token);
-  console.log('session in middleware is :', session)
 
-  if (!isValidToken && !isAuthRoute) {
+
+
+  // If the token is invalid and it's not an authentication route, redirect to login
+  if (!isValidToken && isProtectedRoute) {
     console.log('Invalid token detected. Redirecting to /auth/login.');
-
-    const response = NextResponse.redirect(new URL('/auth/login', request.url));
+    const response = NextResponse.redirect(new URL(`/${langPrefix}/auth/login?error=invalid-token`, request.url));
 
     response.cookies.delete('next-auth.session-token');
     response.cookies.delete('__Secure-next-auth.session-token');
@@ -45,76 +50,55 @@ export async function middleware(request: NextRequest) {
     return response;
   }
 
-
-
+  // If no session exists and the route is protected, redirect to login
   if (!session && isProtectedRoute) {
     console.log('User not authenticated. Redirecting to /auth/login.');
-    return NextResponse.redirect(new URL('/auth/login', request.url));
+    return NextResponse.redirect(new URL(`/${langPrefix}/auth/login`, request.url));
   }
 
+  // Decode token and determine user role
   const decodedToken = isValidToken ? decodeToken(token) : null;
-
   const userRole = decodedToken?.role || null;
 
-
+  // Redirect authenticated users from auth routes to their dashboards
   if (session && isAuthRoute) {
-    return handleAuthRouteRedirection(userRole, request);
+    return handleAuthRouteRedirection(userRole, request, langPrefix);
   }
 
-
-  if (session) {
-    const isAuthorized = validateRoleAccess(userRole, pathname, {
-      isAdminRoute,
-      isInstructorRoute,
-      isStudentRoute,
-    });
-
-    if (!isAuthorized) {
-      if (pathname !== '/auth/access') {
-        console.log(`Unauthorized access. Redirecting to /auth/access.`);
-        return NextResponse.redirect(new URL('/auth/access', request.url));
-      }
-    }
+  if (intlResponse) {
+    return intlResponse;
   }
-
 
   return NextResponse.next();
 }
 
+// Function to handle redirecting authenticated users to their dashboards
+function handleAuthRouteRedirection(role: string | null, request: NextRequest, langPrefix: string) {
 
-function handleAuthRouteRedirection(role: string | null, request: NextRequest) {
   const redirectionMap: { [key: string]: string } = {
-    ROLE_ADMIN: '/dashboard/admin',
-    ROLE_INSTRUCTOR: '/dashboard/instructor',
-    ROLE_STUDENT: 'dashboard/student',
+    ROLE_ADMIN: `/${langPrefix}/dashboard/admin`,
+    ROLE_INSTRUCTOR: `/${langPrefix}/dashboard/instructor`,
+    ROLE_STUDENT: `/${langPrefix}/dashboard/student`,
   };
 
+  if (!role) {
+    return NextResponse.next();
+  }
   const redirectPath = redirectionMap[role];
   if (redirectPath) {
     console.log(`Authenticated user (${role}) redirected to ${redirectPath}`);
     return NextResponse.redirect(new URL(redirectPath, request.url));
   }
 
+
   return NextResponse.next();
 }
 
-
-function validateRoleAccess(
-  role: string | null,
-  pathname: string,
-  routes: { isAdminRoute: boolean; isInstructorRoute: boolean; isStudentRoute: boolean }
-) {
-  const roleAccessMap: { [key: string]: boolean } = {
-    ROLE_ADMIN: routes.isAdminRoute,
-    ROLE_INSTRUCTOR: routes.isInstructorRoute,
-    ROLE_STUDENT: routes.isStudentRoute,
-  };
-
-  return role ? roleAccessMap[role] || false : false;
-}
-
+// Configuration for middleware matching
 export const config = {
   matcher: [
+    '/', // Root route
+    '/(ar|en)/:path*', // Language-prefixed routes
     '/dashboard/admin/:path*',
     '/dashboard/instructor/:path*',
     '/dashboard/student/:path*',
