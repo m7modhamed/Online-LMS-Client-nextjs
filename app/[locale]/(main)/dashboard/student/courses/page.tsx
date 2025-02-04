@@ -4,26 +4,28 @@ import React from 'react';
 import StudentCourseList from '../../../../../../demo/components/(student)/StudentCourseList';
 import { getTranslations } from 'next-intl/server';
 
+
 const courses = async () => {
     const t = await getTranslations('coursesPage');
     let courses: Course[] = [];
-    try {
-        const res = await fetch(API_ROUTES.COURSES.GET_ALL_COURSES, {
-            cache: 'no-store'
-        });
+    const res = await fetch(API_ROUTES.COURSES.GET_ALL_COURSES, {
+        cache: 'no-store',
+    });
 
-        courses = await res.json();
-    } catch (err) {
-        console.error('fetch courses error : ', err);
+    if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message);
     }
+    courses = await res.json();
+
 
     if (!courses || courses.length === 0) {
         return (
             <div className="card">
-            <h5>{t('noContentFound')}</h5>
-            <p>{t('noContentMessage')}</p>
-        </div>
-        
+                <h5>{t('noContentFound')}</h5>
+                <p>{t('noContentMessage')}</p>
+            </div>
+
         );
     }
 

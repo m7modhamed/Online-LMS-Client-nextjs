@@ -9,42 +9,38 @@ import Loading from '@/app/loading';
 import { useParams } from 'next/navigation';
 import { CustomSession } from '@/app/interfaces/customSession';
 import { IFile } from '@/app/interfaces/interfaces';
+import { useTranslations } from 'next-intl';
 
 const LessonContent = () => {
     const { data, status } = useSession() as { data: CustomSession, status: string };
     const [lesson, setLesson] = useState<any>(null);
     const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string>();
     const { courseId, lessonId }: { courseId: string, lessonId: string } = useParams();
+    const t = useTranslations('adminLesson');
 
     useEffect(() => {
 
         const fetchLesson = async () => {
-            try {
-                if (!data) {
-                    return;
-                }
-                const res = await fetch(API_ROUTES.LESSONS.GET_LESSON(lessonId), {
-                    headers: {
-                        Authorization: `Bearer ${data?.accessToken}`
-                    },
-                    cache: 'no-store'
-                });
-
-                if (!res.ok) {
-                    const err = await res.json();
-                    console.log('error', err)
-                    throw new Error(err.message);
-                }
-
-                const lessonData = await res.json();
-                setLesson(lessonData);
-            } catch (err: any) {
-                setError(err.message);
-                console.log('Error fetching lesson:', err.message);
-            } finally {
-                setLoading(false);
+            if (!data) {
+                return;
             }
+            const res = await fetch(API_ROUTES.LESSONS.GET_LESSON(lessonId), {
+                headers: {
+                    Authorization: `Bearer ${data?.accessToken}`
+                },
+                cache: 'no-store'
+            });
+
+            if (!res.ok) {
+                const err = await res.json();
+                setLoading(false);
+                throw new Error(err.message || 'fail to fetch lesson');
+            }
+
+            const lessonData = await res.json();
+            setLesson(lessonData);
+            setLoading(false);
+
         };
 
         fetchLesson();
@@ -54,16 +50,12 @@ const LessonContent = () => {
         return <Loading />;
     }
 
-    console.log('error 2', error)
-    if (error) {
-        return <h5 className='card' >{error}</h5>;
-    }
 
     if (!lesson) {
         return <h5 className='card'>No lesson data found.</h5>;
     }
 
-    let additionalFiles : IFile[] | null = null;
+    let additionalFiles: IFile[] | null = null;
     if (lesson && lesson.fileResource) {
         const formattedFiles = lesson.fileResource.map((file: any) => ({
             ...file,
@@ -84,25 +76,27 @@ const LessonContent = () => {
     };
 
     return (
-        <Box sx={{ padding: 4 }}>
+        <div className="p-4">
+            {/* Lesson Title */}
             <Paper elevation={3} sx={{ padding: 4, borderRadius: 2, marginBottom: 4 }}>
                 <Typography variant="h4" gutterBottom>
                     {lesson?.title}
                 </Typography>
                 <Typography variant="subtitle1" color="textSecondary">
-                    Lesson Content
+                    {t('lessonContent')}
                 </Typography>
             </Paper>
 
+            {/* Video Preview */}
             <Paper elevation={3} sx={{ padding: 4, borderRadius: 2, marginBottom: 4 }}>
                 <Typography variant="h5" gutterBottom>
-                    Video
+                    {t('video')}
                 </Typography>
 
                 {videoPreview && (
                     <Box sx={{ marginTop: 2 }}>
                         <Typography variant="body1" color="textSecondary" sx={{ marginBottom: 1, fontStyle: 'italic' }}>
-                            Video Preview
+                            {t('videoPreview')}
                         </Typography>
                         <video
                             controls
@@ -118,9 +112,10 @@ const LessonContent = () => {
                 )}
             </Paper>
 
+            {/* Course Files Section */}
             <Paper elevation={3} sx={{ padding: 4, borderRadius: 2 }}>
                 <Typography variant="h5" gutterBottom>
-                    Course Files
+                    {t('courseFiles')}
                 </Typography>
 
                 <Divider sx={{ marginY: 2 }} />
@@ -129,11 +124,11 @@ const LessonContent = () => {
                     {additionalFiles?.map((file, index) => (
                         <a
                             href={file?.url}
-                            target="_blank" // Opens the file in a new tab
-                            rel="noopener noreferrer" // Security measure for opening links in new tab
+                            target="_blank"
+                            rel="noopener noreferrer"
                             key={index}
                             className="target-icon"
-                            data-pr-tooltip="download"
+                            data-pr-tooltip={t('download')}
                         >
                             <ListItem
                                 sx={{
@@ -145,8 +140,6 @@ const LessonContent = () => {
                                 secondaryAction={
                                     <div>
                                         <Tooltip target=".target-icon" />
-
-                                        {/* Button to trigger file download */}
                                         <IconButton
                                             edge="end"
                                             onClick={(e) => {
@@ -165,7 +158,7 @@ const LessonContent = () => {
                     ))}
                 </List>
             </Paper>
-        </Box>
+        </div>
     );
 };
 

@@ -1,8 +1,10 @@
 'use client';
 import { API_ROUTES } from '@/app/api/apiRoutes';
 import { CustomSession } from '@/app/interfaces/customSession';
+import { Typography } from '@mui/material';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+import { useRouter } from '@/i18n/routing';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import React, { useRef, useState } from 'react';
@@ -12,6 +14,7 @@ const EnrollCourse = ({ courseId }: { courseId: string }) => {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const toast = useRef<Toast>(null);
+    const t = useTranslations('enrollCourse');
 
 
     if (status === 'loading') {
@@ -71,10 +74,18 @@ const EnrollCourse = ({ courseId }: { courseId: string }) => {
         <div className="mt-6 w-full">
             <Toast ref={toast} />
 
-            <h6 style={{ wordSpacing: '2px', lineHeight: '25px' }}>
-                This course offers valuable insights and hands-on experience in the field. Do not miss the chance to level up your skills and advance your career. Enroll now to start your learning journey!
-            </h6>
-            <Button style={{ width: '50%' }} loading={loading} className="block mx-auto my-4" label="Enroll Now!" severity="success" onClick={handleEnrollButton} />
+            <Typography variant='h6' style={{ wordSpacing: '2px', lineHeight: '25px', margin: '50px 0 75px 0' }}>
+                {t('enrollmentDescription')}
+            </Typography>
+            <Button
+                style={{ width: '50%' }}
+                loading={loading}
+                className="block mx-auto my-4"
+                label={t('enrollButton')}
+                severity="success"
+                onClick={handleEnrollButton}
+            />
+
         </div>
     );
 };

@@ -31,7 +31,7 @@ export default function ErrorBoundary({
                 </div>
                 <h1 className="text-900 font-bold text-5xl mb-2">Error Occured</h1>
                 <div className="text-600 mb-5">Something went wrong.</div>
-                <h5>{error.message}</h5>
+                <h5 style={{ color: 'red' }} className="font-bold text-3xl">{error.message}</h5>
                 <img src="/demo/images/error/asset-error.svg" alt="Error" className="mb-5" width="80%" />
                 <Button icon="pi pi-arrow-left" label="Try again" text onClick={() => reset()} />
 

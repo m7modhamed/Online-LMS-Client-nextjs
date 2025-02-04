@@ -1,20 +1,11 @@
 import { IDashboardInfo } from '@/app/interfaces/interfaces';
-import Loading from '@/app/loading';
 import { getTranslations } from 'next-intl/server';
-import React, { useEffect, useState } from 'react';
-import { useTranslations } from 'use-intl';
+import React from 'react';
 
 const StatisticsDashboard = async ({ coursesInfo }: { coursesInfo: IDashboardInfo | undefined }) => {
-    // const [loading, setLoading] = useState(true);
     const t = await getTranslations('statisticsDashboard')
 
-    // useEffect(() => {
-    //     setLoading(false);
-    // }, []);
 
-    // if (loading) {
-    //     return <Loading />;
-    // }
     return (
         <div className="grid">
             <div className="col-12 lg:col-6 xl:col-6">

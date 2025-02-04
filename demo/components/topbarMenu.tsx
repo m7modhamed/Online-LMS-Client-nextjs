@@ -1,10 +1,12 @@
 import { signOut } from 'next-auth/react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { Menubar } from 'primereact/menubar';
 import React from 'react';
 
 const TopbarMenu = () => {
     const t = useTranslations('topbarMenu');
+    const locale = useLocale();
+
     const items = [
         {
             label: t('setting'),
@@ -19,7 +21,7 @@ const TopbarMenu = () => {
                     label: t('logout'),
                     icon: 'pi pi-user-minus',
                     command: () => {
-                        signOut({ callbackUrl: '/auth/login' });
+                        signOut({ callbackUrl: `/${locale}/auth/login` });
                     }
                 }
             ]

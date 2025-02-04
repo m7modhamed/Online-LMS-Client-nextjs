@@ -1,43 +1,37 @@
 /* eslint-disable @next/next/no-img-element */
-'use client';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { API_ROUTES } from '@/app/api/apiRoutes';
-import { useSession } from 'next-auth/react';
 import { CustomSession } from '@/app/interfaces/customSession';
-import { IDashboardInfo } from '@/app/interfaces/interfaces';
-import { useTranslations } from 'use-intl';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/lib/nextAuth';
+import { getTranslations } from 'next-intl/server';
 
 
-const StudentDashboard = () => {
-    const { data, status } = useSession() as { data: CustomSession; status: string };
-    const [dashboardInfo, setDashboardInfo] = useState<IDashboardInfo>();
-    const t = useTranslations('statisticsDashboard')
+const StudentDashboard = async () => {
 
-    useEffect(() => {
-        const getDashboardInfo = async () => {
-            try {
-                let coursesInfo;
-                if (status === 'authenticated' && data?.accessToken && data?.user?.id) {
-                    const res = await fetch(API_ROUTES.COURSES.GET_STUDENT_DASHBOARD_INFO(data?.user?.id), {
-                        headers: {
-                            Authorization: `Bearer ${data.accessToken}`
-                        },
-                        cache: 'no-store'
-                    });
-                    coursesInfo = await res.json();
-                }
 
-                setDashboardInfo(coursesInfo);
-            } catch (err) {
-                console.log('err', err);
-            }
-        };
-        getDashboardInfo();
-    }, [data, status]);
+    const t = await getTranslations('statisticsDashboard')
+    const session = await getServerSession(authOptions) as CustomSession;
+    if (!session || !session?.user?.id) {
+        return;
+    }
+    const res = await fetch(API_ROUTES.COURSES.GET_STUDENT_DASHBOARD_INFO(session.user.id), {
+        headers: {
+            Authorization: `Bearer ${session.accessToken}`
+        },
+        cache: 'no-store'
+    });
+
+    if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message);
+    }
+    const dashboardInfo = await res.json();
+
 
     return (
         <div className="grid">
-            {data &&
+            {
                 <div className="col-12 lg:col-6 xl:col-12">
                     <div className="card mb-0">
                         <div className="flex justify-content-between mb-3">

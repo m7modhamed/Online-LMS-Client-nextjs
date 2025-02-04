@@ -9,6 +9,7 @@ import { useParams } from 'next/navigation';
 import EditableCourseInfo from '@/demo/components/(instructor)/EditableCourseInfo';
 import { InstructorCourseSections } from '@/demo/components/(instructor)/courseSectionsForInstructor/InstructorCourseSections';
 import PublishCourse from '@/demo/components/publishCourse';
+import { useRouter } from '@/i18n/routing';
 
 //{params} : {params : Promise<{courseId : string}>}
 const InstructorCourse = () => {
@@ -17,6 +18,7 @@ const InstructorCourse = () => {
     const [loading, setLoading] = useState(true);
     const { courseId }: { courseId: string } = useParams();
     //const courseId = (await params).courseId;
+    const router = useRouter();
 
 
     useEffect(() => {
@@ -32,6 +34,7 @@ const InstructorCourse = () => {
                     headers: {
                         Authorization: `Bearer ${data.accessToken}`,
                     },
+                    cache: 'no-store'
                 });
 
                 if (!res.ok) {
@@ -59,11 +62,12 @@ const InstructorCourse = () => {
         return <div className="card"><h5>No course found</h5></div>;
     }
 
+   
     return (
         <div className="grid">
             <EditableCourseInfo course={course} />
             <InstructorCourseSections course={course} />
-            <PublishCourse course={course} />
+            <PublishCourse  course={course} />
         </div>
     );
 };

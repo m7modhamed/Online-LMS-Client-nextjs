@@ -8,7 +8,7 @@ import React, { useState, ChangeEvent, KeyboardEvent, useEffect, useRef } from '
 import { useDropzone } from 'react-dropzone';
 import { createCourseValidationSchema } from './ValidationSchema';
 import { Message } from 'primereact/message';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/routing';
 import { Toast } from 'primereact/toast';
 import { API_ROUTES } from '@/app/api/apiRoutes';
 import { useSession } from 'next-auth/react';
@@ -171,6 +171,8 @@ const CreateCourse: React.FC = () => {
         }
     };
 
+
+
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setCourseData((prevCourseData) => {
@@ -196,22 +198,20 @@ const CreateCourse: React.FC = () => {
     };
 
     const createCourse = async (formData: FormData) => {
-        try {
-            const res = await fetch(API_ROUTES.COURSES.CREATE_COURSE, {
-                headers: {
-                    Authorization: `Bearer ${data.accessToken}`
-                },
-                body: formData,
-                method: 'POST'
-            });
-            if (!res.ok) {
-                const error = await res.json();
-                throw new Error(error);
-            }
-            return await res.json();
-        } catch (error: any) {
+        const res = await fetch(API_ROUTES.COURSES.CREATE_COURSE, {
+            headers: {
+                Authorization: `Bearer ${data.accessToken}`
+            },
+            body: formData,
+            method: 'POST'
+        });
+        if (!res.ok) {
+            const error = await res.json();
             setError(error.message);
+            throw new Error(error);
         }
+        return await res.json();
+
     };
 
     const handleSubmit = async () => {
@@ -225,7 +225,7 @@ const CreateCourse: React.FC = () => {
                 {
                     abortEarly: false
                 }
-            );
+            )
 
             const formData = new FormData();
 
@@ -254,6 +254,7 @@ const CreateCourse: React.FC = () => {
                         errors[err.path as keyof ICourseDataError] = err.message;
                     }
                 });
+                console.log('errors', errors)
                 setCourseDataError(errors);
             } else {
                 showError('Error', error.message);
@@ -308,19 +309,25 @@ const CreateCourse: React.FC = () => {
                     <div className="field col-6">
                         <label htmlFor="category">{t('category')}</label>
                         <Dropdown id="category" name="category" value={courseData.category} options={categories} onChange={handleCategoryChange} placeholder={t('category')} disabled={isLoading} />
+                        {courseDataError.category && <Message style={{ marginTop: '10px' }} severity="error" text={courseDataError.category} />}
+
                     </div>
 
                     <div className="field col-6">
                         <label htmlFor="language">{t('language')}</label>
                         <Dropdown id="language" name="language" value={courseData.language} options={languages} onChange={handleLanguageChange} placeholder={t('language')} />
+                        {courseDataError.language && <Message style={{ marginTop: '10px' }} severity="error" text={courseDataError.language} />}
+
                     </div>
 
                     <div className="field col-12">
                         <label htmlFor="prerequisites">{t('prerequisites')}</label>
                         <div className="p-inputgroup">
-                            <InputText id="prerequisites" className='prerequisitesInputText'  name="prerequisites" value={prerequisiteInput} onChange={handlePrerequisiteChange} onKeyDown={handleKeyDown} placeholder={t('enterPrerequisite')} />
+                            <InputText id="prerequisites" className='prerequisitesInputText' name="prerequisites" value={prerequisiteInput} onChange={handlePrerequisiteChange} onKeyDown={handleKeyDown} placeholder={t('enterPrerequisite')} />
                             <Button label={t('add')} className='addPrerequisitesButton' icon="pi pi-plus" onClick={handleAddPrerequisite} />
+
                         </div>
+                        {courseDataError.prerequisites && <Message style={{ marginTop: '10px' }} severity="error" text={courseDataError.prerequisites} />}
                         <div className="mt-2">
                             {courseData.prerequisites.map((prerequisite, index) => (
                                 <Chip key={index} label={prerequisite} className="mr-2" removable onRemove={() => handleDeletePrerequisite(prerequisite)} />
@@ -331,6 +338,8 @@ const CreateCourse: React.FC = () => {
                     <div className="field col-12">
                         <label htmlFor="description">{t('descriptionLabel')}</label>
                         <InputTextarea id="description" name="description" value={courseData.description} onChange={handleInputChange} placeholder={t('descriptionPlaceholder')} rows={5} cols={30} />
+                        {courseDataError.description && <Message style={{ marginTop: '10px' }} severity="error" text={courseDataError.description} />}
+
                     </div>
 
                     <div className="field col-12">
@@ -344,6 +353,8 @@ const CreateCourse: React.FC = () => {
                                 <img src={URL.createObjectURL(coverImage)} alt="Course Preview" style={{ width: '100px', height: '100px', objectFit: 'cover' }} />
                             </div>
                         )}
+                        {courseDataError.coverImage && <Message style={{ marginTop: '10px' }} severity="error" text={courseDataError.coverImage} />}
+
                     </div>
                 </div>
 

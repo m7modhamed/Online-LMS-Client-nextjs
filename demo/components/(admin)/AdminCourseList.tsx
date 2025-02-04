@@ -5,7 +5,7 @@ import { Button } from 'primereact/button';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import { Course, Image } from '@/app/interfaces/interfaces';
-import Link from 'next/link';
+import { Link } from '@/i18n/routing';
 import { convertSecondsToHoursAndMinutes } from '@/app/utility/utilities';
 import { useSession } from 'next-auth/react';
 import { Tag } from 'primereact/tag';
@@ -31,7 +31,7 @@ const AdminCourseList = ({ courses }: { courses: Course[] }) => {
     useEffect(() => {
         setDataViewValue(courses);
         setLoading(false);
-    }, [user, dataViewValue , courses]);
+    }, [user, dataViewValue, courses]);
 
     if (loading) {
         return <Loading />;
@@ -110,14 +110,14 @@ const AdminCourseList = ({ courses }: { courses: Course[] }) => {
                                 course?.status === 'PUBLISHED'
                                     ? 'success'
                                     : course?.status === 'IN_REVIEW'
-                                    ? 'info'
-                                    : course?.status === 'DRAFT'
-                                    ? 'warning'
-                                    : course?.status === 'ARCHIVED'
-                                    ? null // Use null for "ARCHIVED"
-                                    : course?.status === 'DELETED'
-                                    ? 'danger'
-                                    : null // Use null for "DELETED"
+                                        ? 'info'
+                                        : course?.status === 'DRAFT'
+                                            ? 'warning'
+                                            : course?.status === 'ARCHIVED'
+                                                ? null // Use null for "ARCHIVED"
+                                                : course?.status === 'DELETED'
+                                                    ? 'danger'
+                                                    : null
                             }
                             icon={course?.status == 'PUBLISHED' ? 'pi pi-check' : ''}
                             value={course?.status?.toUpperCase()}
@@ -155,23 +155,26 @@ const AdminCourseList = ({ courses }: { courses: Course[] }) => {
                             <span className="font-semibold">{course.language.toUpperCase()}</span> {/* Display course language */}
                         </div>
                         <span className={`course-badge status-available`}>{course.enrolledStudentsNumber.toString()} students</span> {/* Course status */}
-                        <Tag
-                            severity={
-                                course?.status === 'PUBLISHED'
-                                    ? 'success'
-                                    : course?.status === 'IN_REVIEW'
-                                    ? 'info'
-                                    : course?.status === 'DRAFT'
-                                    ? 'warning'
-                                    : course?.status === 'ARCHIVED'
-                                    ? null // Use null for "ARCHIVED"
-                                    : course?.status === 'DELETED'
-                                    ? 'danger'
-                                    : null // Use null for "DELETED"
-                            }
-                            icon={course?.status == 'PUBLISHED' ? 'pi pi-check' : ''}
-                            value={course?.status?.toUpperCase()}
-                        />
+
+                        {course?.status &&
+                            <Tag
+                                severity={
+                                    course?.status === 'PUBLISHED'
+                                        ? 'success'
+                                        : course?.status === 'IN_REVIEW'
+                                            ? 'info'
+                                            : course?.status === 'DRAFT'
+                                                ? 'warning'
+                                                : course?.status === 'ARCHIVED'
+                                                    ? null // Use null for "ARCHIVED"
+                                                    : course?.status === 'DELETED'
+                                                        ? 'danger'
+                                                        : null // Use null for "DELETED"
+                                }
+                                icon={course?.status == 'PUBLISHED' ? 'pi pi-check' : ''}
+                                value={course?.status?.toUpperCase()}
+                            />
+                        }
                     </div>
                     <div className="flex flex-column align-items-center text-center mb-3">
                         {/* Image container with fixed height */}

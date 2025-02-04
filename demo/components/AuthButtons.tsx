@@ -4,7 +4,7 @@ import Loading from '@/app/loading';
 import { getRouteBasedRole } from '@/app/utility/utilities';
 import { Link } from '@/i18n/routing';
 import { signOut, useSession } from 'next-auth/react';
-import { useTranslations } from 'next-intl';
+import {  useLocale, useTranslations } from 'next-intl';
 import { Avatar } from 'primereact/avatar';
 import { Button } from 'primereact/button';
 import React from 'react'
@@ -13,9 +13,12 @@ const AuthButtons = () => {
 
     const { data, status } = useSession() as { data: CustomSession; status: string };
     const t = useTranslations('MainNavbar');
+    const locale = useLocale();
+
+    const currentLang = locale || 'ar'; 
 
     const handleLogout = () => {
-        signOut({ callbackUrl: '/auth/login' });
+        signOut({ callbackUrl: `/${locale}/auth/login` });
     };
 
     if (status === 'loading') {

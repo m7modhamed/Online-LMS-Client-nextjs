@@ -5,13 +5,15 @@ import { Button } from 'primereact/button';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import { Course, Image } from '@/app/interfaces/interfaces';
-import Link from 'next/link';
+import { Link } from '@/i18n/routing';
 import { convertSecondsToHoursAndMinutes } from '@/app/utility/utilities';
 import { useSession } from 'next-auth/react';
 import Loading from '@/app/loading';
 import { useTranslations } from 'next-intl';
+import { Tag } from 'primereact/tag';
+import { CustomSession } from '@/app/interfaces/customSession';
 
-const InstructorCourseList = ({ courses }: { courses: Course[] }) => {
+const CourseList = ({ courses }: { courses: Course[] }) => {
     const t = useTranslations('courseList'); // Use the translation hook
 
     const [dataViewValue, setDataViewValue] = useState<Course[]>([]);
@@ -22,13 +24,13 @@ const InstructorCourseList = ({ courses }: { courses: Course[] }) => {
     const [sortOrder, setSortOrder] = useState<0 | 1 | -1 | null>(null);
     const [sortField, setSortField] = useState('');
     const [loading, setLoading] = useState(true);
+    const { data, status } = useSession() as { data: CustomSession, status: string };
 
     const sortOptions = [
         { label: t('sort.highToLow'), value: '!enrolledStudentsNumber' },
         { label: t('sort.lowToHigh'), value: 'enrolledStudentsNumber' }
     ];
 
-    const { data, status } = useSession();
     const user = data?.user;
     useEffect(() => {
         setDataViewValue(courses);
@@ -104,6 +106,25 @@ const InstructorCourseList = ({ courses }: { courses: Course[] }) => {
                             <i className="pi pi-book mr-2" />
                             <span className="font-semibold">{language?.toUpperCase()}</span>
                         </div>
+                        {course?.status &&
+                            <Tag
+                                severity={
+                                    course?.status === 'PUBLISHED'
+                                        ? 'success'
+                                        : course?.status === 'IN_REVIEW'
+                                            ? 'info'
+                                            : course?.status === 'DRAFT'
+                                                ? 'warning'
+                                                : course?.status === 'ARCHIVED'
+                                                    ? null // Use null for "ARCHIVED"
+                                                    : course?.status === 'DELETED'
+                                                        ? 'danger'
+                                                        : null // Use null for "DELETED"
+                                }
+                                icon={course?.status == 'PUBLISHED' ? 'pi pi-check' : ''}
+                                value={course?.status?.toUpperCase()}
+                            />
+                        }
                     </div>
 
                     <div style={{ gap: '10px', flexWrap: 'wrap' }} className="flex flex-row md:flex-column justify-content-between w-full md:w-auto align-items-center md:align-items-end mt-5 md:mt-0">
@@ -114,7 +135,7 @@ const InstructorCourseList = ({ courses }: { courses: Course[] }) => {
                             <span className="text-1xl font-semibold ml-2">{convertSecondsToHoursAndMinutes(Number(course.duration))}</span>
                         </div>
 
-                        <Link href={`/dashboard/instructor/courses/${course.id}`}>
+                        <Link href={data?.user?.role === 'ROLE_INSTRUCTOR' ? `/dashboard/instructor/courses/${course.id}` : `/dashboard/admin/courses/${course.id}`}>
                             <Button icon="pi pi-play" label={t('openToEnroll')} size="small" className="mb-2" />
                         </Link>
                     </div>
@@ -132,7 +153,27 @@ const InstructorCourseList = ({ courses }: { courses: Course[] }) => {
                             <i className="pi pi-book mr-2" />
                             <span className="font-semibold">{course.language.toUpperCase()}</span>
                         </div>
+
                         <span className={`course-badge status-available`}>{course.enrolledStudentsNumber.toString()} {t('students')}</span>
+                        {course?.status &&
+                            <Tag
+                                severity={
+                                    course?.status === 'PUBLISHED'
+                                        ? 'success'
+                                        : course?.status === 'IN_REVIEW'
+                                            ? 'info'
+                                            : course?.status === 'DRAFT'
+                                                ? 'warning'
+                                                : course?.status === 'ARCHIVED'
+                                                    ? null // Use null for "ARCHIVED"
+                                                    : course?.status === 'DELETED'
+                                                        ? 'danger'
+                                                        : null // Use null for "DELETED"
+                                }
+                                icon={course?.status == 'PUBLISHED' ? 'pi pi-check' : ''}
+                                value={course?.status?.toUpperCase()}
+                            />
+                        }
                     </div>
                     <div className="flex flex-column align-items-center text-center mb-3">
                         <div className="image-container w-12 h-12 flex align-items-center justify-content-center overflow-hidden" style={{ height: '250px' }}>
@@ -148,7 +189,7 @@ const InstructorCourseList = ({ courses }: { courses: Course[] }) => {
 
                             <span className="text-1xl font-semibold">{convertSecondsToHoursAndMinutes(Number(course.duration))}</span>
                         </div>
-                        <Link href={`/dashboard/instructor/courses/${course.id}`}>
+                        <Link href={data?.user?.role === 'ROLE_INSTRUCTOR' ? `/dashboard/instructor/courses/${course.id}` : `/dashboard/admin/courses/${course.id}`}>
                             <Button icon="pi pi-play" label={t('openToEnroll')} size="small" />
                         </Link>
                     </div>
@@ -181,4 +222,4 @@ const InstructorCourseList = ({ courses }: { courses: Course[] }) => {
     );
 };
 
-export default InstructorCourseList;
+export default CourseList;

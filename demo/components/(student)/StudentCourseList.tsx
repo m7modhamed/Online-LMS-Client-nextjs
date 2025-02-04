@@ -5,14 +5,14 @@ import { Button } from 'primereact/button';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import { Course, Image } from '@/app/interfaces/interfaces';
-import Link from 'next/link';
+import { Link } from '@/i18n/routing';
 import { convertSecondsToHoursAndMinutes } from '@/app/utility/utilities';
 import { useSession } from 'next-auth/react';
 import Loading from '@/app/loading';
 import { useTranslations } from 'next-intl';
 
 const StudentCourseList = ({ courses }: { courses: Course[] }) => {
-    const  t = useTranslations('courseList'); // Use the translation hook
+    const t = useTranslations('courseList'); // Use the translation hook
     const [dataViewValue, setDataViewValue] = useState<Course[]>([]);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filteredValue, setFilteredValue] = useState<Course[] | null>(null);

@@ -8,20 +8,22 @@ import { API_ROUTES } from '@/app/api/apiRoutes';
 import { useSession } from 'next-auth/react';
 import Loading from '@/app/loading';
 import { CustomSession } from '@/app/interfaces/customSession';
+import { useTranslations } from 'next-intl';
 
-const StudentVideoSection = ({ lessonId, studentId }: { lessonId: string; studentId: string | undefined}) => {
+const StudentVideoSection = ({ lessonId, studentId }: { lessonId: string; studentId: string | undefined }) => {
     const [videoPreview, setVideoPreview] = useState<string | null>(null);
     const [additionalFiles, setAdditionalFiles] = useState<{ name: string; url: string }[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const { data, status } = useSession() as { data: CustomSession; status: string };
+    const t = useTranslations('studentVideoSection');
 
     useEffect(() => {
         const fetchLesson = async () => {
             setLoading(true);
             setError(null);
-            if(!studentId){
-                return ;
+            if (!studentId) {
+                return;
             }
             try {
                 const res = await fetch(API_ROUTES.LESSONS.GET_STUDENT_LESSON(lessonId, studentId), {
@@ -82,16 +84,16 @@ const StudentVideoSection = ({ lessonId, studentId }: { lessonId: string; studen
     }
 
     return (
-        <Box>
+        <div>
             <Paper elevation={3} sx={{ padding: 4, borderRadius: 2, marginBottom: 4 }}>
                 <Typography variant="h5" gutterBottom>
-                    Lesson Video
+                    {t('lessonVideo')}
                 </Typography>
 
                 {videoPreview && (
                     <Box sx={{ marginTop: 2 }}>
                         <Typography variant="body1" color="textSecondary" sx={{ marginBottom: 1, fontStyle: 'italic' }}>
-                            Video Preview
+                            {t('videoPreview')}
                         </Typography>
                         <video
                             controls
@@ -107,9 +109,9 @@ const StudentVideoSection = ({ lessonId, studentId }: { lessonId: string; studen
                 )}
             </Paper>
 
-            <Paper elevation={3} sx={{ padding: 4, borderRadius: 2 }}>
+            <Paper elevation={3} sx={{ padding: 4, borderRadius: 2 , marginBottom : '40px' }}>
                 <Typography variant="h5" gutterBottom>
-                    Download Files
+                    {t('downloadFiles')}
                 </Typography>
 
                 <Divider sx={{ marginY: 2 }} />
@@ -127,7 +129,7 @@ const StudentVideoSection = ({ lessonId, studentId }: { lessonId: string; studen
                             secondaryAction={
                                 <>
                                     <Tooltip target=".target-icon" />
-                                    <a href={file.url} download={file.name} className="target-icon" data-pr-tooltip="download">
+                                    <a href={file.url} download={file.name} className="target-icon" data-pr-tooltip={t('download')}>
                                         <IconButton edge="end">
                                             <AttachFileIcon color="primary" />
                                         </IconButton>
@@ -140,7 +142,7 @@ const StudentVideoSection = ({ lessonId, studentId }: { lessonId: string; studen
                     ))}
                 </List>
             </Paper>
-        </Box>
+        </div>
     );
 };
 

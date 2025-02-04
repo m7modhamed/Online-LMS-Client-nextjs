@@ -5,7 +5,7 @@ import { Password } from 'primereact/password';
 import { LayoutContext } from '../../../../../layout/context/layoutcontext';
 import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
-import Link from 'next/link';
+import { Link } from '@/i18n/routing';
 import styles from './styles.module.css';
 import { SignupValidationSchema } from './ValidationSchema';
 import { Message } from 'primereact/message';

@@ -1,4 +1,3 @@
-import styles from "./style.module.css";
 import * as React from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -8,6 +7,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Section } from "@/app/interfaces/interfaces";
+import { useTranslations } from "use-intl";
 
 interface AddSectionDialogProps {
   open: boolean;
@@ -26,9 +26,10 @@ export default function AddSectionDialog({
   const [section, setSection] = React.useState<Section>({
     title: "",
     description: "",
-    position : 1,
+    position: 1,
   });
 
+  const t = useTranslations('addSectionDialog');
   // Handle changes in input fields
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -47,45 +48,38 @@ export default function AddSectionDialog({
   };
 
   return (
-    <React.Fragment>
-      
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Add New Section</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Please enter the name of the new section you would like to add to
-            the course. This section will be displayed in the course content,
-            and you can edit it later if needed.
-          </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="title"
-            name="title"
-            label="Title"
-            type="text"
-            fullWidth
-            variant="standard"
-            value={section.title} // Bind the value to state
-            onChange={handleInputChange} // Update state on change
-          />
-          <TextField
-            margin="dense"
-            id="description"
-            name="description"
-            label="Description"
-            type="text"
-            fullWidth
-            variant="standard"
-            value={section.description} // Bind the value to state
-            onChange={handleInputChange} // Update state on change
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleAddNewSection}>Add</Button>
-        </DialogActions>
-      </Dialog>
-    </React.Fragment>
+    <Dialog open={open} onClose={handleClose}>
+      <DialogTitle>{t("dialogTitle")}</DialogTitle>
+      <DialogContent>
+        <DialogContentText>{t("dialogContentText")}</DialogContentText>
+        <TextField
+          autoFocus
+          margin="dense"
+          id="title"
+          name="title"
+          label={t("titleLabel")}
+          type="text"
+          fullWidth
+          variant="standard"
+          value={section.title} // Bind the value to state
+          onChange={handleInputChange} // Update state on change
+        />
+        <TextField
+          margin="dense"
+          id="description"
+          name="description"
+          label={t("descriptionLabel")}
+          type="text"
+          fullWidth
+          variant="standard"
+          value={section.description} // Bind the value to state
+          onChange={handleInputChange} // Update state on change
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose}>{t("cancelButton")}</Button>
+        <Button onClick={handleAddNewSection}>{t("addButton")}</Button>
+      </DialogActions>
+    </Dialog>
   );
 }

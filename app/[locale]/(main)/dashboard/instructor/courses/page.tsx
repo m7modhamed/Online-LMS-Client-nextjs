@@ -1,11 +1,11 @@
 import React from 'react';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/lib/nextAuth';
-import InstructorCourseList from '../../../../../../demo/components/(instructor)/InstructorCourseList';
 import { API_ROUTES } from '@/app/api/apiRoutes';
 import { Course } from '@/app/interfaces/interfaces';
 import { CustomSession } from '@/app/interfaces/customSession';
 import { getTranslations } from 'next-intl/server';
+import CourseList from '@/demo/components/CourseList';
 
 export default async function MyCourses() {
     const t = await getTranslations('instructorCoursesPage'); // Get translations
@@ -50,7 +50,7 @@ export default async function MyCourses() {
                 </div>
             </div>
 
-            <InstructorCourseList courses={courses} />
+            <CourseList courses={courses} />
         </div>
     );
 }

@@ -7,10 +7,11 @@ import styles from './style.module.css';
 import { Course, Section } from '@/app/interfaces/interfaces';
 import { useSession } from 'next-auth/react';
 import { CustomSession } from '@/app/interfaces/customSession';
-import Link from 'next/link';
+import { Link } from '@/i18n/routing';
 import { convertSecondsToHoursAndMinutes } from '@/app/utility/utilities';
 import { LayoutContext } from '@/layout/context/layoutcontext';
 import Loading from '@/app/loading';
+import { useTranslations } from 'next-intl';
 
 export default function AdminCourseSections({ course }: { course: Course | undefined }) {
     const [sections, setSections] = useState<Section[]>([]);
@@ -19,6 +20,8 @@ export default function AdminCourseSections({ course }: { course: Course | undef
     const { data, status } = useSession() as { data: CustomSession; status: string };
     const user = data?.user;
     const [loading, setLoading] = useState(true);
+        const t = useTranslations('instructorCourseSections');
+    
     useEffect(() => {
         const fetchCourseData = async () => {
             setSections(course?.sections || []);
@@ -64,7 +67,7 @@ export default function AdminCourseSections({ course }: { course: Course | undef
                 <div className="card">
                     <Box className={styles.sectionContainer}>
                         <Typography className={styles.sectionHeading} variant="h6" gutterBottom>
-                            Sections
+                        {t('sections')}
                         </Typography>
                         <PanelMenu model={panelMenuItems} style={{ width: '100%' }} />
                     </Box>

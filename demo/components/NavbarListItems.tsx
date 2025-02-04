@@ -3,7 +3,7 @@ import { CustomSession } from '@/app/interfaces/customSession'
 import { getRouteBasedRole } from '@/app/utility/utilities'
 import { useSession } from 'next-auth/react'
 import { useLocale, useTranslations } from 'next-intl'
-import Link from 'next/link'
+import { Link } from '@/i18n/routing';
 import { Ripple } from 'primereact/ripple'
 import React, { Dispatch, SetStateAction } from 'react'
 

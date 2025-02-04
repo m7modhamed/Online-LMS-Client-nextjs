@@ -23,19 +23,19 @@ export const createCourseValidationSchema = Yup.object().shape({
     }).required('Category is required'),
 
     coverImage: Yup.mixed()
-    .required('Cover image is required')
-    .test('fileSize', 'Image size is too large', (value) => {
-        if (value instanceof File) {
-            return value.size <= 5 * 1024 * 1024; // 5MB limit
-        }
-        return false; // If value is not a File, validation fails
-    })
-    .test('fileType', 'Unsupported file format', (value) => {
-        if (value instanceof File) {
-            return ['image/jpeg', 'image/png'].includes(value.type);
-        }
-        return false; // If value is not a File, validation fails
-    })
+        .required('Cover image is required')
+        .test('fileSize', 'Image size is too large', (value) => {
+            if (value instanceof File) {
+                return value.size <= 5 * 1024 * 1024; // 5MB limit
+            }
+            return false; // If value is not a File, validation fails
+        })
+        .test('fileType', 'Unsupported file format', (value) => {
+            if (value instanceof File) {
+                return ['image/jpeg', 'image/png'].includes(value.type);
+            }
+            return false; // If value is not a File, validation fails
+        })
 
 
 });

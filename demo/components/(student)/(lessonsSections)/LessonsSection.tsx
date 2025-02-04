@@ -2,14 +2,15 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { PanelMenu } from 'primereact/panelmenu';
 import { Box, Typography } from '@mui/material';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import styles from './style.module.css';
 import { Course, Section } from '@/app/interfaces/interfaces';
 import { useSession } from 'next-auth/react';
-import Link from 'next/link';
 import { convertSecondsToHoursAndMinutes } from '@/app/utility/utilities';
 import { LayoutContext } from '@/layout/context/layoutcontext';
 import { CustomSession } from '@/app/interfaces/customSession';
+import { useTranslations } from 'use-intl';
+import { Link } from '@/i18n/routing';
 
 export default function LessonsSection({ course }: { course: Course | undefined }) {
     const [sections, setSections] = useState<Section[]>([]);
@@ -17,7 +18,7 @@ export default function LessonsSection({ course }: { course: Course | undefined 
     const { data, status } = useSession() as { data: CustomSession; status: string };
     const user = data?.user;
     const { layoutConfig } = useContext(LayoutContext);
-
+    const t = useTranslations('studentCourseSections');
 
     useEffect(() => {
         const fetchCourseData = () => {
@@ -62,7 +63,7 @@ export default function LessonsSection({ course }: { course: Course | undefined 
                 <div className="card min-h-screen">
                     <Box className={styles.sectionContainer}>
                         <Typography className={styles.sectionHeading} variant="h6" gutterBottom>
-                            Sections
+                            {t('sections')}
                         </Typography>
                         <PanelMenu model={panelMenuItems} style={{ width: '100%' }} />
                     </Box>

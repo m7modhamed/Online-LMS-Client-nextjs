@@ -7,13 +7,14 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Lesson } from "@/app/interfaces/interfaces";
+import { useTranslations } from "next-intl"; // Import useTranslations for translations
 
 interface AddLessonDialogProps {
   open: boolean;
   handleClickOpen: () => void;
   handleClose: () => void;
-  addLesson: (newLesson: Lesson , sectionId :Number) => void; 
-  sectionId :Number;
+  addLesson: (newLesson: Lesson, sectionId: Number) => void;
+  sectionId: Number;
 }
 
 export default function AddLessonDialog({
@@ -23,8 +24,8 @@ export default function AddLessonDialog({
   addLesson,
   sectionId,
 }: AddLessonDialogProps) {
-  
-    
+  const t = useTranslations("addLessonDialog"); // Fetch the translations for this dialog
+
   const [lesson, setLesson] = React.useState<Lesson>({
     title: "",
     position: 1,
@@ -39,32 +40,27 @@ export default function AddLessonDialog({
     }));
   };
 
-
-  const handleAddNewSection = () => {
+  // Handle adding new lesson
+  const handleAddNewLesson = () => {
     if (lesson.title) {
-      addLesson( lesson , sectionId); 
+      addLesson(lesson, sectionId); // Call parent function to add the lesson
       handleClose(); // Close the dialog
     }
   };
 
   return (
-    <React.Fragment>
-    
+    <div>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Add New Lesson</DialogTitle>
+        <DialogTitle>{t("dialogTitle")}</DialogTitle> {/* Use translation for title */}
         <DialogContent>
-          <DialogContentText>
-            Please enter the title of the new lesson you would like to add to
-            this section. This title will help identify the lesson within the
-            course content. You can update it later if needed.
-          </DialogContentText>
+          <DialogContentText>{t("dialogContentText")}</DialogContentText> {/* Translation for content text */}
 
           <TextField
             autoFocus
             margin="dense"
             id="title"
             name="title"
-            label="Title"
+            label={t("titleLabel")} // Translation for label
             type="text"
             fullWidth
             variant="standard"
@@ -73,10 +69,10 @@ export default function AddLessonDialog({
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleAddNewSection}>Add</Button>
+          <Button onClick={handleClose}>{t("cancelButton")}</Button> {/* Translation for cancel button */}
+          <Button onClick={handleAddNewLesson}>{t("addButton")}</Button> {/* Translation for add button */}
         </DialogActions>
       </Dialog>
-    </React.Fragment>
+    </div>
   );
 }

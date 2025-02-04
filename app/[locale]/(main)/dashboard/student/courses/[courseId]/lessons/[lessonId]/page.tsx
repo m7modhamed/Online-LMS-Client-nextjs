@@ -6,6 +6,7 @@ import { authOptions } from '@/app/lib/nextAuth';
 import { getServerSession } from 'next-auth';
 import React from 'react';
 import { CustomSession } from '@/app/interfaces/customSession';
+import { getTranslations } from 'next-intl/server';
 
 interface PageProps {
     params: Promise<{ courseId: string, lessonId: string }>;  // The params are now a Promise.
@@ -15,7 +16,7 @@ const studentLesson = async ({ params }: PageProps) => {
     const { courseId, lessonId } = await params;
     const session: CustomSession | null = await getServerSession(authOptions);
     const user = session?.user;
-
+    const t = await getTranslations('studentLesson');
     let course: Course | null = null;
     let errorMessage: string | null = null;
 
@@ -59,8 +60,8 @@ const studentLesson = async ({ params }: PageProps) => {
 
     return (
         <div>
-            <div className="card" style={{ marginBottom: '20px', textAlign: 'center' }}>
-                <h5>Student Lesson</h5>
+            <div className="card" style={{ marginBottom: '20px' }}>
+                <h5>{t('title')}</h5>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '20px' }}>
@@ -73,6 +74,7 @@ const studentLesson = async ({ params }: PageProps) => {
                 </div>
             </div>
         </div>
+
     );
 };
 

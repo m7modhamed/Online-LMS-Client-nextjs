@@ -14,8 +14,8 @@ import { CustomSession } from '@/app/interfaces/customSession';
 import { DeleteDialog } from '@/demo/components/DeleteDialog';
 import { useTranslations } from 'next-intl';
 
-const instructorLesson = () => {
-    const toast = useRef<Toast | null>(null);
+const InstructorLesson = () => {
+    const toast = useRef<Toast>(null);
     const { lessonId }: { lessonId: string } = useParams();
     const [videoFile, setVideoFile] = useState<File | null>(null);
     const [videoPreview, setVideoPreview] = useState<string | null>(null);
@@ -30,33 +30,34 @@ const instructorLesson = () => {
     const { data, status } = useSession() as { data: CustomSession, status: string };
     const t = useTranslations('instructorLesson');
 
-    const fetchLesson = async () => {
-        if (status !== 'authenticated' || !data?.accessToken) return;
-        try {
-            const response = await fetch(API_ROUTES.LESSONS.GET_LESSON(lessonId), {
-                headers: { Authorization: `Bearer ${data.accessToken}` },
-                next: {
-                    revalidate: 60
-                }
-            });
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.message);
-            }
-            const fetchedLesson = await response.json();
-            setLesson(fetchedLesson);
-            setVideoPreview(fetchedLesson.video?.url || null);
-            setAdditionalFiles(fetchedLesson.fileResource || []);
-        } catch (error: any) {
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
-    };
+
 
     useEffect(() => {
+        const fetchLesson = async () => {
+            if (status === 'loading' || !data?.accessToken) return;
+            try {
+                const response = await fetch(API_ROUTES.LESSONS.GET_LESSON(lessonId), {
+                    headers: { Authorization: `Bearer ${data.accessToken}` },
+                    next: {
+                        revalidate: 60
+                    }
+                });
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.message);
+                }
+                const fetchedLesson = await response.json();
+                setLesson(fetchedLesson);
+                setVideoPreview(fetchedLesson.video?.url || null);
+                setAdditionalFiles(fetchedLesson.fileResource || []);
+            } catch (error: any) {
+                console.error(error);
+            } finally {
+                setLoading(false);
+            }
+        };
         fetchLesson();
-    }, [lessonId, data]);
+    }, [lessonId, data , status]);
 
     if (loading) {
         return <Loading />;
@@ -358,9 +359,9 @@ const instructorLesson = () => {
                     <Box sx={{ marginTop: 3 }}>
                         <List>
                             {additionalFiles?.map((file, index) => (
-                               
+
                                 <ListItem
-                                className='card'
+                                    className='card'
                                     key={index}
                                     secondaryAction={
                                         <IconButton edge="end" onClick={() => confirmDeleteFile(file)}>
@@ -368,7 +369,7 @@ const instructorLesson = () => {
                                         </IconButton>
                                     }
                                 >
-                                    
+
                                     <ListItemText
                                         primary={file.name}
                                         secondary={`${t('type')} : ${file.type} `}
@@ -391,4 +392,4 @@ const instructorLesson = () => {
     );
 };
 
-export default instructorLesson;
+export default InstructorLesson;

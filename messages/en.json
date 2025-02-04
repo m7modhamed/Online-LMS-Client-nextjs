@@ -176,21 +176,21 @@
         "language": "Language",
         "duration": "Duration",
         "edit": "Edit"
-      },
-      "instructorCourseSections" : {
-        "addNewLesson" : "Add New Lesson",
-        "addNewSection" : "Add New Section",
-        "sections" : "Sections"
-      },
-      "publishCoursePage": {
+    },
+    "instructorCourseSections": {
+        "addNewLesson": "Add New Lesson",
+        "addNewSection": "Add New Section",
+        "sections": "Sections"
+    },
+    "publishCoursePage": {
         "afterUploadMessage": "After uploading the lessons and content, you can request to publish your course:",
         "publishButton": "Publish",
         "archiveButton": "Archive",
         "deleteButton": "Delete",
         "success": "Success",
         "error": "Error"
-      },
-      "instructorLesson" : {
+    },
+    "instructorLesson": {
         "uploadLessonContent": "Upload Lesson Content",
         "uploadVideo": "Upload Video",
         "videoPreview": "Video Preview",
@@ -200,9 +200,93 @@
         "uploadAdditionalFiles": "Upload Additional Files",
         "selectFiles": "Select Files",
         "saveFiles": "Save Files",
-        "type" : "File Type"
+        "type": "File Type"
+    },
+    "studentCourses": {
+        "title": "Your Learning Journey",
+        "description": "Explore your courses and continue growing your knowledge."
+    },
+    "instructorInfo": {
+        "specialization": "Specialization",
+        "socialMedia": "Connect with me",
+        "email": "Email",
+        "phone": "Phone Number"
+    },
+    "courseInfo": {
+        "description": "Course Description",
+        "prerequisites": "Prerequisites",
+        "status": "Status",
+        "category": "Category",
+        "language": "Language",
+        "duration": "Duration",
+        "statusOptions": {
+            "PUBLISHED": "Published",
+            "IN_REVIEW": "In Review",
+            "DRAFT": "Draft",
+            "ARCHIVED": "Archived",
+            "DELETED": "Deleted"
+        }
+    },
+    "studentCourseSections": {
+        "sections": "Sections"
+    },
+    "enrollCourse": {
+        "enrollmentDescription": "This course provides valuable insights and hands-on experience in the field. Don’t miss the opportunity to enhance your skills and advance your career. Enroll now to start your learning journey!",
+        "enrollButton": "Enroll Now!"
+    },
+    "studentLesson": {
+        "title": "Start Learning Your Lesson now !"
+    },
+    "studentVideoSection": {
+        "lessonVideo": "Lesson Video",
+        "videoPreview": "Video Preview",
+        "downloadFiles": "Attached Files",
+        "download": "Download"
+    },
+    "adminCourses": {
+        "title": "Course Management",
+        "description": "View, manage, and create courses from this dashboard. Use the options below to add new courses or update existing ones."
+    },
+    "coursesForReview": {
+        "title": "Courses Awaiting Review",
+        "description": "These courses are pending review. You can assess, approve, or provide feedback on them from this page."
+    },
+    "adminCoursePage": {
+        "title": "Course Details",
+        "description": "Use this page to view and manage course details. You can edit course information, manage sections, and review the course status.",
+        "noCoursesTitle": "No courses found"
+    },
+    "publishSection": {
+        "title": "Review the Course and Approve for Publishing",
+        "publishButtonLabel": "Publish"
+    },
+    "adminLesson": {
+        "lessonContent": "Lesson Content",
+        "video": "Video",
+        "videoPreview": "Video Preview",
+        "courseFiles": "Course Files",
+        "download": "Download"
+    },
+    "addSectionDialog": {
+        "dialogTitle": "Add New Section",
+        "dialogContentText": "Please enter the name of the new section you would like to add to the course. This section will be displayed in the course content, and you can edit it later if needed.",
+        "titleLabel": "Title",
+        "descriptionLabel": "Description",
+        "cancelButton": "Cancel",
+        "addButton": "Add"
+    },
+    "addLessonDialog": {
+        "dialogTitle": "Add New Lesson",
+        "dialogContentText": "Please enter the title of the new lesson you would like to add to this section. This title will help identify the lesson within the course content. You can update it later if needed.",
+        "titleLabel": "Title",
+        "cancelButton": "Cancel",
+        "addButton": "Add"
+    },
+    "deleteDialog": {
+        "confirmationHeader": "Confirmation",
+        "confirmationMessage": "Are you sure you want to delete the resource?",
+        "noButton": "No",
+        "yesButton": "Yes"
       }
-   
-    
     
 }

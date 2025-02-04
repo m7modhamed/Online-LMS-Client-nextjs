@@ -3,7 +3,7 @@ import React, { useRef, useState } from 'react';
 import { DeleteDialog } from './DeleteDialog';
 import { Toast } from 'primereact/toast';
 import { Course } from '@/app/interfaces/interfaces';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/routing';
 import { Button } from 'primereact/button';
 import { API_ROUTES } from '@/app/api/apiRoutes';
 import { useSession } from 'next-auth/react';
@@ -14,9 +14,8 @@ import { useTranslations } from 'next-intl';
 const PublishCourse = ({ course }: { course: Course | undefined }) => {
     const [loading, setLoading] = useState(false);
     const [displayConfirmation, setDisplayConfirmation] = useState(false);
-    const router = useRouter();
     const t = useTranslations('publishCoursePage'); // Access translation keys
-
+    const router = useRouter();
     const toast = useRef<Toast>(null);
     const { data, status } = useSession() as { data: CustomSession; status: string };
     const showSuccess = (title: string, desc: string) => {
@@ -50,18 +49,18 @@ const PublishCourse = ({ course }: { course: Course | undefined }) => {
             const res = await fetch(API_ROUTES.COURSES.PUBLISH_COURSE_REQUEST(String(course?.id)), {
                 headers: {
                     Authorization: `Bearer ${data.accessToken}`
-                }
+                },
             });
 
             if (!res.ok) {
                 const error = await res.json();
-                console.log(error);
                 throw new Error(error.message);
             }
 
-            const result = await res.json();
+            const result = await res.text();
             showSuccess('Success', result);
-            router.refresh();
+            router.push('/dashboard/instructor/courses/')
+
         } catch (err: any) {
             showError('Error', err?.message);
         } finally {

@@ -2,13 +2,13 @@
 import { LayoutContext } from '@/layout/context/layoutcontext';
 import { NodeRef } from '@/types';
 import { useTranslations } from 'next-intl';
-import Link from 'next/link';
 import { StyleClass } from 'primereact/styleclass';
 import { classNames } from 'primereact/utils';
 import React, { useContext, useRef, useState } from 'react';
 import NavbarListItems from './NavbarListItems';
 import AuthButtons from './AuthButtons';
 import LocaleSwitcher from './LocaleSwitcher';
+import { Link } from '@/i18n/routing';
 
 const MainNavbar = () => {
     const [isHidden, setIsHidden] = useState(false);

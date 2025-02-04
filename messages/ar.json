@@ -201,5 +201,92 @@
         "selectFiles": "اختيار الملفات",
         "saveFiles": "حفظ الملفات",
         "type": "نوع الملف"
-    }
+    },
+    "studentCourses": {
+        "title": "رحلة التعلم الخاصة بك",
+        "description": "استكشف دوراتك وواصل تنمية معرفتك."
+    },
+    "instructorInfo": {
+        "specialization": "التخصص",
+        "socialMedia": "تواصل معي",
+        "email": "البريد الإلكتروني",
+        "phone": "رقم الهاتف"
+    },
+    "courseInfo": {
+        "description": "وصف الدورة",
+        "prerequisites": "المتطلبات الأساسية",
+        "status": "الحالة",
+        "category": "الفئة",
+        "language": "اللغة",
+        "duration": "المدة",
+        "statusOptions": {
+            "PUBLISHED": "منشور",
+            "IN_REVIEW": "قيد المراجعة",
+            "DRAFT": "مسودة",
+            "ARCHIVED": "مؤرشف",
+            "DELETED": "محذوف"
+        }
+    },
+    "studentCourseSections": {
+        "sections": "الاقسام"
+    },
+    "enrollCourse": {
+        "enrollmentDescription": "تقدم هذه الدورة رؤى قيمة وتجربة عملية في المجال. لا تفوت الفرصة لتطوير مهاراتك وتعزيز حياتك المهنية. قم بالتسجيل الآن وابدأ رحلة التعلم الخاصة بك!",
+        "enrollButton": "سجل الآن!"
+    },
+    "studentLesson": {
+        "title": "ابدأ في تعلم الدرس الان !"
+    },
+    "studentVideoSection": {
+        "lessonVideo": "فيديو الدرس",
+        "videoPreview": "معاينة الفيديو",
+        "downloadFiles": "الملفات المرفقة",
+        "download": "تحميل"
+    },
+    "adminCourses": {
+        "title": "إدارة الدورات",
+        "description": "يمكنك عرض الدورات وإدارتها وإنشاؤها من لوحة التحكم هذه. استخدم الخيارات أدناه لإضافة دورات جديدة أو تحديث الدورات الحالية."
+    },
+    "coursesForReview": {
+        "title": "الدورات التي في انتظار المراجعة",
+        "description": "هذه الدورات قيد المراجعة. يمكنك تقييمها، الموافقة عليها، أو تقديم ملاحظاتك من هذه الصفحة."
+    },
+    "adminCoursePage": {
+        "title": "تفاصيل الدورة",
+        "description": "استخدم هذه الصفحة لعرض وإدارة تفاصيل الدورة. يمكنك تعديل معلومات الدورة، إدارة الأقسام، ومراجعة حالة الدورة.",
+        "noCoursesTitle": "لم يتم العثور على دورات"
+    },
+    "publishSection": {
+        "title": "مراجعة الدورة والموافقة على النشر",
+        "publishButtonLabel": "نشر"
+    },
+    "adminLesson": {
+        "lessonContent": "محتوى الدرس",
+        "video": "الفيديو",
+        "videoPreview": "معاينة الفيديو",
+        "courseFiles": "ملفات الدورة",
+        "download": "تحميل"
+    },
+    "addSectionDialog": {
+        "dialogTitle": "إضافة قسم جديد",
+        "dialogContentText": "يرجى إدخال اسم القسم الجديد الذي ترغب في إضافته إلى الدورة التدريبية. سيتم عرض هذا القسم في محتوى الدورة، ويمكنك تعديله لاحقًا إذا لزم الأمر.",
+        "titleLabel": "العنوان",
+        "descriptionLabel": "الوصف",
+        "cancelButton": "إلغاء",
+        "addButton": "إضافة"
+    },
+    "addLessonDialog": {
+        "dialogTitle": "إضافة درس جديد",
+        "dialogContentText": "يرجى إدخال عنوان الدرس الجديد الذي ترغب في إضافته إلى هذا القسم. سيساعدك هذا العنوان في تحديد الدرس داخل محتوى الدورة التدريبية. يمكنك تحديثه لاحقًا إذا لزم الأمر.",
+        "titleLabel": "العنوان",
+        "cancelButton": "إلغاء",
+        "addButton": "إضافة"
+    },
+    "deleteDialog": {
+        "confirmationHeader": "تأكيد",
+        "confirmationMessage": "هل أنت متأكد أنك تريد حذف المورد؟",
+        "noButton": "لا",
+        "yesButton": "نعم"
+      }
+    
 }

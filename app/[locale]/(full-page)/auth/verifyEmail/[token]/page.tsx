@@ -3,7 +3,8 @@
 import { API_ROUTES } from '@/app/api/apiRoutes';
 import { CustomSession } from '@/app/interfaces/customSession';
 import { useSession } from 'next-auth/react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
+import { useRouter } from '@/i18n/routing';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import React, { useRef, useState } from 'react';

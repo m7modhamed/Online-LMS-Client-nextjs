@@ -1,12 +1,10 @@
 'use client';
-import { useRouter } from 'next/navigation';
 import React, { useContext, useRef, useState } from 'react';
 import { Button } from 'primereact/button';
 import { Password } from 'primereact/password';
 import { LayoutContext } from '../../../../../layout/context/layoutcontext';
 import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
-import Link from 'next/link';
 import styles from './styles.module.css';
 import { Message } from 'primereact/message';
 import { Toast } from 'primereact/toast';
@@ -15,6 +13,7 @@ import { useTranslations } from 'next-intl';
 import { API_ROUTES } from '@/app/api/apiRoutes';
 import { useSession } from 'next-auth/react';
 import { CustomSession } from '@/app/interfaces/customSession';
+import { Link } from '@/i18n/routing';
 
 const SignUpPage: React.FC = () => {
     interface IFormData {

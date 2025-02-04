@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import React, { useContext,  useRef, useState } from 'react';
 import { Button } from 'primereact/button';
 import { Password } from 'primereact/password';
@@ -12,7 +12,7 @@ import { Message } from 'primereact/message';
 import { Toast } from 'primereact/toast';
 import { signIn } from 'next-auth/react';
 import { ILogin, ILoginError } from '@/app/interfaces/interfaces';
-import Link from 'next/link';
+import { Link, useRouter } from '@/i18n/routing';
 import ForgotPasswordRequest from '../forgotPasswordRequest/page';
 import { useTranslations } from 'next-intl';
 

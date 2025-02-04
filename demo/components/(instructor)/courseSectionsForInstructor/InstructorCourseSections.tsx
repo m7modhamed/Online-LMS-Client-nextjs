@@ -8,7 +8,7 @@ import { convertSecondsToHoursAndMinutes } from '@/app/utility/utilities';
 import { useSession } from 'next-auth/react';
 import AddSectionDialog from '../../AddSectionDialog/AddSectionDialog';
 import AddLessonDialog from '../../AddLessonDialog';
-import Link from 'next/link';
+import { Link } from '@/i18n/routing';
 import { LayoutContext } from '@/layout/context/layoutcontext';
 import { CustomSession } from '@/app/interfaces/customSession';
 import Loading from '@/app/loading';

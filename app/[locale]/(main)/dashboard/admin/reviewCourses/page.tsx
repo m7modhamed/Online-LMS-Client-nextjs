@@ -3,9 +3,12 @@ import { Course } from '@/app/interfaces/interfaces';
 import { authOptions } from '@/app/lib/nextAuth';
 import { getServerSession } from 'next-auth';
 import { CustomSession } from '@/app/interfaces/customSession';
-import AdminCourseList from '@/demo/components/(admin)/AdminCourseList';
+import CourseList from '@/demo/components/CourseList';
+import { getTranslations } from 'next-intl/server';
 
 const AdminCoursesForReview = async () => {
+    const t = await getTranslations('coursesForReview');
+
     const session: CustomSession | null = await getServerSession(authOptions);
     let courses: Course[] = [];
 
@@ -26,10 +29,10 @@ const AdminCoursesForReview = async () => {
         <div className="grid">
             <div className="col-12">
                 <div className="card">
-                    <h5>Courses</h5>
-                    <p>Use this page to create a new course by filling out the form below.</p>
+                    <h5>{t('title')}</h5>
+                    <p>{t('description')}</p>
                 </div>
-                <AdminCourseList courses={courses} />
+                <CourseList courses={courses} />
             </div>
         </div>
     );
