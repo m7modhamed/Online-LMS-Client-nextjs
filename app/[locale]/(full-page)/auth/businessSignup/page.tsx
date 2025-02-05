@@ -11,8 +11,6 @@ import { Toast } from 'primereact/toast';
 import { BusinessSignupValidationSchema } from '../signup/ValidationSchema';
 import { useTranslations } from 'next-intl';
 import { API_ROUTES } from '@/app/api/apiRoutes';
-import { useSession } from 'next-auth/react';
-import { CustomSession } from '@/app/interfaces/customSession';
 import { Link } from '@/i18n/routing';
 
 const SignUpPage: React.FC = () => {
@@ -59,14 +57,13 @@ const SignUpPage: React.FC = () => {
         twitterUrl: ''
     };
     const toast = useRef<Toast>(null);
-
     const [formData, setFormData] = useState<IFormData>(initialState);
     const [formDataError, setFormDataError] = useState<IFormDataError>(initialState);
     const [errorMessage, setErrorMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const { layoutConfig } = useContext(LayoutContext);
-
     const t = useTranslations();
+    
     const containerClassName = classNames('surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden', {
         'p-input-filled': layoutConfig.inputStyle === 'filled'
     });

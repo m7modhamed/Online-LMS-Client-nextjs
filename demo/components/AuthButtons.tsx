@@ -1,10 +1,9 @@
 'use client'
 import { CustomSession } from '@/app/interfaces/customSession';
-import Loading from '@/app/loading';
-import { getRouteBasedRole } from '@/app/utility/utilities';
+import { getRouteBasedRole } from '@/app/lib/utilities';
 import { Link } from '@/i18n/routing';
 import { signOut, useSession } from 'next-auth/react';
-import {  useLocale, useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { Avatar } from 'primereact/avatar';
 import { Button } from 'primereact/button';
 import React from 'react'
@@ -15,14 +14,12 @@ const AuthButtons = () => {
     const t = useTranslations('MainNavbar');
     const locale = useLocale();
 
-    const currentLang = locale || 'ar'; 
-
     const handleLogout = () => {
         signOut({ callbackUrl: `/${locale}/auth/login` });
     };
 
     if (status === 'loading') {
-        return <Loading />;
+        return;
     }
 
     return (

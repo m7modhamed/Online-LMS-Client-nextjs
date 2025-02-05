@@ -1,6 +1,6 @@
 'use client'
 import { CustomSession } from '@/app/interfaces/customSession'
-import { getRouteBasedRole } from '@/app/utility/utilities'
+import { getRouteBasedRole } from '@/app/lib/utilities'
 import { useSession } from 'next-auth/react'
 import { useLocale, useTranslations } from 'next-intl'
 import { Link } from '@/i18n/routing';

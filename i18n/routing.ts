@@ -4,7 +4,7 @@ import {createNavigation} from 'next-intl/navigation';
 export const routing = defineRouting({
   // A list of all locales that are supported
   locales: ['en', 'ar'],
-  localeDetection : false,
+  localeDetection : true,
   // Used when no locale matches
   defaultLocale: 'ar'
 });

@@ -6,7 +6,7 @@ import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import { Course, Image } from '@/app/interfaces/interfaces';
 import { Link } from '@/i18n/routing';
-import { convertSecondsToHoursAndMinutes } from '@/app/utility/utilities';
+import { convertSecondsToHoursAndMinutes } from '@/app/lib/utilities';
 import { useSession } from 'next-auth/react';
 import Loading from '@/app/loading';
 import { useTranslations } from 'next-intl';

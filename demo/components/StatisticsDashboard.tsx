@@ -1,10 +1,32 @@
-import { IDashboardInfo } from '@/app/interfaces/interfaces';
+import { API_ROUTES } from '@/app/api/apiRoutes';
+import { CustomSession } from '@/app/interfaces/customSession';
+import { authOptions } from '@/app/lib/nextAuth';
+import { getServerSession } from 'next-auth';
 import { getTranslations } from 'next-intl/server';
 import React from 'react';
 
-const StatisticsDashboard = async ({ coursesInfo }: { coursesInfo: IDashboardInfo | undefined }) => {
+const StatisticsDashboard = async () => {
     const t = await getTranslations('statisticsDashboard')
+    const session = await getServerSession(authOptions) as CustomSession;
+    if (!session || !session?.user?.id) {
+        return;
+    }
+    const res = await fetch(session.user.role === 'ROLE_INSTRUCTOR'
+        ? API_ROUTES.COURSES.GET_INSTRUCTOR_DASHBOARD_INFO(session?.user?.id)
+        : API_ROUTES.COURSES.GET_ADMIN_DASHBOARD_INFO, {
+        headers: {
+            Authorization: `Bearer ${session.accessToken}`
+        },
+        cache: 'no-store'
+    });
 
+    if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message);
+    }
+
+
+    const coursesInfo = await res.json();
 
     return (
         <div className="grid">

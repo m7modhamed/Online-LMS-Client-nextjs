@@ -10,15 +10,13 @@ import { classNames } from 'primereact/utils';
 import { loginValidationSchema } from '../signup/ValidationSchema';
 import { Message } from 'primereact/message';
 import { Toast } from 'primereact/toast';
-import { signIn, useSession } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 import { ILogin, ILoginError } from '@/app/interfaces/interfaces';
 import { Link, useRouter } from '@/i18n/routing';
 import ForgotPasswordRequest from '../forgotPasswordRequest/page';
 import { useTranslations } from 'next-intl';
-import { CustomSession } from '@/app/interfaces/customSession';
 
 const LoginPage = () => {
-    const [checked, setChecked] = useState(false);
     const { layoutConfig } = useContext(LayoutContext);
     const initialState = {
         email: '',

@@ -84,11 +84,13 @@ const LandingPage = () => {
                                     <a className="line-height-3 text-xl block cursor-pointer mb-2 text-700">{t('Footer.PrivacyPolicy')}</a>
                                     <a className="line-height-3 text-xl block cursor-pointer text-700">{t('Footer.TermsOfService')}</a>
                                 </div>
+
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
     );
 };

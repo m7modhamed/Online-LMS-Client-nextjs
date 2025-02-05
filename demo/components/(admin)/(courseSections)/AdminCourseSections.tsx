@@ -8,7 +8,7 @@ import { Course, Section } from '@/app/interfaces/interfaces';
 import { useSession } from 'next-auth/react';
 import { CustomSession } from '@/app/interfaces/customSession';
 import { Link } from '@/i18n/routing';
-import { convertSecondsToHoursAndMinutes } from '@/app/utility/utilities';
+import { convertSecondsToHoursAndMinutes } from '@/app/lib/utilities';
 import { LayoutContext } from '@/layout/context/layoutcontext';
 import Loading from '@/app/loading';
 import { useTranslations } from 'next-intl';

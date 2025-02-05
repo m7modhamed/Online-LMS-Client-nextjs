@@ -7,7 +7,6 @@ const Loading = () => {
     return (
         <div
             style={{
-                position: 'fixed',
                 top: 0,
                 left: 0,
                 width: '100%',
@@ -20,18 +19,18 @@ const Loading = () => {
                 zIndex: 9999, // Ensures it appears above everything
             }}
         >
-            <div style={{ display : 'flex' , flexDirection : 'column'}}>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
                 {/* Loader Spinner */}
-               <div style={{ margin : 'auto' }}>
-               <Oval
-                    visible={true}
-                    height={80}
-                    width={80}
-                    color="#4fa94d"
-                    ariaLabel="oval-loading"
-                    strokeWidth={10}
-                />
-               </div>
+                <div style={{ margin: 'auto' }}>
+                    <Oval
+                        visible={true}
+                        height={80}
+                        width={80}
+                        color="#4fa94d"
+                        ariaLabel="oval-loading"
+                        strokeWidth={10}
+                    />
+                </div>
 
                 {/* Loading Text */}
                 <p

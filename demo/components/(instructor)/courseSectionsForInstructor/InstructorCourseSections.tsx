@@ -4,7 +4,7 @@ import { PanelMenu } from 'primereact/panelmenu';
 import { useParams } from 'next/navigation';
 import styles from './style.module.css';
 import { Course, Lesson, Section } from '@/app/interfaces/interfaces';
-import { convertSecondsToHoursAndMinutes } from '@/app/utility/utilities';
+import { convertSecondsToHoursAndMinutes } from '@/app/lib/utilities';
 import { useSession } from 'next-auth/react';
 import AddSectionDialog from '../../AddSectionDialog/AddSectionDialog';
 import AddLessonDialog from '../../AddLessonDialog';

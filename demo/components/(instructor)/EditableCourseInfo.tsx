@@ -1,7 +1,7 @@
 'use client'
 import { CustomSession } from '@/app/interfaces/customSession';
 import { Course } from '@/app/interfaces/interfaces';
-import { convertSecondsToHoursAndMinutes } from '@/app/utility/utilities';
+import { convertSecondsToHoursAndMinutes } from '@/app/lib/utilities';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import { Button } from 'primereact/button';

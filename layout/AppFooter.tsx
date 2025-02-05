@@ -7,11 +7,11 @@ import { useTranslations } from 'next-intl';
 const AppFooter = () => {
     const { layoutConfig } = useContext(LayoutContext);
     const t = useTranslations('appFooter');
-        return (
+    return (
         <div className="layout-footer">
             <img src={`/layout/images/logo-${layoutConfig.colorScheme === 'light' ? 'dark' : 'white'}.svg`} alt="Logo" height="20" className="mr-2" />
             {t('by')}
-            <span className="font-medium ml-2">Xocialive</span>
+            <span className="font-medium ml-2">Xocialive</span>  
         </div>
     );
 };

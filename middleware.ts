@@ -11,7 +11,6 @@ export async function middleware(request: NextRequest) {
   // Run the internationalization middleware first
   const intlResponse = intlMiddleware(request);
 
-
   const { pathname } = request.nextUrl;
 
   // Extract language prefix (e.g., 'ar' or 'en')
@@ -20,7 +19,7 @@ export async function middleware(request: NextRequest) {
 
   // Define protected routes based on language
   const routes = {
-    admin: [`/${langPrefix}/dashboard/admin`],
+    admin: [`/${langPrefix}/dashboard/admin` ],
     instructor: [`/${langPrefix}/dashboard/instructor`],
     student: [`/${langPrefix}/dashboard/student`],
   };
@@ -28,7 +27,8 @@ export async function middleware(request: NextRequest) {
   const protectedRoutes = [...routes.admin, ...routes.instructor, ...routes.student];
 
   // Authentication-related routes
-  const isAuthRoute = pathname.startsWith(`/${langPrefix}/auth`) && !pathname.startsWith(`/${langPrefix}/auth/access`);
+  const isAuthRoute = pathname.startsWith(`/${langPrefix}/auth`) &&
+   !pathname.startsWith(`/${langPrefix}/auth/access`)
   const isProtectedRoute = protectedRoutes.some((route) => pathname.startsWith(route));
 
   // Get session from next-auth

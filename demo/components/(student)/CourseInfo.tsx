@@ -1,6 +1,6 @@
 'use client';
 import { Course } from '@/app/interfaces/interfaces';
-import { convertSecondsToHoursAndMinutes } from '@/app/utility/utilities';
+import { convertSecondsToHoursAndMinutes } from '@/app/lib/utilities';
 import { Chip } from 'primereact/chip';
 import { Tag } from 'primereact/tag';
 import React from 'react';
