@@ -65,7 +65,6 @@ const SignUpPage: React.FC = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const { layoutConfig } = useContext(LayoutContext);
-    const { data, status } = useSession() as { data: CustomSession, status: string };
 
     const t = useTranslations();
     const containerClassName = classNames('surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden', {
@@ -117,14 +116,15 @@ const SignUpPage: React.FC = () => {
             //const response = await signupInstructorAccount(formData);
             const res = await fetch(API_ROUTES.USERS.SIGN_UP_INSTRUCTOR, {
                 headers: {
-                    Authorization: `Bearer ${data.accessToken}`
+                    "Content-Type": "application/json",
                 },
+                method: "POST",
                 body: JSON.stringify(formData)
             });
 
             if (!res.ok) {
                 const error = await res.json();
-                throw new Error(error);
+                throw new Error(error.message);
             }
             const response = await res.text();
 

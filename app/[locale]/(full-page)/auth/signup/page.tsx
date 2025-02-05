@@ -16,7 +16,7 @@ import { useSession } from 'next-auth/react';
 import { CustomSession } from '@/app/interfaces/customSession';
 import { useTranslations } from 'next-intl';
 
-const SignUpPage: React.FC = () => {
+const SignUpPage = () => {
     const initialState: ISignup = {
         firstName: '',
         lastName: '',
@@ -32,8 +32,9 @@ const SignUpPage: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
     const { layoutConfig } = useContext(LayoutContext);
     const toast = useRef<Toast>(null);
-    const { data, status } = useSession() as { data: CustomSession, status: string };
     const t = useTranslations("signup");
+
+
 
     const containerClassName = classNames('surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden', {
         'p-input-filled': layoutConfig.inputStyle === 'filled'
@@ -73,30 +74,27 @@ const SignUpPage: React.FC = () => {
     };
 
     const handleSignUp = async () => {
-        console.log(formData);
         if (errorMessage) {
             return;
         }
         setErrorMessage('');
-
         setIsLoading(true);
-
         try {
             // Validate using Yup schema
             await SignupValidationSchema.validate(formData, { abortEarly: false });
 
             // Call API if validation passes
-            //const response = await signupStudentAccount(formData);
             const res = await fetch(API_ROUTES.USERS.SIGN_UP_STUDENT, {
                 headers: {
-                    Authorization: `Bearer ${data.accessToken}`
+                    "Content-Type": "application/json",
                 },
+                method: "POST",
                 body: JSON.stringify(formData)
             });
-
             if (!res.ok) {
                 const error = await res.json();
-                throw new Error(error);
+                console.log(error)
+                throw new Error(error.message);
             }
             const response = await res.text();
 
@@ -182,7 +180,7 @@ const SignUpPage: React.FC = () => {
                                     name="firstName"
                                     value={formData.firstName}
                                     onChange={handleInputChange}
-                                    placeholder= {t("firstName")}
+                                    placeholder={t("firstName")}
                                     className={`w-full md:w-30rem mb-2 p-inputtext-sm ${formDataError.firstName ? 'p-invalid' : ''}`}
                                     style={{ padding: '1rem' }}
                                 />
@@ -192,7 +190,7 @@ const SignUpPage: React.FC = () => {
                             {/* Last Name */}
                             <div className="mb-1" style={{ display: 'flex', flexDirection: 'column', maxWidth: '30rem' }}>
                                 <label htmlFor="lastName" className="block text-900 text-xl font-medium mb-2">
-                                {t("lastName")}
+                                    {t("lastName")}
                                 </label>
                                 <InputText
                                     id="lastName"
@@ -209,7 +207,7 @@ const SignUpPage: React.FC = () => {
                             {/* Email */}
                             <div className="mb-1" style={{ display: 'flex', flexDirection: 'column', maxWidth: '30rem' }}>
                                 <label htmlFor="email" className="block text-900 text-xl font-medium mb-2">
-                                {t("email")}
+                                    {t("email")}
                                 </label>
                                 <InputText
                                     id="email"
@@ -226,7 +224,7 @@ const SignUpPage: React.FC = () => {
                             {/* Phone Number */}
                             <div className="mb-1" style={{ display: 'flex', flexDirection: 'column', maxWidth: '30rem' }}>
                                 <label htmlFor="phoneNumber" className="block text-900 text-xl font-medium mb-2">
-                                {t("phoneNumber")}
+                                    {t("phoneNumber")}
                                 </label>
                                 <InputText
                                     id="phoneNumber"
@@ -243,7 +241,7 @@ const SignUpPage: React.FC = () => {
                             {/* Password */}
                             <div className="mb-1" style={{ display: 'flex', flexDirection: 'column', maxWidth: '30rem' }}>
                                 <label htmlFor="password" className="block text-900 font-medium text-xl mb-2">
-                                {t("password")}
+                                    {t("password")}
                                 </label>
                                 <Password
                                     inputId="password"
@@ -261,7 +259,7 @@ const SignUpPage: React.FC = () => {
                             {/* Confirm Password */}
                             <div className="mb-1" style={{ display: 'flex', flexDirection: 'column', maxWidth: '30rem' }}>
                                 <label htmlFor="confirmPassword" className="block text-900 font-medium text-xl mb-2">
-                                {t("confirmPassword")}
+                                    {t("confirmPassword")}
                                 </label>
                                 <Password
                                     inputId="confirmPassword"
@@ -281,7 +279,7 @@ const SignUpPage: React.FC = () => {
                         <div className="flex align-items-center justify-content-around mb-5 gap-5">
                             <Link href={'/auth/login'}>
                                 <p className="font-medium no-underline ml-2 text-right cursor-pointer" style={{ color: 'var(--primary-color)' }}>
-                                {t("alreadyHaveAccount")}
+                                    {t("alreadyHaveAccount")}
                                 </p>
                             </Link>
                             <Button label={t("signup")} className="w-full md:w-30rem p-button-sm p-button-rounded p-button-primary" onClick={handleSignUp} disabled={!!errorMessage} loading={isLoading} />

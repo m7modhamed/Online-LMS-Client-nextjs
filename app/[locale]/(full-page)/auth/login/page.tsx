@@ -10,11 +10,12 @@ import { classNames } from 'primereact/utils';
 import { loginValidationSchema } from '../signup/ValidationSchema';
 import { Message } from 'primereact/message';
 import { Toast } from 'primereact/toast';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import { ILogin, ILoginError } from '@/app/interfaces/interfaces';
 import { Link, useRouter } from '@/i18n/routing';
 import ForgotPasswordRequest from '../forgotPasswordRequest/page';
 import { useTranslations } from 'next-intl';
+import { CustomSession } from '@/app/interfaces/customSession';
 
 const LoginPage = () => {
     const [checked, setChecked] = useState(false);
@@ -32,7 +33,7 @@ const LoginPage = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [openResetPasswordDialog, setOpenResetPasswordDialog] = useState<boolean>(false);
     const t = useTranslations("login");
-
+   
     const router = useRouter();
     const containerClassName = classNames('surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden', { 'p-input-filled': layoutConfig.inputStyle === 'filled' });
 

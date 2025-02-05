@@ -41,7 +41,9 @@ export default async function RootLayout({ children, params }: RootLayoutProps) 
                 <body>
                     <NextAuthProvider>
                         <PrimeReactProvider>
-                            <LayoutProvider>{children}</LayoutProvider>
+                            <LayoutProvider>
+                                {children}
+                            </LayoutProvider>
                         </PrimeReactProvider>
                     </NextAuthProvider>
                 </body>

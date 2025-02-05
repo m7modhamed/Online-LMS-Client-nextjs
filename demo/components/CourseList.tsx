@@ -102,9 +102,9 @@ const CourseList = ({ courses }: { courses: Course[] }) => {
                         <div style={{ wordBreak: 'break-all' }} className="mb-2">
                             {description}
                         </div>{' '}
-                        <div className="flex align-items-center mt-3">
+                        <div className="flex align-items-center my-3">
                             <i className="pi pi-book mr-2" />
-                            <span className="font-semibold">{language?.toUpperCase()}</span>
+                            <span className="font-semibold ">{language?.toUpperCase()}</span>
                         </div>
                         {course?.status &&
                             <Tag
@@ -147,7 +147,7 @@ const CourseList = ({ courses }: { courses: Course[] }) => {
     const dataviewGridItem = (course: Course) => {
         return (
             <div className="col-12 lg:col-6 flex mb-6">
-                <div className="card m-3 border-1 surface-border flex flex-column ">
+                <div style={{ width: '520px' }} className="card m-3 border-1 surface-border flex flex-column ">
                     <div className="flex flex-wrap gap-2 align-items-center justify-content-between mb-4">
                         <div className="flex align-items-center">
                             <i className="pi pi-book mr-2" />
