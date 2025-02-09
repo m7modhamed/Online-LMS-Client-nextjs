@@ -63,6 +63,19 @@
         "createAccount": "Create Account",
         "alreadyHaveAccount": "Already have an account? Log in"
     },
+    "profileUpdate": {
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email",
+        "phoneNumber": "Phone Number",
+        "specialization": "Specialization",
+        "aboutMe": "About Me",
+        "linkedinUrl": "LinkedIn URL",
+        "githubUrl": "GitHub URL",
+        "facebookUrl": "Facebook URL",
+        "twitterUrl": "Twitter URL",
+        "update" : "Update Profile"
+    },
     "signup": {
         "createAccount": "Create Your Account",
         "signUpMessage": "Sign up to get started",
@@ -287,6 +300,5 @@
         "confirmationMessage": "Are you sure you want to delete the resource?",
         "noButton": "No",
         "yesButton": "Yes"
-      }
-    
+    }
 }

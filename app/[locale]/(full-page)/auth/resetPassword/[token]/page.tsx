@@ -11,15 +11,12 @@ import { classNames } from 'primereact/utils';
 import { LayoutContext } from '@/layout/context/layoutcontext';
 import { SignupValidationSchema } from '../../signup/ValidationSchema';
 import { API_ROUTES } from '@/app/api/apiRoutes';
-import { useSession } from 'next-auth/react';
-import { CustomSession } from '@/app/interfaces/customSession';
 
 const ResetPassword = () => {
     const { token }: { token: string } = useParams(); // Extract token from the URL
     const router = useRouter();
     const toast = useRef<Toast>(null);
     const [errorMessage, setErrorMessage] = useState('');
-    const { data, status } = useSession() as { data: CustomSession, status: string };
     const [userData, setUserData] = useState({ password: '', confirmPassword: '' });
     const [userDataError, setUserDataError] = useState({ password: '', confirmPassword: '' });
     const [isLoading, setIsLoading] = useState(false);
@@ -46,6 +43,7 @@ const ResetPassword = () => {
     };
 
     const handleSubmit = async () => {
+
         try {
             if (!!errorMessage || !userData.password || !token) {
                 return;
@@ -53,11 +51,9 @@ const ResetPassword = () => {
             setIsLoading(true);
             console.log('before')
             //const response = await resetPassword(token, userData.password);
-            const res = await fetch(API_ROUTES.USERS.RESET_PASSWORD(token, userData.password), {
-                headers: {
-                    Authorization: `Bearer ${data.accessToken}`
-                }
-            });
+            const res = await fetch(API_ROUTES.USERS.RESET_PASSWORD(token, userData.password),
+                { method: "POST" }
+            );
 
             if (!res.ok) {
                 const error = await res.json();
@@ -71,7 +67,7 @@ const ResetPassword = () => {
 
             setTimeout(() => {
                 router.push('/auth/login'); // Navigate to the login page
-            }, 5000);
+            }, 1500);
         } catch (error: any) {
             setIsLoading(false);
             setErrorMessage(error.message);

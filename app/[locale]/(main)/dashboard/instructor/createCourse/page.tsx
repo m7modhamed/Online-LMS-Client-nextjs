@@ -40,7 +40,7 @@ const CreateCourse: React.FC = () => {
         language: null,
         description: ''
     };
-
+    
     const [courseData, setCourseData] = useState<ICourseData>(initialCourse);
     const { data, status } = useSession() as { data: CustomSession; status: string };
     const [prerequisiteInput, setPrerequisiteInput] = useState<string>('');
@@ -49,7 +49,8 @@ const CreateCourse: React.FC = () => {
     const [categories, setCategories] = useState<{ label: string; value: string }[]>([]); // State to store categories
     const router = useRouter();
     const t = useTranslations('createCoursePage'); // Get translations
-
+    const toast = useRef<Toast>(null);
+    
     const [courseDataError, setCourseDataError] = useState<ICourseDataError>({
         category: '',
         prerequisites: '',
@@ -266,7 +267,6 @@ const CreateCourse: React.FC = () => {
         onDrop,
         maxSize: 5000000
     });
-    const toast = useRef<Toast>(null);
 
     const showError = (title: string, desc: string) => {
         toast.current?.show({

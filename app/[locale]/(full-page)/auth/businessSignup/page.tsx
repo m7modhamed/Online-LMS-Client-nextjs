@@ -12,37 +12,10 @@ import { BusinessSignupValidationSchema } from '../signup/ValidationSchema';
 import { useTranslations } from 'next-intl';
 import { API_ROUTES } from '@/app/api/apiRoutes';
 import { Link } from '@/i18n/routing';
-
-const SignUpPage: React.FC = () => {
-    interface IFormData {
-        firstName: string;
-        lastName: string;
-        email: string;
-        password: string;
-        confirmPassword: string;
-        phoneNumber: string;
-        specialization: string;
-        aboutMe: string;
-        linkedinUrl: string;
-        githubUrl: string;
-        facebookUrl: string;
-        twitterUrl: string;
-    }
-    interface IFormDataError {
-        firstName?: string;
-        lastName?: string;
-        email?: string;
-        password?: string;
-        phoneNumber?: string;
-        specialization?: string;
-        aboutMe?: string;
-        linkedinUrl?: string;
-        githubUrl?: string;
-        facebookUrl?: string;
-        twitterUrl?: string;
-        confirmPassword?: string;
-    }
-    const initialState: IFormData = {
+import { IBusinessSignUp, IBusinessSignUpError } from '@/app/interfaces/interfaces';
+const BusinessSignUpPage: React.FC = () => {
+   
+    const initialState = {
         firstName: '',
         lastName: '',
         email: '',
@@ -54,11 +27,11 @@ const SignUpPage: React.FC = () => {
         linkedinUrl: '',
         githubUrl: '',
         facebookUrl: '',
-        twitterUrl: ''
+        twitterUrl: '',
     };
     const toast = useRef<Toast>(null);
-    const [formData, setFormData] = useState<IFormData>(initialState);
-    const [formDataError, setFormDataError] = useState<IFormDataError>(initialState);
+    const [formData, setFormData] = useState<IBusinessSignUp>(initialState);
+    const [formDataError, setFormDataError] = useState<IBusinessSignUpError>(initialState);
     const [errorMessage, setErrorMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const { layoutConfig } = useContext(LayoutContext);
@@ -134,10 +107,10 @@ const SignUpPage: React.FC = () => {
 
             // If it's a Yup validation error
             if (error.name === 'ValidationError') {
-                const errors: IFormDataError = {};
+                const errors: IBusinessSignUpError = {};
                 error.inner.forEach((err: any) => {
                     if (err.path) {
-                        errors[err.path as keyof IFormDataError] = err.message;
+                        errors[err.path as keyof IBusinessSignUpError] = err.message;
                     }
                 });
                 setFormDataError(errors);
@@ -386,4 +359,4 @@ const SignUpPage: React.FC = () => {
     );
 };
 
-export default SignUpPage;
+export default BusinessSignUpPage;

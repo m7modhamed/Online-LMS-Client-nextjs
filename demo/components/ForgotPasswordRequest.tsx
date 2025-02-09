@@ -1,30 +1,24 @@
 'use client';
-import React, { useState } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
-import { SignupValidationSchema } from '../signup/ValidationSchema';
 import { Message } from 'primereact/message';
 import { API_ROUTES } from '@/app/api/apiRoutes';
-import { useSession } from 'next-auth/react';
-import { CustomSession } from '@/app/interfaces/customSession';
 import { Dialog } from 'primereact/dialog';
+import { SignupValidationSchema } from '@/app/[locale]/(full-page)/auth/signup/ValidationSchema';
 
 
 
-export default function ForgotPasswordRequest({ open, setOpen } : any) {
+export default function ForgotPasswordRequest({ open, setOpen }: { open: boolean; setOpen: Dispatch<SetStateAction<boolean>>; }) {
     const [email, setEmail] = useState('');
     const [emailError, setEmailError] = useState('');
     const [loading, setLoading] = useState(false);
-    const { data, status } = useSession() as { data: CustomSession, status: string };
 
     const toast = React.useRef<Toast>(null);
 
     const handleSubmit = async () => {
         try {
-            if (emailError) {
-                return;
-            }
 
             SignupValidationSchema.validateAt('email', { email: email })
                 .then(() => {
@@ -32,14 +26,14 @@ export default function ForgotPasswordRequest({ open, setOpen } : any) {
                 })
                 .catch((err) => {
                     setEmailError(err.message);
+                    return;
                 });
 
+            if (emailError || !email) {
+                return;
+            }
             setLoading(true);
-            const res = await fetch(API_ROUTES.USERS.FORGOT_PASSWORD_REQUEST(email), {
-                headers: {
-                    Authorization: `Bearer ${data.accessToken}`
-                }
-            });
+            const res = await fetch(API_ROUTES.USERS.FORGOT_PASSWORD_REQUEST(email));
 
             if (!res.ok) {
                 const error = await res.json();
@@ -52,14 +46,14 @@ export default function ForgotPasswordRequest({ open, setOpen } : any) {
             console.log(response);
             setTimeout(() => {
                 setOpen(false);
-            }, 3000);
+            }, 2000);
         } catch (error: any) {
             setLoading(false);
             console.log(error);
             setEmailError(error.message);
             showError('Error', error.message);
         }
-        // setOpen(false);
+
     };
 
     const showError = (title: string, desc: string) => {

@@ -51,6 +51,9 @@ export const API_ROUTES = {
         VERIFY_ACCOUNT: (token: string) => `${API_BASE_URL}/verifyEmail?token=${token}`,
         FORGOT_PASSWORD_REQUEST: (email: string) => `${API_BASE_URL}/forgot-password-request?email=${email}`,
         RESET_PASSWORD: (token: string, password: string) => `${API_BASE_URL}/resetPassword?token=${token}&password=${password}`,
-
+        GET_INSTRUCTOR_INFO: (instructorId: string) => `${API_BASE_URL}/instructors/${instructorId}`,
+        GET_STUDENT_INFO: (studentId: string) => `${API_BASE_URL}/students/${studentId}`,
+        GET_ADMIN_INFO: (adminId: string) => `${API_BASE_URL}/admins/${adminId}`,
+        UPDATE_INSTRUCTOR_INFO: (instructorId: string) => `${API_BASE_URL}/instructors/${instructorId}/update`,
     },
 };

@@ -23,7 +23,6 @@ export const authOptions: AuthOptions = {
 
                 const data = await res.json();
 
-                console.log('data in next auth : ', data);
                 if (res.ok && data.token) {
                     return {
                         id: '',

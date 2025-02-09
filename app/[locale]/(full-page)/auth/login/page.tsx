@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 import { useSearchParams } from 'next/navigation';
-import React, { useContext,  useRef, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { Button } from 'primereact/button';
 import { Password } from 'primereact/password';
 import { LayoutContext } from '../../../../../layout/context/layoutcontext';
@@ -13,8 +13,8 @@ import { Toast } from 'primereact/toast';
 import { signIn } from 'next-auth/react';
 import { ILogin, ILoginError } from '@/app/interfaces/interfaces';
 import { Link, useRouter } from '@/i18n/routing';
-import ForgotPasswordRequest from '../forgotPasswordRequest/page';
 import { useTranslations } from 'next-intl';
+import ForgotPasswordRequest from '@/demo/components/ForgotPasswordRequest';
 
 const LoginPage = () => {
     const { layoutConfig } = useContext(LayoutContext);
@@ -24,14 +24,14 @@ const LoginPage = () => {
     };
     const searchParams = useSearchParams();
     const message = searchParams.get('error');
-    //console.log('error' , message)
+
     const [userData, setUserData] = useState<ILogin>(initialState);
     const [errorMessage, setErrorMessage] = useState('');
     const [userDataError, setUserDataError] = useState<ILoginError>();
     const [isLoading, setIsLoading] = useState(false);
     const [openResetPasswordDialog, setOpenResetPasswordDialog] = useState<boolean>(false);
     const t = useTranslations("login");
-   
+
     const router = useRouter();
     const containerClassName = classNames('surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden', { 'p-input-filled': layoutConfig.inputStyle === 'filled' });
 
@@ -126,7 +126,7 @@ const LoginPage = () => {
     return (
         <div className={containerClassName}>
             <Toast ref={toast} />
-            {openResetPasswordDialog && <ForgotPasswordRequest openResetPasswordDialog={openResetPasswordDialog} setOpenResetPasswordDialog={setOpenResetPasswordDialog} />}
+            {openResetPasswordDialog && <ForgotPasswordRequest open={openResetPasswordDialog} setOpen={setOpenResetPasswordDialog} />}
             <div className="flex flex-column align-items-center justify-content-center">
                 <div
                     style={{

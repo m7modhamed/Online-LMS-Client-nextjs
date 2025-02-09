@@ -1,8 +1,6 @@
 'use client';
 
 import { API_ROUTES } from '@/app/api/apiRoutes';
-import { CustomSession } from '@/app/interfaces/customSession';
-import { useSession } from 'next-auth/react';
 import { useParams } from 'next/navigation';
 import { useRouter } from '@/i18n/routing';
 import { Button } from 'primereact/button';
@@ -15,7 +13,6 @@ const VerifyEmail = () => {
   const [verificationStatus, setVerificationStatus] = useState('');
   const toast = useRef<Toast>(null);
   const router = useRouter();
-  const { data, status } = useSession() as { data: CustomSession, status: string };
 
   const handleVerification = async () => {
     if (!token) {
@@ -30,9 +27,7 @@ const VerifyEmail = () => {
       // Simulate API call to verify email
       //const response = await verifyAccount(token);
       const res = await fetch(API_ROUTES.USERS.VERIFY_ACCOUNT(token), {
-        headers: {
-          Authorization: `Bearer ${data.accessToken}`
-        }
+       
       });
 
       if (!res.ok) {

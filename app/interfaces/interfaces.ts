@@ -16,6 +16,38 @@ export interface Instructor {
   lastUpdated: [number, number, number, number, number, number, number];
 }
 
+export interface IBusinessSignUp {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password?: string;
+  confirmPassword?: string;
+  phoneNumber: string;
+  specialization: string;
+  aboutMe: string;
+  linkedinUrl: string;
+  githubUrl: string;
+  facebookUrl: string;
+  twitterUrl: string;
+  profileImage?: Image;
+
+}
+export interface IBusinessSignUpError {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  password?: string;
+  phoneNumber?: string;
+  specialization?: string;
+  aboutMe?: string;
+  linkedinUrl?: string;
+  githubUrl?: string;
+  facebookUrl?: string;
+  twitterUrl?: string;
+  confirmPassword?: string;
+  profileImage?: string;
+}
+
 // Define Category type
 export interface Category {
   id: number;
@@ -73,7 +105,7 @@ export interface Course {
 }
 
 export interface Image {
-  id: Number;
+  id?: Number;
   name: string;
   type: string;
   imageUrl: string;
@@ -118,7 +150,7 @@ export interface IUser {
   isActive: boolean,
   isBlocked: boolean,
   image: string,
-  exp : any
+  exp: any
 }
 
 export interface IDashboardInfo {

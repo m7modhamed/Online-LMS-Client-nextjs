@@ -63,6 +63,19 @@
         "createAccount": "إنشاء حساب",
         "alreadyHaveAccount": "هل لديك حساب؟ تسجيل الدخول"
     },
+    "profileUpdate": {
+        "firstName": "الاسم الأول",
+        "lastName": "اسم العائلة",
+        "email": "البريد الإلكتروني",
+        "phoneNumber": "رقم الهاتف",
+        "specialization": "التخصص",
+        "aboutMe": "عنّي",
+        "linkedinUrl": "رابط لينكد إن",
+        "githubUrl": "رابط جيت هاب",
+        "facebookUrl": "رابط فيسبوك",
+        "twitterUrl": "رابط تويتر",
+        "update": "تحديث الملف الشخصي"
+    },
     "signup": {
         "createAccount": "إنشاء حسابك",
         "signUpMessage": "سجل للبدء",
@@ -287,6 +300,5 @@
         "confirmationMessage": "هل أنت متأكد أنك تريد حذف المورد؟",
         "noButton": "لا",
         "yesButton": "نعم"
-      }
-    
+    }
 }
