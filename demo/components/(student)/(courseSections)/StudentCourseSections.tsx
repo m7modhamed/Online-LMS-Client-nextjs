@@ -11,7 +11,6 @@ import EnrollCourse from '../enrollCourse';
 import { Link } from '@/i18n/routing';
 import { convertSecondsToHoursAndMinutes } from '@/app/lib/utilities';
 import { LayoutContext } from '@/layout/context/layoutcontext';
-import { CustomSession } from '@/app/interfaces/customSession';
 import Loading from '@/app/loading';
 import { API_ROUTES } from '@/app/api/apiRoutes';
 import { useTranslations } from 'use-intl';
@@ -19,7 +18,7 @@ import { useTranslations } from 'use-intl';
 export default function StudentCourseSections({ course }: { course: Course | undefined }) {
     const [sections, setSections] = useState<Section[]>([]);
     const { courseId }: { courseId: string } = useParams();
-    const { data, status } = useSession() as { data: CustomSession; status: string };
+    const { data, status } = useSession();
     const user = data?.user;
     const [isEnrolled, setIsEnrolled] = useState(true);
     const router = useRouter();

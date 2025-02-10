@@ -74,7 +74,8 @@
         "githubUrl": "GitHub URL",
         "facebookUrl": "Facebook URL",
         "twitterUrl": "Twitter URL",
-        "update" : "Update Profile"
+        "update": "Update Profile",
+        "profilePhoto": " profile Photo "
     },
     "signup": {
         "createAccount": "Create Your Account",

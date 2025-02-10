@@ -4,6 +4,7 @@ import { Link } from '@/i18n/routing';
 import { Avatar } from 'primereact/avatar';
 import React from 'react';
 import { useTranslations } from 'next-intl';
+import { getImageUrl } from '@/app/lib/utilities';
 
 const InstructorInfo = ({ instructor }: { instructor: Instructor }) => {
     const t = useTranslations('instructorInfo');
@@ -14,7 +15,7 @@ const InstructorInfo = ({ instructor }: { instructor: Instructor }) => {
                 <div className="card">
                     <div className="surface-0 p-4">
                         <div className="flex text-center align-items-center gap-3 font-medium text-3xl text-900 mb-3">
-                            <Avatar image={instructor?.profileImage?.imageUrl} size="xlarge" shape="circle" />
+                            <Avatar image={getImageUrl(instructor?.profileImage?.imageUrl)} size="xlarge" shape="circle" />
                             {instructor.firstName} {instructor.lastName}
                         </div>
                         <div className="text-500 mb-5">{instructor.aboutMe}</div>

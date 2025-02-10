@@ -74,7 +74,8 @@
         "githubUrl": "رابط جيت هاب",
         "facebookUrl": "رابط فيسبوك",
         "twitterUrl": "رابط تويتر",
-        "update": "تحديث الملف الشخصي"
+        "update": "تحديث الملف الشخصي",
+        "profilePhoto": " الصورة الشخصيه "
     },
     "signup": {
         "createAccount": "إنشاء حسابك",

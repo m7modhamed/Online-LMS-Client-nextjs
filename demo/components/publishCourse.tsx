@@ -7,7 +7,6 @@ import { useRouter } from '@/i18n/routing';
 import { Button } from 'primereact/button';
 import { API_ROUTES } from '@/app/api/apiRoutes';
 import { useSession } from 'next-auth/react';
-import { CustomSession } from '@/app/interfaces/customSession';
 import Loading from '@/app/loading';
 import { useTranslations } from 'next-intl';
 
@@ -17,7 +16,7 @@ const PublishCourse = ({ course }: { course: Course | undefined }) => {
     const t = useTranslations('publishCoursePage'); // Access translation keys
     const router = useRouter();
     const toast = useRef<Toast>(null);
-    const { data, status } = useSession() as { data: CustomSession; status: string };
+    const { data, status } = useSession();
     const showSuccess = (title: string, desc: string) => {
         toast.current?.show({
             severity: 'success',
@@ -41,8 +40,10 @@ const PublishCourse = ({ course }: { course: Course | undefined }) => {
     };
 
     const handlePublish = async (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+        if (!data) {
+            return;
+        }
         setLoading(true);
-
         try {
             setLoading(true);
 
@@ -69,8 +70,9 @@ const PublishCourse = ({ course }: { course: Course | undefined }) => {
     };
 
     const handleArchive = async () => {
-        setLoading(true);
-
+        if (!data) {
+            return;
+        }
         try {
             setLoading(true);
 
@@ -98,6 +100,9 @@ const PublishCourse = ({ course }: { course: Course | undefined }) => {
     };
 
     const handleDelete = async () => {
+        if (!data) {
+            return;
+        }
         try {
             setLoading(true);
             const res = await fetch(API_ROUTES.COURSES.DELETE_COURSE(String(course?.id)), {

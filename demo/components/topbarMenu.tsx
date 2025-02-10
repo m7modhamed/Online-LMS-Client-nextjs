@@ -1,6 +1,6 @@
-import { CustomSession } from '@/app/interfaces/customSession';
 import { getRouteBasedRole } from '@/app/lib/utilities';
 import Loading from '@/app/loading';
+import { useRouter } from '@/i18n/routing';
 import { signOut, useSession } from 'next-auth/react';
 import { useLocale, useTranslations } from 'next-intl';
 import { Menubar } from 'primereact/menubar';
@@ -9,10 +9,10 @@ import React from 'react';
 const TopbarMenu = () => {
     const t = useTranslations('topbarMenu');
     const locale = useLocale();
+    const router = useRouter();
+    const { data, status } = useSession();
 
-    const { data, status } = useSession() as { data: CustomSession; status: string };
-
-    if (status === 'loading') {
+    if (status === 'loading' || !data) {
         return;
     }
     const items = [
@@ -23,7 +23,9 @@ const TopbarMenu = () => {
                 {
                     label: t('profile'),
                     icon: 'pi pi-user-edit',
-                    url: `/${locale}/${getRouteBasedRole(data.user?.role)}/update`
+                    command: () => {
+                        router.push(`/${getRouteBasedRole(data.user?.role)}/update`)
+                    }
                 },
                 {
                     label: t('logout'),

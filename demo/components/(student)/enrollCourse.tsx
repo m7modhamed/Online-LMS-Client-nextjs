@@ -1,6 +1,5 @@
 'use client';
 import { API_ROUTES } from '@/app/api/apiRoutes';
-import { CustomSession } from '@/app/interfaces/customSession';
 import { Typography } from '@mui/material';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
@@ -10,7 +9,7 @@ import { Toast } from 'primereact/toast';
 import React, { useRef, useState } from 'react';
 
 const EnrollCourse = ({ courseId }: { courseId: string }) => {
-    const { data, status } = useSession() as { data: CustomSession; status: string };
+    const { data, status } = useSession();
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const toast = useRef<Toast>(null);

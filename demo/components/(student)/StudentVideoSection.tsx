@@ -7,7 +7,6 @@ import { Tooltip } from 'primereact/tooltip';
 import { API_ROUTES } from '@/app/api/apiRoutes';
 import { useSession } from 'next-auth/react';
 import Loading from '@/app/loading';
-import { CustomSession } from '@/app/interfaces/customSession';
 import { useTranslations } from 'next-intl';
 
 const StudentVideoSection = ({ lessonId, studentId }: { lessonId: string; studentId: string | undefined }) => {
@@ -15,7 +14,7 @@ const StudentVideoSection = ({ lessonId, studentId }: { lessonId: string; studen
     const [additionalFiles, setAdditionalFiles] = useState<{ name: string; url: string }[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const { data, status } = useSession() as { data: CustomSession; status: string };
+    const { data, status } = useSession();
     const t = useTranslations('studentVideoSection');
 
     useEffect(() => {

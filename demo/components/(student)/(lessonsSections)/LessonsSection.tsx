@@ -8,14 +8,13 @@ import { Course, Section } from '@/app/interfaces/interfaces';
 import { useSession } from 'next-auth/react';
 import { convertSecondsToHoursAndMinutes } from '@/app/lib/utilities';
 import { LayoutContext } from '@/layout/context/layoutcontext';
-import { CustomSession } from '@/app/interfaces/customSession';
 import { useTranslations } from 'use-intl';
 import { Link } from '@/i18n/routing';
 
 export default function LessonsSection({ course }: { course: Course | undefined }) {
     const [sections, setSections] = useState<Section[]>([]);
     const param = useParams();
-    const { data, status } = useSession() as { data: CustomSession; status: string };
+    const { data, status } = useSession();
     const user = data?.user;
     const { layoutConfig } = useContext(LayoutContext);
     const t = useTranslations('studentCourseSections');

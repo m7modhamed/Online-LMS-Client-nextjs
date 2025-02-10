@@ -3,13 +3,12 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/lib/nextAuth';
 import { API_ROUTES } from '@/app/api/apiRoutes';
 import { Course } from '@/app/interfaces/interfaces';
-import { CustomSession } from '@/app/interfaces/customSession';
 import { getTranslations } from 'next-intl/server';
 import CourseList from '@/demo/components/CourseList';
 
 export default async function MyCourses() {
     const t = await getTranslations('instructorCoursesPage'); // Get translations
-    const session: CustomSession | null = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions);
     let courses: Course[] = [];
 
     try {

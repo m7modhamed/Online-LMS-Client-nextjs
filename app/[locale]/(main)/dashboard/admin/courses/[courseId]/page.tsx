@@ -5,9 +5,9 @@ import { Course } from '@/app/interfaces/interfaces';
 import { authOptions } from '@/app/lib/nextAuth';
 import { getServerSession } from 'next-auth';
 import React from 'react';
-import { CustomSession } from '@/app/interfaces/customSession';
 import { getTranslations } from 'next-intl/server';
 import EditableCourseInfo from '@/demo/components/(instructor)/EditableCourseInfo';
+import InstructorInfo from '@/demo/components/InstructorInfo';
 
 interface PageProps {
     params: Promise<{ courseId: string }>;  // The params are now a Promise.
@@ -17,7 +17,7 @@ const AdminCourse = async ({ params }: PageProps) => {
     const { courseId } = await params;  // Await the Promise to get the courseId.
     const t = await getTranslations('adminCoursePage');
 
-    const session: CustomSession | null = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions);
     if (!session) {
         return;
     }
@@ -57,6 +57,7 @@ const AdminCourse = async ({ params }: PageProps) => {
                     <p>{t('description')}</p>
                 </div>
             </div>
+            <InstructorInfo instructor={course.instructor}/>
             <EditableCourseInfo course={course} />
             <AdminCourseSections course={course} />
             {course.status === 'IN_REVIEW' && <PublishSection course={course} />}

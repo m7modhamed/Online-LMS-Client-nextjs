@@ -123,11 +123,12 @@ const StudentCourseList = ({ courses }: { courses: Course[] }) => {
 
     const dataviewGridItem = (course: Course) => {
         return (
-            <div className="col-12 lg:col-6 flex mb-6">
-                <div style={{width : '520px'}} className="card m-3 border-1 surface-border flex flex-column ">
-                    <div className="flex flex-wrap gap-2 align-items-center justify-content-between mb-4">
+            <div className="col-12 lg:col-4">
+                <div className="card m-3 border-1 surface-border">
+                    <div className="flex flex-wrap gap-2 align-items-center justify-content-between mb-2">
                         <div className="flex align-items-center">
-                            <i className="pi pi-book mr-2" />
+                            <i className="pi pi-tag mr-2" />
+
                             <span className="font-semibold">{course?.language.toUpperCase()}</span>
                         </div>
                         <span className={`course-badge status-available`}>{course?.enrolledStudentsNumber?.toString()} {t('students')}</span> {/* Course status */}

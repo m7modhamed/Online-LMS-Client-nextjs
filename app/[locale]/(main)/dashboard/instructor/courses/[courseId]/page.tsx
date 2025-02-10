@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { API_ROUTES } from '@/app/api/apiRoutes';
 import { Course } from '@/app/interfaces/interfaces';
-import { CustomSession } from '@/app/interfaces/customSession';
 import { useParams } from 'next/navigation';
 import EditableCourseInfo from '@/demo/components/(instructor)/EditableCourseInfo';
 import { InstructorCourseSections } from '@/demo/components/(instructor)/courseSectionsForInstructor/InstructorCourseSections';
@@ -13,7 +12,7 @@ import { useRouter } from '@/i18n/routing';
 
 //{params} : {params : Promise<{courseId : string}>}
 const InstructorCourse = () => {
-    const { data, status } = useSession() as { data: CustomSession, status: string };
+    const { data, status } = useSession();
     const [course, setCourse] = useState<Course | null>(null);
     const [loading, setLoading] = useState(true);
     const { courseId }: { courseId: string } = useParams();

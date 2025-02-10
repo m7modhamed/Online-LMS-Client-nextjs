@@ -1,5 +1,4 @@
 'use client'
-import { CustomSession } from '@/app/interfaces/customSession';
 import { Course } from '@/app/interfaces/interfaces';
 import { convertSecondsToHoursAndMinutes } from '@/app/lib/utilities';
 import { useSession } from 'next-auth/react';
@@ -11,7 +10,7 @@ import React from 'react';
 
 const EditableCourseInfo = ({ course }: { course: Course | undefined }) => {
     const t = useTranslations('editableCoursePage'); // Access translation keys
-    const { data, status } = useSession() as { data: CustomSession, status: string };
+    const { data, status } = useSession();
     if (!data) {
         return;
     }

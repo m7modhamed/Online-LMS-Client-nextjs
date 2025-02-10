@@ -37,18 +37,26 @@ export const authOptions: AuthOptions = {
         })
     ],
     callbacks: {
-        async jwt({ token, user }: any) {
+        async jwt({ token, user, trigger, session }: any) {
             if (user) {
                 token.accessToken = user.token;
                 token.sub = decodeToken(token.accessToken)?.exp;
+                token.user = decodeToken(token.accessToken);
+            }
+            if (trigger === 'update') {               
+                return {
+                    ...token,
+                    user: {
+                        ...session.user,
+                    }
+                }
             }
             return token;
         },
         async session({ session, token }: any) {
-            const decodedToken = decodeToken(token.accessToken);
+            //const decodedToken = decodeToken(token.accessToken);
             session.accessToken = token.accessToken;
-            session.user = decodedToken;
-
+            session.user = token.user;
             return session;
         }
     },

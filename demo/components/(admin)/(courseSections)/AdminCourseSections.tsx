@@ -6,7 +6,6 @@ import { useParams } from 'next/navigation';
 import styles from './style.module.css';
 import { Course, Section } from '@/app/interfaces/interfaces';
 import { useSession } from 'next-auth/react';
-import { CustomSession } from '@/app/interfaces/customSession';
 import { Link } from '@/i18n/routing';
 import { convertSecondsToHoursAndMinutes } from '@/app/lib/utilities';
 import { LayoutContext } from '@/layout/context/layoutcontext';
@@ -17,7 +16,7 @@ export default function AdminCourseSections({ course }: { course: Course | undef
     const [sections, setSections] = useState<Section[]>([]);
     const param = useParams();
     const { layoutConfig } = useContext(LayoutContext);
-    const { data, status } = useSession() as { data: CustomSession; status: string };
+    const { data, status } = useSession();
     const user = data?.user;
     const [loading, setLoading] = useState(true);
         const t = useTranslations('instructorCourseSections');

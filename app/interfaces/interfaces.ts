@@ -60,9 +60,11 @@ export interface ISignup {
   firstName: string;
   lastName: string;
   email: string;
-  password: string;
+  password?: string;
   phoneNumber: string;
-  confirmPassword: string;
+  confirmPassword?: string;
+  profileImage?: Image;
+
 }
 
 export interface ISignupError {
@@ -72,6 +74,8 @@ export interface ISignupError {
   password?: string;
   phoneNumber?: string;
   confirmPassword?: string;
+  profileImage?: string;
+
 }
 
 export interface ILogin {

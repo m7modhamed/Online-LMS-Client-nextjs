@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import React from 'react';
 import { API_ROUTES } from '@/app/api/apiRoutes';
-import { CustomSession } from '@/app/interfaces/customSession';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/lib/nextAuth';
 import { getTranslations } from 'next-intl/server';
@@ -11,7 +10,7 @@ const StudentDashboard = async () => {
 
 
     const t = await getTranslations('statisticsDashboard')
-    const session = await getServerSession(authOptions) as CustomSession;
+    const session = await getServerSession(authOptions);
     if (!session || !session?.user?.id) {
         return;
     }

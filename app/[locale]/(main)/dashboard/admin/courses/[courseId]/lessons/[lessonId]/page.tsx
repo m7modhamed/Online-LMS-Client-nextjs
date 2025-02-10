@@ -7,12 +7,11 @@ import { useSession } from 'next-auth/react';
 import { Tooltip } from 'primereact/tooltip';
 import Loading from '@/app/loading';
 import { useParams } from 'next/navigation';
-import { CustomSession } from '@/app/interfaces/customSession';
 import { IFile } from '@/app/interfaces/interfaces';
 import { useTranslations } from 'next-intl';
 
 const LessonContent = () => {
-    const { data, status } = useSession() as { data: CustomSession, status: string };
+    const { data, status } = useSession();
     const [lesson, setLesson] = useState<any>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const { courseId, lessonId }: { courseId: string, lessonId: string } = useParams();

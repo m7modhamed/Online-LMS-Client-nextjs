@@ -5,7 +5,6 @@ import { Course } from '@/app/interfaces/interfaces';
 import { authOptions } from '@/app/lib/nextAuth';
 import { getServerSession } from 'next-auth';
 import React from 'react';
-import { CustomSession } from '@/app/interfaces/customSession';
 import { getTranslations } from 'next-intl/server';
 
 interface PageProps {
@@ -14,7 +13,7 @@ interface PageProps {
 
 const studentLesson = async ({ params }: PageProps) => {
     const { courseId, lessonId } = await params;
-    const session: CustomSession | null = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions);
     const user = session?.user;
     const t = await getTranslations('studentLesson');
     let course: Course | null = null;

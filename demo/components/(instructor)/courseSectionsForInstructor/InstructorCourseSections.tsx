@@ -10,7 +10,6 @@ import AddSectionDialog from '../../AddSectionDialog/AddSectionDialog';
 import AddLessonDialog from '../../AddLessonDialog';
 import { Link } from '@/i18n/routing';
 import { LayoutContext } from '@/layout/context/layoutcontext';
-import { CustomSession } from '@/app/interfaces/customSession';
 import Loading from '@/app/loading';
 import { API_ROUTES } from '@/app/api/apiRoutes';
 import { Button } from 'primereact/button';
@@ -21,7 +20,7 @@ export function InstructorCourseSections({ course }: { course: Course | undefine
     const [openLessonDialog, setOpenLessonDialog] = React.useState(false);
     const [sectionId, setSectionId] = useState<Number>(0);
     const [sections, setSections] = useState<Section[]>([]);
-    const { data, status } = useSession() as { data: CustomSession, status: string };
+    const { data, status } = useSession();
     const user = data?.user;
     const { layoutConfig } = useContext(LayoutContext);
     const [loading, setLoading] = useState(true);
@@ -42,6 +41,9 @@ export function InstructorCourseSections({ course }: { course: Course | undefine
     const handleAddSection = () => setOpenSectionDialog(true);
 
     const addSection = async (newSection: Section) => {
+        if(!data){
+            return;
+        }
         try {
             newSection.position = sections.length > 0 ? Number(sections[sections.length - 1].position) + 1 : 1;
 
@@ -66,8 +68,9 @@ export function InstructorCourseSections({ course }: { course: Course | undefine
 
     const addLesson = async (newLesson: Lesson, sectionId: Number) => {
         try {
-            console.log(newLesson)
-            console.log(sectionId)
+            if(!data){
+                return;
+            }
             const targetSection = sections.find((section) => section.id === sectionId);
             if (!targetSection) return;
 

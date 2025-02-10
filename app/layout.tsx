@@ -31,12 +31,13 @@ export default async function RootLayout({ children, params }: RootLayoutProps) 
     // side is the easiest way to get started
     const messages = await getMessages({ locale });
 
+    const link = (<link id="theme-css" href={`/themes/lara-light-indigo/theme.css`} rel="stylesheet"></link>)
 
     return (
         <NextIntlClientProvider messages={messages}>
             <ClientLocaleWrapper>
                 <head>
-                    <link id="theme-css" href={`/themes/lara-light-indigo/theme.css`} rel="stylesheet"></link>
+                    {link}
                 </head>
                 <body>
                     <NextAuthProvider>

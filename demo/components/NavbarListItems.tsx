@@ -1,5 +1,4 @@
 'use client'
-import { CustomSession } from '@/app/interfaces/customSession'
 import { getRouteBasedRole } from '@/app/lib/utilities'
 import { useSession } from 'next-auth/react'
 import { useLocale, useTranslations } from 'next-intl'
@@ -9,7 +8,7 @@ import React, { Dispatch, SetStateAction } from 'react'
 
 const NavbarListItems = ({ setIsHidden }: { setIsHidden: Dispatch<SetStateAction<boolean>> }) => {
 
-    const { data, status } = useSession() as { data: CustomSession; status: string };
+    const { data, status } = useSession();
     const locale = useLocale();
     const t = useTranslations('MainNavbar');
 

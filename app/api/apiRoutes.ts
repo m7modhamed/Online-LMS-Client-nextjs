@@ -55,5 +55,7 @@ export const API_ROUTES = {
         GET_STUDENT_INFO: (studentId: string) => `${API_BASE_URL}/students/${studentId}`,
         GET_ADMIN_INFO: (adminId: string) => `${API_BASE_URL}/admins/${adminId}`,
         UPDATE_INSTRUCTOR_INFO: (instructorId: string) => `${API_BASE_URL}/instructors/${instructorId}/update`,
+        UPDATE_STUDENT_INFO: (studentId: string) => `${API_BASE_URL}/students/${studentId}/update`,
+        UPDATE_ADMIN_INFO: (adminId: string) => `${API_BASE_URL}/admins/${adminId}/update`,
     },
 };

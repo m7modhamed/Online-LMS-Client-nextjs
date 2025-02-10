@@ -1,5 +1,4 @@
 import { API_ROUTES } from '@/app/api/apiRoutes';
-import { CustomSession } from '@/app/interfaces/customSession';
 import { authOptions } from '@/app/lib/nextAuth';
 import { getServerSession } from 'next-auth';
 import { getTranslations } from 'next-intl/server';
@@ -7,7 +6,7 @@ import React from 'react';
 
 const StatisticsDashboard = async () => {
     const t = await getTranslations('statisticsDashboard')
-    const session = await getServerSession(authOptions) as CustomSession;
+    const session = await getServerSession(authOptions);
     if (!session || !session?.user?.id) {
         return;
     }

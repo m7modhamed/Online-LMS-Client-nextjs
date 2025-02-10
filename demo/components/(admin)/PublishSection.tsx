@@ -6,16 +6,18 @@ import { useRouter } from '@/i18n/routing';
 import { Toast } from 'primereact/toast';
 import { API_ROUTES } from '@/app/api/apiRoutes';
 import { useSession } from 'next-auth/react';
-import { CustomSession } from '@/app/interfaces/customSession';
 import { useTranslations } from 'next-intl';
 
 const PublishSection = ({ course }: { course: Course }) => {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
-    const { data, status } = useSession() as { data: CustomSession; status: string };
+    const { data, status } = useSession();
     const t = useTranslations('publishSection');
 
     const handlePublish = async (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+        if (!data) {
+            return;
+        }
         try {
             setLoading(true);
 
@@ -65,15 +67,15 @@ const PublishSection = ({ course }: { course: Course }) => {
     };
     return (
         <div className="col-12">
-        <Toast ref={toast} />
+            <Toast ref={toast} />
 
-        <div className="publish-section">
-            <div className="card">
-                <h4 className='my-6'>{t('title')}</h4>
-                <Button className='w-2 ' loading={loading} label={t('publishButtonLabel')} severity="success" onClick={handlePublish} />
+            <div className="publish-section">
+                <div className="card">
+                    <h4 className='my-6'>{t('title')}</h4>
+                    <Button className='w-2 ' loading={loading} label={t('publishButtonLabel')} severity="success" onClick={handlePublish} />
+                </div>
             </div>
         </div>
-    </div>
     );
 };
 

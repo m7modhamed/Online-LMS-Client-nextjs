@@ -6,7 +6,7 @@ export default function ClientLocaleWrapper({ children }: { children: React.Reac
     const locale = useLocale(); // Always runs on the client
 
     return (
-        <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'} suppressHydrationWarning>
+        <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'} suppressHydrationWarning={true} >
             {children}
         </html>
     );

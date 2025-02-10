@@ -10,7 +10,6 @@ import Loading from '@/app/loading';
 import { API_ROUTES } from '@/app/api/apiRoutes';
 import { Toast } from 'primereact/toast';
 import { useSession } from 'next-auth/react';
-import { CustomSession } from '@/app/interfaces/customSession';
 import { DeleteDialog } from '@/demo/components/DeleteDialog';
 import { useTranslations } from 'next-intl';
 
@@ -27,7 +26,7 @@ const InstructorLesson = () => {
     const [fileToDelete, setFileToDelete] = useState<File | IFile | null>(null);
     const [displayConfirmation, setDisplayConfirmation] = useState(false);
     const [loading, setLoading] = useState(true);
-    const { data, status } = useSession() as { data: CustomSession, status: string };
+    const { data, status } = useSession();
     const t = useTranslations('instructorLesson');
 
 

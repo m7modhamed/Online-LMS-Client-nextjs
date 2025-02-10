@@ -12,6 +12,13 @@
 
 
 
+html[lang="en"] {
+    .layout-config-button {
+       
+        right: 0;
+        position: fixed;
+    }
+}
 html[lang="ar"] {
 
     body {
@@ -123,4 +130,16 @@ html[lang="ar"] {
         border-bottom-right-radius: 6px;
 
     }
+
+    .layout-config-button {
+        position: fixed;
+        left: 0;
+        border-top-right-radius: var(--border-radius);
+        border-bottom-right-radius: var(--border-radius);
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    
+    }
+
+   
 }

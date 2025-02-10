@@ -9,7 +9,6 @@ import { Link } from '@/i18n/routing';
 import { convertSecondsToHoursAndMinutes } from '@/app/lib/utilities';
 import { useSession } from 'next-auth/react';
 import { Tag } from 'primereact/tag';
-import { CustomSession } from '@/app/interfaces/customSession';
 import Loading from '@/app/loading';
 
 const AdminCourseList = ({ courses }: { courses: Course[] }) => {
@@ -26,7 +25,7 @@ const AdminCourseList = ({ courses }: { courses: Course[] }) => {
         { label: 'Enrolled Students: Low to High', value: 'enrolledStudentsNumber' }
     ];
 
-    const { data, status } = useSession() as { data: CustomSession; status: string };
+    const { data, status } = useSession();
     const user = data?.user;
     useEffect(() => {
         setDataViewValue(courses);

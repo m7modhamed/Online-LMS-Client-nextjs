@@ -3,14 +3,13 @@ import { Course } from '@/app/interfaces/interfaces';
 import { authOptions } from '@/app/lib/nextAuth';
 import { getServerSession } from 'next-auth';
 import React from 'react';
-import { CustomSession } from '@/app/interfaces/customSession';
 import CourseList from '@/demo/components/CourseList';
 import { getTranslations } from 'next-intl/server';
 
 const CoursesPage = async () => {
     const t = await getTranslations('adminCourses');
 
-    const session: CustomSession | null = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions);
     let courses: Course[] = [];
     const res = await fetch(API_ROUTES.COURSES.GET_ALL_COURSES_FOR_ADMIN, {
         headers: {

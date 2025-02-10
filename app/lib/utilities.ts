@@ -26,3 +26,11 @@ export const urlToFile = async (imageUrl: string, fileName: string): Promise<Fil
     const fileType = blob.type || "image/jpeg"; // Default to JPEG if type is unknown
     return new File([blob], fileName, { type: fileType });
 };
+
+
+export const getImageUrl = (url: string) => {
+    return url?.split('public')[1];
+
+    // return url.substring(url.indexOf("public") + 6);
+}
+

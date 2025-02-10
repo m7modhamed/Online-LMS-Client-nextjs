@@ -4,11 +4,10 @@ import { authOptions } from '@/app/lib/nextAuth';
 import { getServerSession } from 'next-auth';
 import React from 'react';
 import StudentCourseList from '../../../../../../demo/components/(student)/StudentCourseList';
-import { CustomSession } from '@/app/interfaces/customSession';
 import { getTranslations } from 'next-intl/server';
 
 const learningCourses = async () => {
-    const session: CustomSession | null = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions);
     const user = session?.user;
     const t = await getTranslations('studentCourses');
 

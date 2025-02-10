@@ -2,14 +2,13 @@ import { API_ROUTES } from '@/app/api/apiRoutes';
 import { Course } from '@/app/interfaces/interfaces';
 import { authOptions } from '@/app/lib/nextAuth';
 import { getServerSession } from 'next-auth';
-import { CustomSession } from '@/app/interfaces/customSession';
 import CourseList from '@/demo/components/CourseList';
 import { getTranslations } from 'next-intl/server';
 
 const AdminCoursesForReview = async () => {
     const t = await getTranslations('coursesForReview');
 
-    const session: CustomSession | null = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions);
     let courses: Course[] = [];
 
     const res = await fetch(API_ROUTES.COURSES.GET_COURSES_FOR_REVIEW, {

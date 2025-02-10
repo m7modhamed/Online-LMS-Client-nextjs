@@ -11,7 +11,6 @@ import { useSession } from 'next-auth/react';
 import Loading from '@/app/loading';
 import { useTranslations } from 'next-intl';
 import { Tag } from 'primereact/tag';
-import { CustomSession } from '@/app/interfaces/customSession';
 
 const CourseList = ({ courses }: { courses: Course[] }) => {
     const t = useTranslations('courseList'); // Use the translation hook
@@ -24,7 +23,7 @@ const CourseList = ({ courses }: { courses: Course[] }) => {
     const [sortOrder, setSortOrder] = useState<0 | 1 | -1 | null>(null);
     const [sortField, setSortField] = useState('');
     const [loading, setLoading] = useState(true);
-    const { data, status } = useSession() as { data: CustomSession, status: string };
+    const { data, status } = useSession();
 
     const sortOptions = [
         { label: t('sort.highToLow'), value: '!enrolledStudentsNumber' },
@@ -82,7 +81,6 @@ const CourseList = ({ courses }: { courses: Course[] }) => {
     );
 
     const getUrlImage = (image: Image) => {
-        console.log(image);
         return image?.imageUrl.split('public')[1];
     };
 
@@ -146,11 +144,11 @@ const CourseList = ({ courses }: { courses: Course[] }) => {
 
     const dataviewGridItem = (course: Course) => {
         return (
-            <div className="col-12 lg:col-6 flex mb-6">
-                <div style={{ width: '520px' }} className="card m-3 border-1 surface-border flex flex-column ">
-                    <div className="flex flex-wrap gap-2 align-items-center justify-content-between mb-4">
+            <div className="col-12 lg:col-4">
+                <div className="card m-3 border-1 surface-border">
+                    <div className="flex flex-wrap gap-2 align-items-center justify-content-between mb-2">
                         <div className="flex align-items-center">
-                            <i className="pi pi-book mr-2" />
+                            <i className="pi pi-tag mr-2" />
                             <span className="font-semibold">{course.language.toUpperCase()}</span>
                         </div>
 

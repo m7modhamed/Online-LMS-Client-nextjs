@@ -1,9 +1,7 @@
 'use client'
-import { BusinessSignupValidationSchema } from '@/app/[locale]/(full-page)/auth/signup/ValidationSchema';
 import { API_ROUTES } from '@/app/api/apiRoutes';
-import { CustomSession } from '@/app/interfaces/customSession';
 import { IBusinessSignUp, IBusinessSignUpError } from '@/app/interfaces/interfaces';
-import { urlToFile } from '@/app/lib/utilities';
+import { getImageUrl, urlToFile } from '@/app/lib/utilities';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import { Avatar } from 'primereact/avatar';
@@ -14,6 +12,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useDropzone } from 'react-dropzone';
 import { UpdateBusinessValidationSchema } from './ValidationSchema';
 import { Toast } from 'primereact/toast';
+import Loading from '@/app/loading';
 
 const initialState = {
     firstName: '',
@@ -29,21 +28,21 @@ const initialState = {
 };
 
 
-const updateUserPage = () => {
+const UpdateUserPage = () => {
 
     const t = useTranslations("profileUpdate");
     const [instructorInfo, setInstructorInfo] = useState<IBusinessSignUp>(initialState);
     const [formDataError, setFormDataError] = useState<IBusinessSignUpError>(initialState);
     const [errorMessage, setErrorMessage] = useState('');
     const [profileImage, setProfileImage] = useState<File | null>(null);
-    const { data, status } = useSession() as { data: CustomSession; status: string };
+    const { data, status, update } = useSession();
     const [isLoading, setIsLoading] = useState(false);
     const toast = useRef<Toast>(null);
     const [existChange, setExistChange] = useState(false);
 
 
     useEffect(() => {
-        const fetchinstructorData = async () => {
+        const fetchInstructorData = async () => {
             if (!data || !data?.user?.id) {
                 return;
             }
@@ -61,10 +60,12 @@ const updateUserPage = () => {
             const response: IBusinessSignUp = await res.json();
             setInstructorInfo(response)
             console.log(response)
-            if (response?.profileImage?.imageUrl) {
-                const imageUrl = response.profileImage?.imageUrl;
-                console.log(imageUrl.substring(imageUrl.lastIndexOf("public") + 6))
-                await urlToFile(imageUrl.substring(imageUrl.indexOf("public") + 6), response.profileImage?.name).then((res) => {
+            const imageUrl = response?.profileImage?.imageUrl;
+            const imageName = response?.profileImage?.name;
+            if (imageUrl) {
+                const imageUrlToUpload = imageUrl.includes('public') ? getImageUrl(imageUrl) : imageUrl;
+
+                await urlToFile(imageUrlToUpload, imageName || 'img').then((res) => {
                     setProfileImage(res)
                 }).catch((err) => {
                     console.log('Error converting URL to File', err)
@@ -73,7 +74,7 @@ const updateUserPage = () => {
 
             }
         }
-        fetchinstructorData();
+        fetchInstructorData();
 
     }, [data])
 
@@ -124,12 +125,11 @@ const updateUserPage = () => {
     const handleUpdateClick = async () => {
         console.log('profileImage', profileImage)
 
-        if (errorMessage || !data.user?.id) {
+        if (errorMessage || !data) {
             return;
         }
         setErrorMessage('');
         setIsLoading(true);
-        debugger;
         try {
             // Validate using Yup schema
             await UpdateBusinessValidationSchema.validate(instructorInfo, {
@@ -156,10 +156,23 @@ const updateUserPage = () => {
                 const error = await res.json();
                 throw new Error(error.message);
             }
-            const response = await res.text();
+            const response = await res.json();
 
-            showSuccess('Registration successful', response);
+            await update(
+                {
+                    ...data,
+                    user: {
+                        ...data.user,
+                        firstName: response.firstName,
+                        lastName: response.lastName,
+                        image: response.profileImage.imageUrl
+                    }
 
+                }
+            );
+            setTimeout(() => {
+                showSuccess('update successful', "Profile updated successfully");
+            }, 0)
             //resetForm();
         } catch (error: any) {
 
@@ -207,6 +220,13 @@ const updateUserPage = () => {
         });
     };
 
+
+
+    if (status === 'loading') {
+        return <Loading />
+    }
+
+
     return (
         <div >
             <Toast ref={toast} />
@@ -231,6 +251,7 @@ const updateUserPage = () => {
                             </div>
 
                         )}
+                        <label className='pi pi-pencil' htmlFor="photo">{t('profilePhoto')}</label>
 
                         {formDataError.profileImage && <Message style={{ marginTop: '10px' }} severity="error" text={formDataError.profileImage} />}
                     </div>
@@ -413,4 +434,4 @@ const updateUserPage = () => {
     )
 }
 
-export default updateUserPage
+export default UpdateUserPage

@@ -12,8 +12,6 @@ import { Message } from 'primereact/message';
 import { Toast } from 'primereact/toast';
 import { ISignup, ISignupError } from '@/app/interfaces/interfaces';
 import { API_ROUTES } from '@/app/api/apiRoutes';
-import { useSession } from 'next-auth/react';
-import { CustomSession } from '@/app/interfaces/customSession';
 import { useTranslations } from 'next-intl';
 
 const SignUpPage = () => {
@@ -25,9 +23,17 @@ const SignUpPage = () => {
         phoneNumber: '',
         confirmPassword: ''
     };
+    const initialErrorState: ISignupError = {
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        phoneNumber: '',
+        confirmPassword: ''
+    };
 
     const [formData, setFormData] = useState<ISignup>(initialState);
-    const [formDataError, setFormDataError] = useState<ISignupError>(initialState);
+    const [formDataError, setFormDataError] = useState<ISignupError>(initialErrorState);
     const [errorMessage, setErrorMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const { layoutConfig } = useContext(LayoutContext);

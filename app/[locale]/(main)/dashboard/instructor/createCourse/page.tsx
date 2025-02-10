@@ -12,7 +12,6 @@ import { useRouter } from '@/i18n/routing';
 import { Toast } from 'primereact/toast';
 import { API_ROUTES } from '@/app/api/apiRoutes';
 import { useSession } from 'next-auth/react';
-import { CustomSession } from '@/app/interfaces/customSession';
 import { Category, Course } from '@/app/interfaces/interfaces';
 import { useTranslations } from 'next-intl';
 
@@ -42,7 +41,7 @@ const CreateCourse: React.FC = () => {
     };
     
     const [courseData, setCourseData] = useState<ICourseData>(initialCourse);
-    const { data, status } = useSession() as { data: CustomSession; status: string };
+    const { data, status } = useSession();
     const [prerequisiteInput, setPrerequisiteInput] = useState<string>('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -126,6 +125,9 @@ const CreateCourse: React.FC = () => {
     useEffect(() => {
         setIsLoading(true);
         const getCategories = async () => {
+            if(!data){
+                return;
+            }
             try {
                 const res = await fetch(API_ROUTES.CATEGORIES.GET_CATEGORY, {
                     headers: {
@@ -199,6 +201,9 @@ const CreateCourse: React.FC = () => {
     };
 
     const createCourse = async (formData: FormData) => {
+        if(!data){
+            return;
+        }
         const res = await fetch(API_ROUTES.COURSES.CREATE_COURSE, {
             headers: {
                 Authorization: `Bearer ${data.accessToken}`
