@@ -38,7 +38,7 @@ const AuthButtons = () => {
             {data ? (
                 <div style={{ alignItems: 'center', gap: '5px' }} className="flex items-center justify-between space-x-4">
                     {/* User Info Section */}
-                    <Link href={getRouteBasedRole(data?.user?.role)}>
+                    <Link href={`${getRouteBasedRole(data?.user?.role)}/update`}>
                        
                         <div style={{ alignItems: 'center' }} className="flex items-center p-3 rounded-lg  transition duration-800 cursor-pointer">
 

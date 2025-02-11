@@ -14,18 +14,21 @@
 
 html[lang="en"] {
     .layout-config-button {
-       
+
         right: 0;
         position: fixed;
     }
 }
+
 html[lang="ar"] {
 
     body {
         font-size: medium;
     }
 
-    span{
+
+
+    span {
         margin-left: 5px;
     }
 
@@ -138,8 +141,25 @@ html[lang="ar"] {
         border-bottom-right-radius: var(--border-radius);
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
-    
+
     }
 
-   
+
+    .p-buttonset .p-button:last-of-type {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+
+    }
+
+    .p-buttonset .p-button:first-of-type {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+        border-right: 1px #d1d5db solid;
+    }
+
 }

@@ -31,7 +31,7 @@ const CoursesPage = async () => {
                     <h5>{t('title')}</h5>
                     <p>{t('description')}</p>
                 </div>
-                <CourseList courses={courses} />
+                <CourseList />
             </div>
         </div>
 

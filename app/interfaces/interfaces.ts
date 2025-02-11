@@ -1,3 +1,5 @@
+import { boolean } from "yup";
+
 // Define Instructor type
 export interface Instructor {
   id: number;
@@ -165,4 +167,33 @@ export interface IDashboardInfo {
   draftCoursesCount: string,
   archivedCoursesCount: string,
   deletedCoursesCount: string
+}
+
+export interface paginationResponse {
+  content : Course[],
+  pageable: {
+    pageNumber: number,
+    pageSize: number,
+    sort: {
+      empty: boolean,
+      sorted: boolean,
+      unsorted: boolean
+    },
+    offset: number,
+    paged: boolean,
+    unpaged: boolean
+  },
+  last: boolean,
+  totalElements: number,
+  totalPages: number,
+  size: number,
+  number: number,
+  sort: {
+    empty: boolean,
+    sorted: boolean,
+    unsorted: boolean
+  },
+  first: boolean,
+  numberOfElements: number,
+  empty: boolean
 }

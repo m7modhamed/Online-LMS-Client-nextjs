@@ -49,7 +49,7 @@ export default async function MyCourses() {
                 </div>
             </div>
 
-            <CourseList courses={courses} />
+            <CourseList />
         </div>
     );
 }
