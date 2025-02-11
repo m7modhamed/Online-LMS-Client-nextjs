@@ -14,6 +14,7 @@ import { API_ROUTES } from '@/app/api/apiRoutes';
 import { useSession } from 'next-auth/react';
 import { Category, Course } from '@/app/interfaces/interfaces';
 import { useTranslations } from 'next-intl';
+import { languages } from '@/app/lib/utilities';
 
 interface ICourseData {
     name: string;
@@ -59,11 +60,7 @@ const CreateCourse: React.FC = () => {
         coverImage: ''
     });
 
-    const languages = [
-        { label: 'English', value: 'english' },
-        { label: 'Spanish', value: 'spanish' },
-        { label: 'French', value: 'french' }
-    ];
+
 
     const handleCategoryChange = (e: { value: { id: string; name: string } | null }) => {
         if (e.value) {

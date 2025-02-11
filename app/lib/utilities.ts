@@ -34,3 +34,25 @@ export const getImageUrl = (url: string) => {
     // return url.substring(url.indexOf("public") + 6);
 }
 
+export const languages = [
+    { label: 'English', value: 'english' },
+    { label: 'Spanish', value: 'spanish' },
+    { label: 'French', value: 'french' },
+    { label: 'German', value: 'german' },
+    { label: 'Italian', value: 'italian' },
+    { label: 'Portuguese', value: 'portuguese' },
+    { label: 'Russian', value: 'russian' },
+    { label: 'Chinese', value: 'chinese' },
+    { label: 'Japanese', value: 'japanese' },
+    { label: 'Korean', value: 'korean' },
+    { label: 'Arabic', value: 'arabic' },
+    { label: 'Hindi', value: 'hindi' },
+    { label: 'Bengali', value: 'bengali' },
+    { label: 'Urdu', value: 'urdu' },
+    { label: 'Turkish', value: 'turkish' },
+    { label: 'Vietnamese', value: 'vietnamese' },
+    { label: 'Polish', value: 'polish' },
+    { label: 'Dutch', value: 'dutch' },
+    { label: 'Swedish', value: 'swedish' },
+    { label: 'Greek', value: 'greek' }
+];

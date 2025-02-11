@@ -6,7 +6,7 @@ import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import { Course, Image, paginationResponse } from '@/app/interfaces/interfaces';
 import { Link } from '@/i18n/routing';
-import { convertSecondsToHoursAndMinutes } from '@/app/lib/utilities';
+import { convertSecondsToHoursAndMinutes, languages } from '@/app/lib/utilities';
 import { useSession } from 'next-auth/react';
 import Loading from '@/app/loading';
 import { useTranslations } from 'next-intl';
@@ -117,6 +117,11 @@ const CourseList = () => {
         return image?.imageUrl.split('public')[1];
     };
 
+    const handleLanguageChange = (e: { value: string }) => {
+        console.log('es',e)
+        setFiltterCriteria({...fillterCriteria , "language" : e.value})
+    };
+
     const dataViewHeader = (
         <div className="flex flex-column md:flex-row md:justify-content-between gap-2">
             <Dropdown value={sortKey} options={sortOptions} optionLabel="label" placeholder={t('sort.placeholder')} onChange={onSortChange} />
@@ -124,6 +129,8 @@ const CourseList = () => {
                 <i className="pi pi-search" />
                 <InputText value={fillterCriteria.searchKey} onChange={onSearchFilter} placeholder={t('search.placeholder')} />
             </span>
+                <Dropdown className='' id="language" name="language"  value={fillterCriteria.language} options={languages} onChange={handleLanguageChange}  placeholder={('language')} />
+
             <DataViewLayoutOptions layout={layout} onChange={(e) => setLayout(e.value)} />
         </div>
     );
