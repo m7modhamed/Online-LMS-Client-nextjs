@@ -6,6 +6,9 @@ export function convertSecondsToHoursAndMinutes(seconds: number): string {
     return `${hours}h ${minutes}m ${remainingSeconds}s`;
 }
 
+export function convertHoursToSeconds(hours: number): number {
+    return hours * 3600;
+}
 export const getRouteBasedRole = (userRole: string | undefined) => {
 
     switch (userRole) {

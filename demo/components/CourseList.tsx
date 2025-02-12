@@ -2,51 +2,119 @@
 import React, { useState, useEffect } from 'react';
 import { DataView, DataViewLayoutOptions, DataViewPageEvent } from 'primereact/dataview';
 import { Button } from 'primereact/button';
-import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
+import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
-import { Course, Image, paginationResponse } from '@/app/interfaces/interfaces';
+import { Category, Course, Image, paginationResponse } from '@/app/interfaces/interfaces';
 import { Link } from '@/i18n/routing';
-import { convertSecondsToHoursAndMinutes, languages } from '@/app/lib/utilities';
+import { convertHoursToSeconds, convertSecondsToHoursAndMinutes, languages } from '@/app/lib/utilities';
 import { useSession } from 'next-auth/react';
 import Loading from '@/app/loading';
 import { useTranslations } from 'next-intl';
 import { Tag } from 'primereact/tag';
-import { Icon } from '@mui/material';
 import { API_ROUTES } from '@/app/api/apiRoutes';
+import { MultiSelect, MultiSelectChangeEvent } from 'primereact/multiselect';
+import { RadioButton } from 'primereact/radiobutton';
 
 const CourseList = () => {
     const t = useTranslations('courseList');
-
     const [dataViewValue, setDataViewValue] = useState<Course[]>([]);
     const [layout, setLayout] = useState<'grid' | 'list' | (string & Record<string, unknown>)>('grid');
-    const [sortKey, setSortKey] = useState(null);
-    const [sortOrder, setSortOrder] = useState<0 | 1 | -1 | null>(null);
-    const [sortField, setSortField] = useState('');
     const [loading, setLoading] = useState(true);
+    const [categories, setCategories] = useState<{ name: string; code: string }[]>([]); // State to store categories
     const { data, status } = useSession();
+    const [videoDuration, setVideoDuration] = useState('');
+    const [selectedCourseStatus, setSelectedCourseStatus] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState([]);
+    const courseStatus = [
+        { name: 'DRAFT', code: 'DRAFT' },
+        { name: 'IN_REVIEW', code: 'IN_REVIEW' },
+        { name: 'PUBLISHED', code: 'PUBLISHED' },
+        { name: 'ARCHIVED', code: 'ARCHIVED' },
+        { name: 'DELETED', code: 'DELETED' }
+    ];
+
     const [pageRequest, setPageRequest] = useState({
         offset: 0,
         pageSize: 3,
         sortBy: '',
         sortDirection: ''
     });
-    const [fillterCriteria, setFiltterCriteria] = useState({
+    const [fillterCriteria, setFiltterCriteria] = useState<{
+        "searchKey": string,
+        "language": string,
+        "status": string[],
+        "category": string[],
+        "minDuration": number,
+        "maxDuration": number
+    }>({
         "searchKey": "",
         "language": "",
-        "status": "",
+        "status": [],
         "category": [],
-        "minDuration": "",
-        "maxDuration": ""
+        "minDuration": convertHoursToSeconds(0),
+        "maxDuration": convertHoursToSeconds(150)
 
     });
     const [pageData, setPageData] = useState<paginationResponse>();
 
     const user = data?.user;
 
-    const sortOptions = [
-        { label: t('sort.highToLow'), value: '!enrolledStudentsNumber' },
-        { label: t('sort.lowToHigh'), value: 'enrolledStudentsNumber' }
-    ];
+    useEffect(() => {
+        switch (videoDuration) {
+            case '0':
+                setFiltterCriteria({ ...fillterCriteria, minDuration: 0, maxDuration: convertHoursToSeconds(1) })
+                break;
+            case '1':
+                setFiltterCriteria({ ...fillterCriteria, minDuration: convertHoursToSeconds(1), maxDuration: convertHoursToSeconds(3) })
+                break;
+            case '2':
+                setFiltterCriteria({ ...fillterCriteria, minDuration: convertHoursToSeconds(3), maxDuration: convertHoursToSeconds(6) })
+                break;
+            case '3':
+                setFiltterCriteria({ ...fillterCriteria, minDuration: convertHoursToSeconds(6), maxDuration: convertHoursToSeconds(17) })
+                break;
+            case '5':
+                setFiltterCriteria({ ...fillterCriteria, minDuration: convertHoursToSeconds(17) })
+                break;
+
+        }
+    }, [videoDuration])
+
+
+    useEffect(() => {
+        setLoading(true);
+        const getCategories = async () => {
+            if (!data) {
+                return;
+            }
+            try {
+                const res = await fetch(API_ROUTES.CATEGORIES.GET_CATEGORY, {
+                    headers: {
+                        Authorization: `Bearer ${data.accessToken}`
+                    },
+                    cache: 'no-store'
+                });
+                if (!res.ok) {
+                    const error = await res.json();
+                    throw new Error(error.message || 'Error fetching categories');
+                }
+
+                const categories = await res.json();
+
+                const formattedCategories = categories.map((category: Category) => ({
+                    name: category.name,
+                    code: category.name
+                }));
+                setCategories(formattedCategories);
+            } catch (err: any) {
+                //console.log(err.message || 'Error fetching categories');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        getCategories();
+    }, [data]);
 
     useEffect(() => {
         const endPointSearch = `offset=${pageRequest.offset}&pageSize=${pageRequest.pageSize}&sortBy=${pageRequest.sortBy}&sortDirection=${pageRequest.sortDirection}`
@@ -54,6 +122,7 @@ const CourseList = () => {
             ? `${API_ROUTES.COURSES.GET_INSTRUCTOR_COURSES(data.user.id)}?${endPointSearch}`
             : `${API_ROUTES.COURSES.GET_ALL_COURSES_FOR_ADMIN}?${endPointSearch}`;
         const fetchcourses = async () => {
+            console.log('fillterCriteria', fillterCriteria)
             try {
                 const userId = data?.user?.id;
                 if (!userId) {
@@ -80,7 +149,6 @@ const CourseList = () => {
             } catch (err: any) {
                 console.error('', err.message);
             } finally {
-
                 setLoading(false);
             }
 
@@ -89,7 +157,7 @@ const CourseList = () => {
     }, [data, user, pageRequest, fillterCriteria]);
 
 
-    if (loading) {
+    if (loading || status === 'loading') {
         return <Loading />;
     }
     const onSearchFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -98,42 +166,104 @@ const CourseList = () => {
 
     };
 
-    console.log('fillterCriteria', fillterCriteria)
-
-    const onSortChange = (event: DropdownChangeEvent) => {
-        const value = event.value;
-
-        if (value.indexOf('!') === 0) {
-            setSortOrder(-1);
-            setSortField(value.substring(1, value.length));
-            setSortKey(value);
-        } else {
-            setSortOrder(1);
-            setSortField(value);
-            setSortKey(value);
-        }
-    };
 
     const getUrlImage = (image: Image) => {
         return image?.imageUrl.split('public')[1];
     };
 
     const handleLanguageChange = (e: { value: string }) => {
-        console.log('es', e)
-        setFiltterCriteria({ ...fillterCriteria, "language": e.value })
+        if (e.value === 'all') {
+            setFiltterCriteria({ ...fillterCriteria, "language": '' })
+        } else {
+
+            setFiltterCriteria({ ...fillterCriteria, "language": e.value })
+        }
     };
 
-    const dataViewHeader = (
-        <div className="flex flex-column md:flex-row md:justify-content-between gap-2">
-            <Dropdown value={sortKey} options={sortOptions} optionLabel="label" placeholder={t('sort.placeholder')} onChange={onSortChange} />
-            <span className="p-input-icon-left">
-                <i className="pi pi-search" />
-                <InputText value={fillterCriteria.searchKey} onChange={onSearchFilter} placeholder={t('search.placeholder')} />
-            </span>
-            <Dropdown className='' id="language" name="language" value={fillterCriteria.language} options={languages} onChange={handleLanguageChange} placeholder={('language')} />
+    const onSelectCourseStatus = (e: MultiSelectChangeEvent) => {
+        setSelectedCourseStatus(e.value)
 
-            <DataViewLayoutOptions layout={layout} onChange={(e) => setLayout(e.value)} />
-        </div>
+        setFiltterCriteria((prevState) => {
+            const selectedArray: { name: string; code: string }[] = e.value;
+
+            const updatedStatus = selectedArray.map((val) => val.code);
+
+            return { ...prevState, status: updatedStatus };
+        });
+    }
+    const onSelectCategory = (e: MultiSelectChangeEvent) => {
+        setSelectedCategory(e.value)
+
+        setFiltterCriteria((prevState) => {
+            const selectedArray: { name: string; code: string }[] = e.value;
+
+            const updatedCategory = selectedArray.map((val) => val.code);
+
+            return { ...prevState, category: updatedCategory };
+        });
+    }
+
+    const dataViewHeader = (
+        <>
+
+            <div className="flex flex-column md:flex-row md:justify-content-between gap-2">
+
+                <span className="p-input-icon-left">
+                    <i className="pi pi-search" />
+                    <InputText value={fillterCriteria.searchKey} onChange={onSearchFilter} placeholder={t('search.placeholder')} />
+                </span>
+
+                <Dropdown className='w-2' id="language" name="language" value={fillterCriteria.language} options={[{ label: 'All', value: 'all' }, ...languages]} onChange={handleLanguageChange} placeholder={('language')} />
+
+                <MultiSelect value={selectedCourseStatus}
+                    onChange={(e) => onSelectCourseStatus(e)}
+                    options={courseStatus}
+                    optionLabel="name"
+                    display="chip"
+                    placeholder="Select Status"
+                    maxSelectedLabels={3}
+                    className="w-full md:w-22rem"
+                />
+
+                <MultiSelect value={selectedCategory}
+                    onChange={(e) => onSelectCategory(e)}
+                    options={categories}
+                    optionLabel="name"
+                    display="chip"
+                    placeholder="Select category"
+                    maxSelectedLabels={3}
+                    className="w-full md:w-22rem"
+                />
+
+                <DataViewLayoutOptions layout={layout} onChange={(e) => setLayout(e.value)} />
+            </div>
+
+            <div className="flex flex-column md:flex-row md:justify-content-start gap-8 mt-4">
+
+                <h5 className='text-red'>Video Duration :</h5>
+
+                <div >
+                    <RadioButton inputId="duration1" name="pizza" value="0" onChange={(e) => setVideoDuration(e.value)} checked={videoDuration === '0'} />
+                    <label htmlFor="duration1" className="ml-2">0-1 Hour</label>
+                </div>
+                <div >
+                    <RadioButton inputId="duration2" name="pizza" value="1" onChange={(e) => setVideoDuration(e.value)} checked={videoDuration === '1'} />
+                    <label htmlFor="duration2" className="ml-2">1-3 Hour</label>
+                </div>
+                <div >
+                    <RadioButton inputId="duration3" name="pizza" value="2" onChange={(e) => setVideoDuration(e.value)} checked={videoDuration === '2'} />
+                    <label htmlFor="duration3" className="ml-2">3-6 Hour</label>
+                </div>
+                <div >
+                    <RadioButton inputId="duration4" name="pizza" value="3" onChange={(e) => setVideoDuration(e.value)} checked={videoDuration === '3'} />
+                    <label htmlFor="duration4" className="ml-2">6-17 Hour</label>
+                </div>
+                <div >
+                    <RadioButton inputId="duration5" name="pizza" value="4" onChange={(e) => setVideoDuration(e.value)} checked={videoDuration === '4'} />
+                    <label htmlFor="duration5" className="ml-2">+17 Hour</label>
+                </div>
+            </div>
+        </>
     );
 
     const handlePageMovement = (e: DataViewPageEvent) => {
@@ -277,8 +407,6 @@ const CourseList = () => {
                         pageLinkSize={pageData?.totalPages}
                         first={pageRequest.offset * pageRequest.pageSize}
                         layout={layout}
-                        sortOrder={sortOrder}
-                        sortField={sortField}
                         itemTemplate={itemTemplate}
                         header={dataViewHeader}
                         onPage={(e) => handlePageMovement(e)}
