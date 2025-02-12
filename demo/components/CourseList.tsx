@@ -12,6 +12,7 @@ import Loading from '@/app/loading';
 import { useTranslations } from 'next-intl';
 import { Tag } from 'primereact/tag';
 import { Icon } from '@mui/material';
+import { API_ROUTES } from '@/app/api/apiRoutes';
 
 const CourseList = () => {
     const t = useTranslations('courseList');
@@ -25,7 +26,7 @@ const CourseList = () => {
     const { data, status } = useSession();
     const [pageRequest, setPageRequest] = useState({
         offset: 0,
-        pageSize: 6,
+        pageSize: 3,
         sortBy: '',
         sortDirection: ''
     });
@@ -50,8 +51,8 @@ const CourseList = () => {
     useEffect(() => {
         const endPointSearch = `offset=${pageRequest.offset}&pageSize=${pageRequest.pageSize}&sortBy=${pageRequest.sortBy}&sortDirection=${pageRequest.sortDirection}`
         const endPoint = data?.user.role === 'ROLE_INSTRUCROT'
-            ? `http://localhost:8080/instructor/${data.user.id}/courses?${endPointSearch}`
-            : `http://localhost:8080/admin/courses?${endPointSearch}`;
+            ? `${API_ROUTES.COURSES.GET_INSTRUCTOR_COURSES(data.user.id)}?${endPointSearch}`
+            : `${API_ROUTES.COURSES.GET_ALL_COURSES_FOR_ADMIN}?${endPointSearch}`;
         const fetchcourses = async () => {
             try {
                 const userId = data?.user?.id;
@@ -118,8 +119,8 @@ const CourseList = () => {
     };
 
     const handleLanguageChange = (e: { value: string }) => {
-        console.log('es',e)
-        setFiltterCriteria({...fillterCriteria , "language" : e.value})
+        console.log('es', e)
+        setFiltterCriteria({ ...fillterCriteria, "language": e.value })
     };
 
     const dataViewHeader = (
@@ -129,7 +130,7 @@ const CourseList = () => {
                 <i className="pi pi-search" />
                 <InputText value={fillterCriteria.searchKey} onChange={onSearchFilter} placeholder={t('search.placeholder')} />
             </span>
-                <Dropdown className='' id="language" name="language"  value={fillterCriteria.language} options={languages} onChange={handleLanguageChange}  placeholder={('language')} />
+            <Dropdown className='' id="language" name="language" value={fillterCriteria.language} options={languages} onChange={handleLanguageChange} placeholder={('language')} />
 
             <DataViewLayoutOptions layout={layout} onChange={(e) => setLayout(e.value)} />
         </div>
