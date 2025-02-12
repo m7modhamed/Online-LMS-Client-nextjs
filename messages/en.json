@@ -145,14 +145,14 @@
         "noContentMessage": "It seems like no content has been created yet. Start creating content and share your knowledge with others!"
     },
     "courseList": {
-        "sort": {
-            "highToLow": "Enrolled Students: High to Low",
-            "lowToHigh": "Enrolled Students: Low to High",
-            "placeholder": "Sort By Enrolled Students"
-        },
         "search": {
             "placeholder": "Search by Name"
         },
+        "language" : "Language",
+        "status": "Select Status",
+        "category": "Select Category",
+        "duration": "Video Duration :",
+        "hour" : "Hour",
         "students": "students",
         "openToEnroll": "Open",
         "courses": "Courses"

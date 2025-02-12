@@ -3,6 +3,7 @@ import { getToken } from 'next-auth/jwt';
 import { decodeToken, isTokenValid } from './app/lib/jwtDecode';
 import createMiddleware from 'next-intl/middleware';
 import { routing } from './i18n/routing';
+import { getLocale } from 'next-intl/server';
 
 // Create intl middleware
 const intlMiddleware = createMiddleware(routing);
@@ -13,8 +14,10 @@ export async function middleware(request: NextRequest) {
 
   const { pathname: pathName } = request.nextUrl;
   // Extract language prefix (e.g., 'ar' or 'en')
-  const langMatch = pathName.match(/^\/(ar|en)(\/|$)/);
-  const langPrefix = langMatch ? langMatch[1] : 'ar'; // Default to 'ar'
+  const langPrefix = await getLocale();
+  // const langMatch = pathName.match(/^\/(ar|en)(\/|$)/);
+  // const langPrefix = langMatch ? langMatch[1] : 'ar'; // Default to 'ar'
+
 
   // Define protected routes based on language
   const routes = {
@@ -27,7 +30,6 @@ export async function middleware(request: NextRequest) {
 
   // Authentication-related routes
   const isAllowedRoute = !protectedRoutes.some((route) => pathName.includes(route));
-  //pathName.startsWith(`/${langPrefix}/auth`);
 
   const isAccessRoute = pathName.startsWith(`/${langPrefix}/auth/access`);
   const isAuthRoute = pathName.startsWith(`/${langPrefix}/auth`) && !isAccessRoute;

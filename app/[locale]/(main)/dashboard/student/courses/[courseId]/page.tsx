@@ -16,7 +16,7 @@ const StudentCourse = async ({ params }: PageProps) => {
 
     if (!session) {
         return;
-       // throw new Error('Invalid user or course ID');
+        // throw new Error('Invalid user or course ID');
     }
 
     const userId = session.user.id;

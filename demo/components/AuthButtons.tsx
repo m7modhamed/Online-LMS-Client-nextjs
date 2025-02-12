@@ -1,7 +1,7 @@
 'use client'
 import { getRouteBasedRole } from '@/app/lib/utilities';
 import { Link } from '@/i18n/routing';
-import { getSession, signOut, useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { useLocale, useTranslations } from 'next-intl';
 import { Avatar } from 'primereact/avatar';
 import { Button } from 'primereact/button';

@@ -73,7 +73,7 @@ const ReviewCourseList = () => {
             case '3':
                 setFiltterCriteria({ ...fillterCriteria, minDuration: convertHoursToSeconds(6), maxDuration: convertHoursToSeconds(17) })
                 break;
-            case '5':
+            case '4':
                 setFiltterCriteria({ ...fillterCriteria, minDuration: convertHoursToSeconds(17) })
                 break;
 
@@ -213,7 +213,7 @@ const ReviewCourseList = () => {
                     <InputText value={fillterCriteria.searchKey} onChange={onSearchFilter} placeholder={t('search.placeholder')} />
                 </span>
 
-                <Dropdown className='w-2' id="language" name="language" value={fillterCriteria.language} options={[{ label: 'All', value: 'all' }, ...languages]} onChange={handleLanguageChange} placeholder={('language')} />
+                <Dropdown className='w-2' id="language" name="language" value={fillterCriteria.language} options={[{ label: 'All', value: 'all' }, ...languages]} onChange={handleLanguageChange} placeholder={t('language')} />
 
 
 
@@ -222,7 +222,7 @@ const ReviewCourseList = () => {
                     options={categories}
                     optionLabel="name"
                     display="chip"
-                    placeholder="Select category"
+                    placeholder={t('category')}
                     maxSelectedLabels={3}
                     className="w-full md:w-22rem"
                 />
@@ -232,27 +232,27 @@ const ReviewCourseList = () => {
 
             <div className="flex flex-column md:flex-row md:justify-content-start gap-8 mt-4">
 
-                <h5 className='text-red'>Video Duration :</h5>
+                <h5 className='text-red'>{t('duration')}</h5>
 
                 <div >
                     <RadioButton inputId="duration1" name="pizza" value="0" onChange={(e) => setVideoDuration(e.value)} checked={videoDuration === '0'} />
-                    <label htmlFor="duration1" className="ml-2">0-1 Hour</label>
+                    <label htmlFor="duration1" className="mx-2">0-1 {t('hour')}</label>
                 </div>
                 <div >
                     <RadioButton inputId="duration2" name="pizza" value="1" onChange={(e) => setVideoDuration(e.value)} checked={videoDuration === '1'} />
-                    <label htmlFor="duration2" className="ml-2">1-3 Hour</label>
+                    <label htmlFor="duration2" className="mx-2">1-3 {t('hour')}</label>
                 </div>
                 <div >
                     <RadioButton inputId="duration3" name="pizza" value="2" onChange={(e) => setVideoDuration(e.value)} checked={videoDuration === '2'} />
-                    <label htmlFor="duration3" className="ml-2">3-6 Hour</label>
+                    <label htmlFor="duration3" className="mx-2">3-6 {t('hour')}</label>
                 </div>
                 <div >
                     <RadioButton inputId="duration4" name="pizza" value="3" onChange={(e) => setVideoDuration(e.value)} checked={videoDuration === '3'} />
-                    <label htmlFor="duration4" className="ml-2">6-17 Hour</label>
+                    <label htmlFor="duration4" className="mx-2">6-17 {t('hour')}</label>
                 </div>
                 <div >
                     <RadioButton inputId="duration5" name="pizza" value="4" onChange={(e) => setVideoDuration(e.value)} checked={videoDuration === '4'} />
-                    <label htmlFor="duration5" className="ml-2">+17 Hour</label>
+                    <label htmlFor="duration5" className="mx-2">+17 {t('hour')}</label>
                 </div>
             </div>
         </>

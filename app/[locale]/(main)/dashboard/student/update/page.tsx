@@ -19,6 +19,8 @@ const initialState = {
     lastName: '',
     email: '',
     phoneNumber: '',
+    profileImage: undefined
+
 };
 
 

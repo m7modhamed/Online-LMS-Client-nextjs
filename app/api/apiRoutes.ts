@@ -6,7 +6,7 @@ export const API_ROUTES = {
         CREATE_COURSE: `${API_BASE_URL}/courses`,
         PUBLISH_COURSE_REQUEST: (courseId: string) => `${API_BASE_URL}/courses/${courseId}/publishRequest`,
         PUBLISH_COURSE: (courseId: string) => `${API_BASE_URL}/courses/${courseId}/publish`,
-        GET_ALL_COURSES: `${API_BASE_URL}/courses`,
+        GET_ALL_COURSES: `${API_BASE_URL}/courses/all`,
         GET_ALL_COURSES_FOR_ADMIN: `${API_BASE_URL}/admin/courses`,
         GET_ADMIN_DASHBOARD_INFO: `${API_BASE_URL}/admin/courses/info`,
         GET_INSTRUCTOR_DASHBOARD_INFO: (instructorId: string) => `${API_BASE_URL}/instructor/${instructorId}/courses/info`,

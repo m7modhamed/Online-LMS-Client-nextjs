@@ -30,8 +30,11 @@ const CourseList = () => {
         { name: 'IN_REVIEW', code: 'IN_REVIEW' },
         { name: 'PUBLISHED', code: 'PUBLISHED' },
         { name: 'ARCHIVED', code: 'ARCHIVED' },
-        { name: 'DELETED', code: 'DELETED' }
     ];
+
+    if (data && data?.user.role === 'ROLE_ADMIN') {
+        courseStatus.push({ name: 'DELETED', code: 'DELETED' })
+    }
 
     const [pageRequest, setPageRequest] = useState({
         offset: 0,
@@ -57,7 +60,8 @@ const CourseList = () => {
     });
     const [pageData, setPageData] = useState<paginationResponse>();
 
-    const user = data?.user;
+
+
 
     useEffect(() => {
         switch (videoDuration) {
@@ -73,7 +77,7 @@ const CourseList = () => {
             case '3':
                 setFiltterCriteria({ ...fillterCriteria, minDuration: convertHoursToSeconds(6), maxDuration: convertHoursToSeconds(17) })
                 break;
-            case '5':
+            case '4':
                 setFiltterCriteria({ ...fillterCriteria, minDuration: convertHoursToSeconds(17) })
                 break;
 
@@ -118,14 +122,17 @@ const CourseList = () => {
 
     useEffect(() => {
         const endPointSearch = `offset=${pageRequest.offset}&pageSize=${pageRequest.pageSize}&sortBy=${pageRequest.sortBy}&sortDirection=${pageRequest.sortDirection}`
-        const endPoint = data?.user.role === 'ROLE_INSTRUCROT'
-            ? `${API_ROUTES.COURSES.GET_INSTRUCTOR_COURSES(data.user.id)}?${endPointSearch}`
-            : `${API_ROUTES.COURSES.GET_ALL_COURSES_FOR_ADMIN}?${endPointSearch}`;
+        const endPoint =
+            data?.user.role === 'ROLE_INSTRUCTOR'
+                ? `${API_ROUTES.COURSES.GET_INSTRUCTOR_COURSES(data.user.id)}?${endPointSearch}`
+                : data?.user.role === 'ROLE_ADMIN'
+                    ? `${API_ROUTES.COURSES.GET_ALL_COURSES_FOR_ADMIN}?${endPointSearch}`
+                    : `${API_ROUTES.COURSES.GET_ALL_COURSES}?${endPointSearch}`;
+
         const fetchcourses = async () => {
-            console.log('fillterCriteria', fillterCriteria)
+
             try {
-                const userId = data?.user?.id;
-                if (!userId) {
+                if (!data) {
                     return;
                 }
                 setLoading(true);
@@ -154,7 +161,7 @@ const CourseList = () => {
 
         }
         fetchcourses();
-    }, [data, user, pageRequest, fillterCriteria]);
+    }, [data, pageRequest, fillterCriteria]);
 
 
     if (loading || status === 'loading') {
@@ -205,32 +212,32 @@ const CourseList = () => {
 
     const dataViewHeader = (
         <>
-
             <div className="flex flex-column md:flex-row md:justify-content-between gap-2">
-
                 <span className="p-input-icon-left">
                     <i className="pi pi-search" />
                     <InputText value={fillterCriteria.searchKey} onChange={onSearchFilter} placeholder={t('search.placeholder')} />
                 </span>
 
-                <Dropdown className='w-2' id="language" name="language" value={fillterCriteria.language} options={[{ label: 'All', value: 'all' }, ...languages]} onChange={handleLanguageChange} placeholder={('language')} />
+                <Dropdown className='w-2' id="language" name="language" value={fillterCriteria.language} options={[{ label: 'All', value: 'all' }, ...languages]} onChange={handleLanguageChange} placeholder={t('language')} />
 
-                <MultiSelect value={selectedCourseStatus}
-                    onChange={(e) => onSelectCourseStatus(e)}
-                    options={courseStatus}
-                    optionLabel="name"
-                    display="chip"
-                    placeholder="Select Status"
-                    maxSelectedLabels={3}
-                    className="w-full md:w-22rem"
-                />
+                {data?.user.role !== 'ROLE_STUDENT' &&
+                    <MultiSelect value={selectedCourseStatus}
+                        onChange={(e) => onSelectCourseStatus(e)}
+                        options={courseStatus}
+                        optionLabel="name"
+                        display="chip"
+                        placeholder={t('status')}
+                        maxSelectedLabels={3}
+                        className="w-full md:w-22rem"
+                    />
+                }
 
                 <MultiSelect value={selectedCategory}
                     onChange={(e) => onSelectCategory(e)}
                     options={categories}
                     optionLabel="name"
                     display="chip"
-                    placeholder="Select category"
+                    placeholder={t('category')}
                     maxSelectedLabels={3}
                     className="w-full md:w-22rem"
                 />
@@ -240,27 +247,27 @@ const CourseList = () => {
 
             <div className="flex flex-column md:flex-row md:justify-content-start gap-8 mt-4">
 
-                <h5 className='text-red'>Video Duration :</h5>
+                <h5 className='text-red'>{t('duration')}</h5>
 
                 <div >
                     <RadioButton inputId="duration1" name="pizza" value="0" onChange={(e) => setVideoDuration(e.value)} checked={videoDuration === '0'} />
-                    <label htmlFor="duration1" className="ml-2">0-1 Hour</label>
+                    <label htmlFor="duration1" className="mx-2">0-1 {t('hour')}</label>
                 </div>
                 <div >
                     <RadioButton inputId="duration2" name="pizza" value="1" onChange={(e) => setVideoDuration(e.value)} checked={videoDuration === '1'} />
-                    <label htmlFor="duration2" className="ml-2">1-3 Hour</label>
+                    <label htmlFor="duration2" className="mx-2">1-3 {t('hour')}</label>
                 </div>
                 <div >
                     <RadioButton inputId="duration3" name="pizza" value="2" onChange={(e) => setVideoDuration(e.value)} checked={videoDuration === '2'} />
-                    <label htmlFor="duration3" className="ml-2">3-6 Hour</label>
+                    <label htmlFor="duration3" className="mx-2">3-6 {t('hour')}</label>
                 </div>
                 <div >
                     <RadioButton inputId="duration4" name="pizza" value="3" onChange={(e) => setVideoDuration(e.value)} checked={videoDuration === '3'} />
-                    <label htmlFor="duration4" className="ml-2">6-17 Hour</label>
+                    <label htmlFor="duration4" className="mx-2">6-17 {t('hour')}</label>
                 </div>
                 <div >
                     <RadioButton inputId="duration5" name="pizza" value="4" onChange={(e) => setVideoDuration(e.value)} checked={videoDuration === '4'} />
-                    <label htmlFor="duration5" className="ml-2">+17 Hour</label>
+                    <label htmlFor="duration5" className="mx-2">+17 {t('hour')}</label>
                 </div>
             </div>
         </>
@@ -288,7 +295,7 @@ const CourseList = () => {
                             <i className="pi pi-book mr-2" />
                             <span className="font-semibold ">{course.language?.toUpperCase()}</span>
                         </div>
-                        {course?.status &&
+                        {course?.status && data?.user.role !== "ROLE_STUDENT" &&
                             <Tag
                                 severity={
                                     course?.status === 'PUBLISHED'
@@ -317,7 +324,7 @@ const CourseList = () => {
                             <span className="text-1xl font-semibold ml-2">{convertSecondsToHoursAndMinutes(Number(course.duration))}</span>
                         </div>
 
-                        <Link href={data?.user?.role === 'ROLE_INSTRUCTOR' ? `/dashboard/instructor/courses/${course.id}` : `/dashboard/admin/courses/${course.id}`}>
+                        <Link href={data?.user?.role === 'ROLE_INSTRUCTOR' ? `/dashboard/instructor/courses/${course.id}` : data?.user.role === "ROLE_ADMIN" ? `/dashboard/admin/courses/${course.id}` : `/dashboard/student/courses/${course.id}`}>
                             <Button icon="pi pi-play" label={t('openToEnroll')} size="small" className="mb-2" />
                         </Link>
                     </div>
@@ -337,7 +344,7 @@ const CourseList = () => {
                         </div>
 
                         <span className={`course-badge status-available`}>{course.enrolledStudentsNumber.toString()} {t('students')}</span>
-                        {course?.status &&
+                        {course?.status && data?.user.role !== "ROLE_STUDENT" &&
                             <Tag
                                 severity={
                                     course?.status === 'PUBLISHED'
@@ -371,7 +378,7 @@ const CourseList = () => {
 
                             <span className="text-1xl font-semibold">{convertSecondsToHoursAndMinutes(Number(course.duration))}</span>
                         </div>
-                        <Link href={data?.user?.role === 'ROLE_INSTRUCTOR' ? `/dashboard/instructor/courses/${course.id}` : `/dashboard/admin/courses/${course.id}`}>
+                        <Link href={data?.user?.role === 'ROLE_INSTRUCTOR' ? `/dashboard/instructor/courses/${course.id}` : data?.user.role === "ROLE_ADMIN" ? `/dashboard/admin/courses/${course.id}` : `/dashboard/student/courses/${course.id}`}>
                             <Button icon="pi pi-play" label={t('openToEnroll')} size="small" />
                         </Link>
                     </div>
