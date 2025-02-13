@@ -23,15 +23,9 @@ const ReviewCourseList = () => {
     const [categories, setCategories] = useState<{ name: string; code: string }[]>([]); // State to store categories
     const { data, status } = useSession();
     const [videoDuration, setVideoDuration] = useState('');
-    const [selectedCourseStatus, setSelectedCourseStatus] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState([]);
-    const courseStatus = [
-        { name: 'DRAFT', code: 'DRAFT' },
-        { name: 'IN_REVIEW', code: 'IN_REVIEW' },
-        { name: 'PUBLISHED', code: 'PUBLISHED' },
-        { name: 'ARCHIVED', code: 'ARCHIVED' },
-        { name: 'DELETED', code: 'DELETED' }
-    ];
+    const [pageData, setPageData] = useState<paginationResponse>();
+
 
     const [pageRequest, setPageRequest] = useState({
         offset: 0,
@@ -55,10 +49,6 @@ const ReviewCourseList = () => {
         "maxDuration": convertHoursToSeconds(150)
 
     });
-    const [pageData, setPageData] = useState<paginationResponse>();
-
-    const user = data?.user;
-
     useEffect(() => {
         switch (videoDuration) {
             case '0':
@@ -153,7 +143,7 @@ const ReviewCourseList = () => {
 
         }
         fetchcourses();
-    }, [data, user, pageRequest, fillterCriteria]);
+    }, [data, pageRequest, fillterCriteria]);
 
 
     if (loading || status === 'loading') {
@@ -180,17 +170,6 @@ const ReviewCourseList = () => {
         }
     };
 
-    const onSelectCourseStatus = (e: MultiSelectChangeEvent) => {
-        setSelectedCourseStatus(e.value)
-
-        setFiltterCriteria((prevState) => {
-            const selectedArray: { name: string; code: string }[] = e.value;
-
-            const updatedStatus = selectedArray.map((val) => val.code);
-
-            return { ...prevState, status: updatedStatus };
-        });
-    }
     const onSelectCategory = (e: MultiSelectChangeEvent) => {
         setSelectedCategory(e.value)
 

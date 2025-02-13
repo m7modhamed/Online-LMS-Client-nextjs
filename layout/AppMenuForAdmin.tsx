@@ -20,8 +20,7 @@ const AppMenuForAdmin = () => {
             items: [
                 { label: t('courses'), icon: 'pi pi-fw pi-id-card', to: '/dashboard/admin/courses' },
                 { label: t('coursesForReview'), icon: 'pi pi-fw pi-check-square', to: '/dashboard/admin/reviewCourses' },
-                { label: t('students'), icon: 'pi pi-users', to: '/dashboard/admin/students' },
-                { label: t('instructors'), icon: 'pi pi-users', to: '/dashboard/admin/Instructors' }
+                { label: t('users'), icon: 'pi pi-users', to: '/dashboard/admin/users' },
             ]
         }
     ];

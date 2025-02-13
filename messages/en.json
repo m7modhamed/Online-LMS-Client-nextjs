@@ -114,7 +114,7 @@
         "dashboard": "Dashboard",
         "courses": "Courses",
         "coursesForReview": "Courses for Review",
-        "students": "Students",
+        "users": "Users",
         "instructors": "Instructors",
         "createCourse": "Create Course",
         "myCourses": "My Courses"
@@ -148,11 +148,11 @@
         "search": {
             "placeholder": "Search by Name"
         },
-        "language" : "Language",
+        "language": "Language",
         "status": "Select Status",
         "category": "Select Category",
         "duration": "Video Duration :",
-        "hour" : "Hour",
+        "hour": "Hour",
         "students": "students",
         "openToEnroll": "Open",
         "courses": "Courses"
@@ -301,5 +301,31 @@
         "confirmationMessage": "Are you sure you want to delete the resource?",
         "noButton": "No",
         "yesButton": "Yes"
-    }
+    },
+    "userTable": {
+        "usersTitle": "Users",
+        "usersDescription": "View and manage users by blocking or unblocking them on this page.",
+        "searchPlaceholder": "Keyword Search",
+        "noUsersFound": "No users found.",
+        "fullName": "Full Name",
+        "email": "Email",
+        "role": "Role",
+        "active": "Active",
+        "unblock": "Not Block",
+        "createdAt": "Created At",
+        "lastUpdated": "Last Updated",
+        "blockUser": "Block User",
+        "unblockUser": "Unblock User"
+    },
+    "blockUserDialog" :{
+        "close": "Close",
+        "blockUser": "Block User",
+        "unblockUser": "Unblock User",
+        "userBlocked": "User is currently: ",
+        "currentlyBlocked": "currently blocked",
+        "unblock": "unblock",
+        "currentlyUnblocked": "currently unblocked",
+        "toggleBlockStatus": "You can {action} them by clicking the button below."
+      }
+      
 }

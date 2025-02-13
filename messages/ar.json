@@ -114,7 +114,7 @@
         "dashboard": "لوحة التحكم",
         "courses": "الدورات",
         "coursesForReview": "الدورات للمراجعة",
-        "students": "الطلاب",
+        "users": "المستخدمين",
         "instructors": "المعلمين",
         "createCourse": "انشاء دورة جديدة",
         "myCourses": "دوراتي"
@@ -148,11 +148,11 @@
         "search": {
             "placeholder": "البحث بالاسم"
         },
-        "language" : "اللغة",
+        "language": "اللغة",
         "status": "حدد الحالة",
         "category": "حدد الفئة",
         "duration": "مدة الفيديو :",
-        "hour" : "ساعة",
+        "hour": "ساعة",
         "students": "طلاب",
         "openToEnroll": "افتح",
         "courses": "الدورات"
@@ -301,5 +301,31 @@
         "confirmationMessage": "هل أنت متأكد أنك تريد حذف المورد؟",
         "noButton": "لا",
         "yesButton": "نعم"
-    }
+    },
+    "userTable": {
+        "usersTitle": "المستخدمين",
+        "usersDescription": "عرض وإدارة المستخدمين عن طريق حظرهم أو إلغاء حظرهم في هذه الصفحة.",
+        "searchPlaceholder": "البحث بالكلمة الرئيسية",
+        "noUsersFound": "لم يتم العثور على مستخدمين.",
+        "fullName": "الاسم الكامل",
+        "email": "البريد الإلكتروني",
+        "role": "الدور",
+        "active": "نشط",
+        "unblock": "غير محظور",
+        "createdAt": "تاريخ الإنشاء",
+        "lastUpdated": "آخر تحديث",
+        "blockUser": "حظر المستخدم",
+        "unblockUser": "إلغاء حظر المستخدم"
+    },
+    "blockUserDialog" :{
+        "close": "إغلاق",
+        "blockUser": "حظر المستخدم",
+        "unblockUser": "إلغاء حظر المستخدم",
+        "userBlocked": "المستخدم حالياً: ",
+        "currentlyBlocked": "محظور حالياً",
+        "unblock": "إلغاء الحظر",
+        "currentlyUnblocked": "غير محظور حالياً",
+        "toggleBlockStatus": "يمكنك {action} بالنقر على الزر أدناه."
+      }
+      
 }

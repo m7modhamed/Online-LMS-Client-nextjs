@@ -28,8 +28,12 @@ html[lang="ar"] {
 
 
 
-    span {
-        margin-left: 5px;
+    // span {
+    //     margin-left: 5px;
+    // }
+
+    td {
+        text-align: center;
     }
 
     .layout-main-container {
@@ -144,7 +148,29 @@ html[lang="ar"] {
 
     }
 
+    .p-sidebar-right .p-sidebar-enter,
+    .p-sidebar-right .p-sidebar-exit-active {
+        transform: translate3d(-100%, 0px, 0px);
 
+       
+
+    }
+
+    .p-sidebar-top .p-sidebar-enter-active,
+    .p-sidebar-bottom .p-sidebar-enter-active,
+    .p-sidebar-left .p-sidebar-enter-active,
+    .p-sidebar-right .p-sidebar-enter-active {
+        transform: translate3d(0px, 0px, 0px);
+        transition: all 0.3s;
+    }
+    
+    .p-sidebar-top .p-sidebar-enter-done,
+    .p-sidebar-bottom .p-sidebar-enter-done,
+    .p-sidebar-left .p-sidebar-enter-done,
+    .p-sidebar-right .p-sidebar-enter-done {
+        transform: none;
+    }
+    
     .p-buttonset .p-button:last-of-type {
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;

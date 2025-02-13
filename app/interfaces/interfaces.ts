@@ -148,6 +148,28 @@ export interface IFile extends Content {
   type: string,
 }
 
+
+interface Role {
+  id: number;
+  name: string;
+  description: string;
+}
+
+export interface IUserData {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  profileImage: Image;
+  phoneNumber: string;
+  isActive: boolean;
+  isBlocked: boolean;
+  role: Role;
+  createdAt: string;
+  lastUpdated: string;
+}
+
+
 export interface IUser {
   id: Number,
   firstName: string,
@@ -170,7 +192,35 @@ export interface IDashboardInfo {
 }
 
 export interface paginationResponse {
-  content : Course[],
+  content: Course[],
+  pageable: {
+    pageNumber: number,
+    pageSize: number,
+    sort: {
+      empty: boolean,
+      sorted: boolean,
+      unsorted: boolean
+    },
+    offset: number,
+    paged: boolean,
+    unpaged: boolean
+  },
+  last: boolean,
+  totalElements: number,
+  totalPages: number,
+  size: number,
+  number: number,
+  sort: {
+    empty: boolean,
+    sorted: boolean,
+    unsorted: boolean
+  },
+  first: boolean,
+  numberOfElements: number,
+  empty: boolean
+}
+export interface userPaginationResponse {
+  content:  IUserData[],
   pageable: {
     pageNumber: number,
     pageSize: number,

@@ -57,5 +57,9 @@ export const API_ROUTES = {
         UPDATE_INSTRUCTOR_INFO: (instructorId: string) => `${API_BASE_URL}/instructors/${instructorId}/update`,
         UPDATE_STUDENT_INFO: (studentId: string) => `${API_BASE_URL}/students/${studentId}/update`,
         UPDATE_ADMIN_INFO: (adminId: string) => `${API_BASE_URL}/admins/${adminId}/update`,
+        GET_USERS: (adminId: string, offset: number, pageSize: number, sortBy = 'createdAt', sortDirection = 'ASC') =>
+            `${API_BASE_URL}/admins/${adminId}/users?offset=${offset}&pageSize=${pageSize}&sortBy=${sortBy}&sortDirection=${sortDirection}`,
+        TOGGLE_BLOCK: (userId: string) => `${API_BASE_URL}/users/${userId}/toggleBlock`
+
     },
 };
