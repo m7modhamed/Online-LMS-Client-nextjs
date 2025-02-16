@@ -21,6 +21,7 @@ const StatisticsDashboard = async () => {
 
     if (!res.ok) {
         const error = await res.json();
+        console.error("Fetch error:", error);
         throw new Error(error.message);
     }
 

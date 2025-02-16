@@ -48,9 +48,9 @@ export default async function AppLayout({ children, params
     // side is the easiest way to get started
     const messages = await getMessages();
 
-    return <Layout>
-        <NextIntlClientProvider messages={messages}>
+    return <NextIntlClientProvider locale={locale} messages={messages}>
+        <Layout>
             {children}
-        </NextIntlClientProvider>
-    </Layout>;
+        </Layout>;
+    </NextIntlClientProvider>
 }

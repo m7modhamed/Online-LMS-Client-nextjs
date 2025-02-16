@@ -29,8 +29,8 @@ export default async function RootLayout({ children, params }: RootLayoutProps) 
     const link = (<link id="theme-css" href={`/themes/lara-light-indigo/theme.css`} rel="stylesheet"></link>)
 
     return (
-        <NextIntlClientProvider messages={messages}>
-            <ClientLocaleWrapper>
+        <ClientLocaleWrapper>
+            <NextIntlClientProvider messages={messages}>
                 <head>
                     {link}
                 </head>
@@ -43,8 +43,8 @@ export default async function RootLayout({ children, params }: RootLayoutProps) 
                         </PrimeReactProvider>
                     </NextAuthProvider>
                 </body>
-            </ClientLocaleWrapper>
-        </NextIntlClientProvider>
+            </NextIntlClientProvider>
+        </ClientLocaleWrapper>
     );
 
 

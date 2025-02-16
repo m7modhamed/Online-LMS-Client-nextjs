@@ -14,6 +14,7 @@ import { Tag } from 'primereact/tag';
 import { API_ROUTES } from '@/app/api/apiRoutes';
 import { MultiSelect, MultiSelectChangeEvent } from 'primereact/multiselect';
 import { RadioButton } from 'primereact/radiobutton';
+import Error from 'next/error';
 
 const CourseList = () => {
     const t = useTranslations('courseList');
@@ -111,7 +112,7 @@ const CourseList = () => {
                 }));
                 setCategories(formattedCategories);
             } catch (err: any) {
-                //console.log(err.message || 'Error fetching categories');
+                console.log(err.message || 'Error fetching categories');
             } finally {
                 setLoading(false);
             }

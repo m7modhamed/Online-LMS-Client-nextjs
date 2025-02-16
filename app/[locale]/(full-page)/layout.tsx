@@ -33,7 +33,7 @@ export default async function SimpleLayout({ children, params
 
     return (
         <React.Fragment>
-            <NextIntlClientProvider messages={messages}>
+            <NextIntlClientProvider locale={locale} messages={messages}>
                 <div className="surface-0 ">
                     <MainNavbar />
                 </div>

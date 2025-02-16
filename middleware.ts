@@ -14,10 +14,13 @@ export async function middleware(request: NextRequest) {
 
   const { pathname: pathName } = request.nextUrl;
   // Extract language prefix (e.g., 'ar' or 'en')
-  const langPrefix = await getLocale();
-  // const langMatch = pathName.match(/^\/(ar|en)(\/|$)/);
-  // const langPrefix = langMatch ? langMatch[1] : 'ar'; // Default to 'ar'
+  const langMatch = pathName.match(/^\/(ar|en)(\/|$)/);
+  const langPrefix = langMatch ? langMatch[1] : "en";
 
+  // Ensure we don't override locale by mistake
+  if (!langMatch) {
+    return NextResponse.redirect(new URL(`/${langPrefix}${pathName}`, request.url));
+  }
 
   // Define protected routes based on language
   const routes = {
@@ -53,6 +56,10 @@ export async function middleware(request: NextRequest) {
     console.log('User not authenticated. Redirecting to /auth/login.');
     return NextResponse.redirect(new URL(`/${langPrefix}/auth/login`, request.url));
   }
+  // console.log('isValidToken' , isValidToken)
+  // console.log('isProtectedRoute' , isProtectedRoute)
+  // console.log('pathName' ,pathName)
+  //console.log('langPrefix' ,langPrefix)
 
   // If the token is invalid and it's not an authentication route, redirect to login
   if (!isValidToken && isProtectedRoute) {
