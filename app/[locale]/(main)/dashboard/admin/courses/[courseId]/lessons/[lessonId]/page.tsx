@@ -9,9 +9,11 @@ import Loading from '@/app/loading';
 import { useParams } from 'next/navigation';
 import { IFile } from '@/app/interfaces/interfaces';
 import { useTranslations } from 'next-intl';
+import { Session } from 'next-auth/core/types';
+import { isTokenValid } from '@/app/lib/jwtDecode';
 
 const LessonContent = () => {
-    const { data, status } = useSession();
+    const { data, status, update } = useSession();
     const [lesson, setLesson] = useState<any>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const { courseId, lessonId }: { courseId: string, lessonId: string } = useParams();
@@ -23,9 +25,14 @@ const LessonContent = () => {
             if (!data) {
                 return;
             }
+            let session: Session | null = data;
+            if (!isTokenValid(data.accessToken)) {
+                console.log("Session expired x, updating...");
+                session = await update();
+            }
             const res = await fetch(API_ROUTES.LESSONS.GET_LESSON(lessonId), {
                 headers: {
-                    Authorization: `Bearer ${data?.accessToken}`
+                    Authorization: `Bearer ${session?.accessToken}`
                 },
                 cache: 'no-store'
             });

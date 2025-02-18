@@ -14,13 +14,15 @@ import Loading from '@/app/loading';
 import { API_ROUTES } from '@/app/api/apiRoutes';
 import { Button } from 'primereact/button';
 import { useTranslations } from 'next-intl';
+import { Session } from 'next-auth/core/types';
+import { isTokenValid } from '@/app/lib/jwtDecode';
 
 export function InstructorCourseSections({ course }: { course: Course | undefined }) {
     const [openSectionDialog, setOpenSectionDialog] = React.useState(false);
     const [openLessonDialog, setOpenLessonDialog] = React.useState(false);
     const [sectionId, setSectionId] = useState<Number>(0);
     const [sections, setSections] = useState<Section[]>([]);
-    const { data, status } = useSession();
+    const { data, status, update } = useSession();
     const user = data?.user;
     const { layoutConfig } = useContext(LayoutContext);
     const [loading, setLoading] = useState(true);
@@ -41,8 +43,13 @@ export function InstructorCourseSections({ course }: { course: Course | undefine
     const handleAddSection = () => setOpenSectionDialog(true);
 
     const addSection = async (newSection: Section) => {
-        if(!data){
+        if (!data) {
             return;
+        }
+        let session: Session | null = data;
+        if (!isTokenValid(data.accessToken)) {
+            console.log("Session expired x, updating...");
+            session = await update();
         }
         try {
             newSection.position = sections.length > 0 ? Number(sections[sections.length - 1].position) + 1 : 1;
@@ -50,7 +57,7 @@ export function InstructorCourseSections({ course }: { course: Course | undefine
             const res = await fetch(API_ROUTES.SECTIONS.ADD_NEW_SECTION(courseId), {
                 method: 'POST',
                 headers: {
-                    Authorization: `Bearer ${data.accessToken}`,
+                    Authorization: `Bearer ${session?.accessToken}`,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(newSection)
@@ -68,8 +75,14 @@ export function InstructorCourseSections({ course }: { course: Course | undefine
 
     const addLesson = async (newLesson: Lesson, sectionId: Number) => {
         try {
-            if(!data){
+            if (!data) {
                 return;
+            }
+
+            let session: Session | null = data;
+            if (!isTokenValid(data.accessToken)) {
+                console.log("Session expired x, updating...");
+                session = await update();
             }
             const targetSection = sections.find((section) => section.id === sectionId);
             if (!targetSection) return;
@@ -81,14 +94,14 @@ export function InstructorCourseSections({ course }: { course: Course | undefine
             const res = await fetch(API_ROUTES.LESSONS.ADD_NEW_LESSON(sectionId.toString()), {
                 method: 'POST',
                 headers: {
-                    Authorization: `Bearer ${data.accessToken}`,
+                    Authorization: `Bearer ${session?.accessToken}`,
                     'Content-Type': 'application/json',
 
                 },
                 body: JSON.stringify(newLesson),
             })
 
-            if (!res.ok) {
+            if (!res.ok) {    
                 const error = await res.json()
                 throw new Error(error.message);
             }
@@ -154,7 +167,7 @@ export function InstructorCourseSections({ course }: { course: Course | undefine
                 <div className="card">
                     <div className={styles.sectionContainer}>
                         <h6 className={styles.sectionHeading}  >
-                        {t('sections')}
+                            {t('sections')}
                         </h6>
                         <PanelMenu model={panelMenuItems} style={{ width: '100%' }} />
 

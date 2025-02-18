@@ -9,6 +9,8 @@ import { API_ROUTES } from '@/app/api/apiRoutes';
 import { useSession } from 'next-auth/react';
 import Loading from '@/app/loading';
 import { useTranslations } from 'next-intl';
+import { Session } from 'next-auth/core/types';
+import { isTokenValid } from '@/app/lib/jwtDecode';
 
 const PublishCourse = ({ course }: { course: Course | undefined }) => {
     const [loading, setLoading] = useState(false);
@@ -16,7 +18,7 @@ const PublishCourse = ({ course }: { course: Course | undefined }) => {
     const t = useTranslations('publishCoursePage'); // Access translation keys
     const router = useRouter();
     const toast = useRef<Toast>(null);
-    const { data, status } = useSession();
+    const { data, status, update } = useSession();
     const showSuccess = (title: string, desc: string) => {
         toast.current?.show({
             severity: 'success',
@@ -40,20 +42,29 @@ const PublishCourse = ({ course }: { course: Course | undefined }) => {
     };
 
     const handlePublish = async (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-        if (!data) {
-            return;
-        }
-        setLoading(true);
+
         try {
             setLoading(true);
-
+            if (!data) {
+                return;
+            }
+            let session: Session | null = data;
+            if (!isTokenValid(data.accessToken)) {
+                console.log("Session expired x, updating...");
+                session = await update();
+            }
             const res = await fetch(API_ROUTES.COURSES.PUBLISH_COURSE_REQUEST(String(course?.id)), {
                 headers: {
-                    Authorization: `Bearer ${data.accessToken}`
+                    Authorization: `Bearer ${session?.accessToken}`
                 },
             });
 
             if (!res.ok) {
+                if (res.status === 401) {
+                    console.log("Session expired, updating...");
+                    await update();
+                    return;
+                }
                 const error = await res.json();
                 throw new Error(error.message);
             }
@@ -70,19 +81,29 @@ const PublishCourse = ({ course }: { course: Course | undefined }) => {
     };
 
     const handleArchive = async () => {
-        if (!data) {
-            return;
-        }
+
         try {
             setLoading(true);
-
+            if (!data) {
+                return;
+            }
+            let session: Session | null = data;
+            if (!isTokenValid(data.accessToken)) {
+                console.log("Session expired x, updating...");
+                session = await update();
+            }
             const res = await fetch(API_ROUTES.COURSES.ARCHIVE_COURSE(String(course?.id)), {
                 headers: {
-                    Authorization: `Bearer ${data.accessToken}`
+                    Authorization: `Bearer ${session?.accessToken}`
                 }
             });
 
             if (!res.ok) {
+                if (res.status === 401) {
+                    console.log("Session expired, updating...");
+                    await update();
+                    return;
+                }
                 const error = await res.json();
                 console.log(error);
                 throw new Error(error.message);
@@ -100,19 +121,30 @@ const PublishCourse = ({ course }: { course: Course | undefined }) => {
     };
 
     const handleDelete = async () => {
-        if (!data) {
-            return;
-        }
+
         try {
             setLoading(true);
+            if (!data) {
+                return;
+            }
+            let session: Session | null = data;
+            if (!isTokenValid(data.accessToken)) {
+                console.log("Session expired x, updating...");
+                session = await update();
+            }
             const res = await fetch(API_ROUTES.COURSES.DELETE_COURSE(String(course?.id)), {
                 headers: {
-                    Authorization: `Bearer ${data.accessToken}`
+                    Authorization: `Bearer ${session?.accessToken}`
                 },
                 method: 'DELETE'
             });
-            console.log('res', res);
+
             if (!res.ok) {
+                if (res.status === 401) {
+                    console.log("Session expired, updating...");
+                    await update();
+                    return;
+                }
                 const error = await res.json();
                 console.log(error);
                 throw new Error(error.message);

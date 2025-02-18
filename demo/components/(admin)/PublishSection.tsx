@@ -7,11 +7,13 @@ import { Toast } from 'primereact/toast';
 import { API_ROUTES } from '@/app/api/apiRoutes';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
+import { Session } from 'next-auth/core/types';
+import { isTokenValid } from '@/app/lib/jwtDecode';
 
 const PublishSection = ({ course }: { course: Course }) => {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
-    const { data, status } = useSession();
+    const { data, update } = useSession();
     const t = useTranslations('publishSection');
 
     const handlePublish = async (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
@@ -21,13 +23,19 @@ const PublishSection = ({ course }: { course: Course }) => {
         try {
             setLoading(true);
 
+            let session: Session | null = data;
+            if (!isTokenValid(data.accessToken)) {
+                console.log("Session expired x, updating...");
+                session = await update();
+            }
             const res = await fetch(API_ROUTES.COURSES.PUBLISH_COURSE(String(course?.id)), {
                 headers: {
-                    Authorization: `Bearer ${data.accessToken}`
+                    Authorization: `Bearer ${session?.accessToken}`
                 }
             });
 
             if (!res.ok) {
+
                 const error = await res.json();
                 console.log(error);
                 throw new Error(error.message);

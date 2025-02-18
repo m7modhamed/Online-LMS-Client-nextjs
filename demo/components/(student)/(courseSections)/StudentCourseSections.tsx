@@ -18,7 +18,7 @@ import { useTranslations } from 'use-intl';
 export default function StudentCourseSections({ course }: { course: Course | undefined }) {
     const [sections, setSections] = useState<Section[]>([]);
     const { courseId }: { courseId: string } = useParams();
-    const { data, status } = useSession();
+    const { data, status, update } = useSession();
     const user = data?.user;
     const [isEnrolled, setIsEnrolled] = useState(true);
     const router = useRouter();
@@ -35,6 +35,11 @@ export default function StudentCourseSections({ course }: { course: Course | und
                         }
                     });
                     if (!res.ok) {
+                        if (res.status === 401) {
+                            console.log("Session expired, updating...");
+                            await update();
+                            return;
+                        }
                         const error = await res.json();
                         throw new Error(error.message);
                     }

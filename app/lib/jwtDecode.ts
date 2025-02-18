@@ -27,13 +27,7 @@ export const decodeToken = (token: string) => {
   try {
     const decoded: IUser = jwtDecode(token);
 
-    return decoded; // Example: { userId: 123, exp: 1678901234 }
-
-    // if(isTokenValid(decoded)){    
-    //   return decoded; // Example: { userId: 123, exp: 1678901234 }
-    // }else{
-    //   return null;
-    // }
+    return decoded; 
 
   } catch (err) {
     console.error('Invalid token');

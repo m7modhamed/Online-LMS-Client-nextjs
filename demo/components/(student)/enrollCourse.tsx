@@ -7,9 +7,11 @@ import { useRouter } from '@/i18n/routing';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import React, { useRef, useState } from 'react';
+import { Session } from 'next-auth/core/types';
+import { isTokenValid } from '@/app/lib/jwtDecode';
 
 const EnrollCourse = ({ courseId }: { courseId: string }) => {
-    const { data, status } = useSession();
+    const { data, status, update } = useSession();
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const toast = useRef<Toast>(null);
@@ -27,13 +29,24 @@ const EnrollCourse = ({ courseId }: { courseId: string }) => {
             if (!data || !data?.user?.id || !courseId) {
                 return;
             }
+
+            let session: Session | null = data;
+            if (!isTokenValid(data.accessToken)) {
+                console.log("Session expired x, updating...");
+                session = await update();
+            }
             const res = await fetch(API_ROUTES.COURSES.ENROLL_COURSE(data.user?.id, courseId), {
                 headers: {
-                    Authorization: `Bearer ${data?.accessToken}`
+                    Authorization: `Bearer ${session?.accessToken}`
                 },
                 method: "POST"
             });
             if (!res.ok) {
+                if (res.status === 401) {
+                    console.log("Session expired, updating...");
+                    await update();
+                    return;
+                }
                 const error = await res.json();
                 throw new Error(error.message);
             }

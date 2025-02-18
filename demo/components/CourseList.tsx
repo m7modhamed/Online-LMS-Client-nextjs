@@ -22,7 +22,7 @@ const CourseList = () => {
     const [layout, setLayout] = useState<'grid' | 'list' | (string & Record<string, unknown>)>('grid');
     const [loading, setLoading] = useState(true);
     const [categories, setCategories] = useState<{ name: string; code: string }[]>([]); // State to store categories
-    const { data, status } = useSession();
+    const { data, status, update } = useSession();
     const [videoDuration, setVideoDuration] = useState('');
     const [selectedCourseStatus, setSelectedCourseStatus] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState([]);
@@ -32,11 +32,13 @@ const CourseList = () => {
         { name: 'PUBLISHED', code: 'PUBLISHED' },
         { name: 'ARCHIVED', code: 'ARCHIVED' },
     ];
+    const [isUpdatingSession, setIsUpdatingSession] = useState(false);
 
     if (data && data?.user.role === 'ROLE_ADMIN') {
         courseStatus.push({ name: 'DELETED', code: 'DELETED' })
     }
 
+    console.log('data', data)
     const [pageRequest, setPageRequest] = useState({
         offset: 0,
         pageSize: 3,
@@ -63,8 +65,8 @@ const CourseList = () => {
 
 
 
-
     useEffect(() => {
+
         switch (videoDuration) {
             case '0':
                 setFiltterCriteria({ ...fillterCriteria, minDuration: 0, maxDuration: convertHoursToSeconds(1) })
@@ -92,6 +94,7 @@ const CourseList = () => {
             if (!data) {
                 return;
             }
+
             try {
                 const res = await fetch(API_ROUTES.CATEGORIES.GET_CATEGORY, {
                     headers: {
@@ -100,6 +103,12 @@ const CourseList = () => {
                     cache: 'no-store'
                 });
                 if (!res.ok) {
+                    if (res.status === 401 && !isUpdatingSession) {
+                        console.log("Session expired, updating...");
+                        setIsUpdatingSession(true);
+                        await update();
+                        return;
+                    }
                     const error = await res.json();
                     throw new Error(error.message || 'Error fetching categories');
                 }
@@ -137,6 +146,8 @@ const CourseList = () => {
                     return;
                 }
                 setLoading(true);
+
+
                 const res = await fetch(endPoint, {
                     headers: {
                         Authorization: `Bearer ${data?.accessToken}`,
@@ -147,15 +158,22 @@ const CourseList = () => {
                 });
 
                 if (!res.ok) {
+                    if (res.status === 401 && !isUpdatingSession) {
+                        console.log("Session expired, updating...");
+                        setIsUpdatingSession(true);
+                        await update();
+                        return;
+                    }
                     const error = await res.json();
+                    console.log('error : ', error.message || 'Error fetching categories')
                     throw new Error(error.message);
                 }
                 const response = await res.json();
-                console.log('response', response)
+
                 setPageData(response)
                 setDataViewValue(response.content);
             } catch (err: any) {
-                console.error('', err.message);
+                console.error('Error fetching', err?.message);
             } finally {
                 setLoading(false);
             }

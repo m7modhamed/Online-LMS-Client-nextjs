@@ -21,7 +21,7 @@ const StudentCourseList = () => {
     const [layout, setLayout] = useState<'grid' | 'list' | (string & Record<string, unknown>)>('grid');
     const [loading, setLoading] = useState(true);
     const [categories, setCategories] = useState<{ name: string; code: string }[]>([]); // State to store categories
-    const { data, status } = useSession();
+    const { data, status, update } = useSession();
     const [videoDuration, setVideoDuration] = useState('');
     const [selectedCourseStatus, setSelectedCourseStatus] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState([]);
@@ -99,6 +99,11 @@ const StudentCourseList = () => {
                     cache: 'no-store'
                 });
                 if (!res.ok) {
+                    if (res.status === 401) {
+                        console.log("Session expired, updating...");
+                        await update();
+                        return;
+                    }
                     const error = await res.json();
                     throw new Error(error.message || 'Error fetching categories');
                 }
@@ -130,9 +135,6 @@ const StudentCourseList = () => {
                     : `${API_ROUTES.COURSES.GET_ALL_COURSES}?${endPointSearch}`;
 
         const fetchcourses = async () => {
-            console.log('data?.user.role', data?.user.role)
-            console.log('endPoint', endPoint)
-            console.log('fillterCriteria', fillterCriteria)
             try {
                 if (!data) {
                     return;
@@ -149,6 +151,11 @@ const StudentCourseList = () => {
                 });
 
                 if (!res.ok) {
+                    if (res.status === 401) {
+                        console.log("Session expired, updating...");
+                        await update();
+                        return;
+                    }
                     const error = await res.json();
                     throw new Error(error.message);
                 }

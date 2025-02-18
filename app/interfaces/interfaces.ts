@@ -174,6 +174,7 @@ export interface IUser {
   id: Number,
   firstName: string,
   lastName: string,
+  subject :string,
   role: string,
   isActive: boolean,
   isBlocked: boolean,

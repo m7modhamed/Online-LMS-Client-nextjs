@@ -15,6 +15,8 @@ import { useSession } from 'next-auth/react';
 import { Category, Course } from '@/app/interfaces/interfaces';
 import { useTranslations } from 'next-intl';
 import { languages } from '@/app/lib/utilities';
+import { Session } from 'next-auth/core/types';
+import { isTokenValid } from '@/app/lib/jwtDecode';
 
 interface ICourseData {
     name: string;
@@ -40,9 +42,9 @@ const CreateCourse: React.FC = () => {
         language: null,
         description: ''
     };
-    
+
     const [courseData, setCourseData] = useState<ICourseData>(initialCourse);
-    const { data, status } = useSession();
+    const { data, update } = useSession();
     const [prerequisiteInput, setPrerequisiteInput] = useState<string>('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -50,7 +52,7 @@ const CreateCourse: React.FC = () => {
     const router = useRouter();
     const t = useTranslations('createCoursePage'); // Get translations
     const toast = useRef<Toast>(null);
-    
+
     const [courseDataError, setCourseDataError] = useState<ICourseDataError>({
         category: '',
         prerequisites: '',
@@ -122,7 +124,7 @@ const CreateCourse: React.FC = () => {
     useEffect(() => {
         setIsLoading(true);
         const getCategories = async () => {
-            if(!data){
+            if (!data) {
                 return;
             }
             try {
@@ -133,6 +135,11 @@ const CreateCourse: React.FC = () => {
                     cache: 'no-store'
                 });
                 if (!res.ok) {
+                    if (res.status === 401) {
+                        console.log("Session expired, updating...");
+                        await update();
+                        return;
+                    }
                     const error = await res.json();
                     throw new Error(error.message || 'Error fetching categories');
                 }
@@ -198,12 +205,18 @@ const CreateCourse: React.FC = () => {
     };
 
     const createCourse = async (formData: FormData) => {
-        if(!data){
+        if (!data) {
             return;
+        }
+
+        let session: Session | null = data;
+        if (!isTokenValid(data.accessToken)) {
+            console.log("Session expired x, updating...");
+            session = await update();
         }
         const res = await fetch(API_ROUTES.COURSES.CREATE_COURSE, {
             headers: {
-                Authorization: `Bearer ${data.accessToken}`
+                Authorization: `Bearer ${session?.accessToken}`
             },
             body: formData,
             method: 'POST'
@@ -218,8 +231,6 @@ const CreateCourse: React.FC = () => {
     };
 
     const handleSubmit = async () => {
-        console.log('Form Submitted', courseData);
-        console.log('image', coverImage);
 
         setIsLoading(true);
         try {

@@ -1,9 +1,10 @@
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { decodeToken } from './jwtDecode';
+import { decodeToken, isTokenValid } from './jwtDecode';
 import { API_ROUTES } from '../api/apiRoutes';
 import { AuthOptions } from 'next-auth';
 
 export const authOptions: AuthOptions = {
+    secret: process.env.NEXTAUTH_SECRET,
 
     providers: [
         CredentialsProvider({
@@ -23,14 +24,14 @@ export const authOptions: AuthOptions = {
 
                 const data = await res.json();
 
-                if (res.ok && data.token) {
+                if (res.ok && data.accessToken && data.refreshToken) {
                     return {
                         id: '',
                         email: '',
-                        token: data.token, // Include the token
+                        accessToken: data.accessToken,
+                        refreshToken: data.refreshToken,
                     };
                 } else {
-
                     throw new Error(data.message || 'Login failed');
                 }
             }
@@ -38,29 +39,80 @@ export const authOptions: AuthOptions = {
     ],
     callbacks: {
         async jwt({ token, user, trigger, session }: any) {
+
             if (user) {
-                token.accessToken = user.token;
-                token.sub = decodeToken(token.accessToken)?.exp;
-                token.user = decodeToken(token.accessToken);
-            }
-            if (trigger === 'update') {               
+                const decoded = decodeToken(user.accessToken);
                 return {
                     ...token,
-                    user: {
-                        ...session.user,
-                    }
+                    accessToken: user.accessToken,
+                    refreshToken: user.refreshToken,
+                    user: decoded,
+                    exp: decoded?.exp
                 }
+            }
+            if (trigger === 'update') {
+                if (!isTokenValid(token.accessToken)) {
+                    return await refreshAccessToken(token);
+                }
+                return session ? {
+                    ...token,
+                    user: {
+                        ...session?.user,
+                    }
+                } : token
+            }
+
+            if (!isTokenValid(token.accessToken)) {
+                return await refreshAccessToken(token);
             }
             return token;
         },
         async session({ session, token }: any) {
-            //const decodedToken = decodeToken(token.accessToken);
-            session.accessToken = token.accessToken;
-            session.user = token.user;
-            return session;
+            return {
+                user: token.user,
+                expires: token.exp,
+                accessToken: token.accessToken,
+                refreshToken: token.refreshToken,
+                error: token?.error
+            }
         }
     },
     pages: {
         signIn: '/auth/login'
     },
 };
+
+
+export async function refreshAccessToken(token: any) {
+    try {
+        const response = await fetch(API_ROUTES.USERS.REFRESH_TOKEN, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token.refreshToken}`,
+            },
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            console.log("Failed to refresh access token", error);
+            return { ...token, error: "RefreshAccessTokenError" };
+        }
+
+        const refreshedTokens = await response.json();
+        const decoded = decodeToken(refreshedTokens.accessToken);
+        return {
+            ...token,
+            accessToken: refreshedTokens?.accessToken,
+            user: decoded,
+            refreshToken: refreshedTokens?.refreshToken ?? token.refreshToken,
+            exp: decoded?.exp
+
+        };
+    } catch (error) {
+        console.error("Error refreshing access token", error);
+        return { ...token, error: "RefreshAccessTokenError" };
+    }
+}
+
+

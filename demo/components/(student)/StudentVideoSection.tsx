@@ -14,7 +14,7 @@ const StudentVideoSection = ({ lessonId, studentId }: { lessonId: string; studen
     const [additionalFiles, setAdditionalFiles] = useState<{ name: string; url: string }[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const { data, status } = useSession();
+    const { data, status, update } = useSession();
     const t = useTranslations('studentVideoSection');
 
     useEffect(() => {
@@ -32,6 +32,11 @@ const StudentVideoSection = ({ lessonId, studentId }: { lessonId: string; studen
                 });
 
                 if (!res.ok) {
+                    if (res.status === 401) {
+                        console.log("Session expired, updating...");
+                        await update();
+                        return;
+                    }
                     const errorData = await res.json();
                     throw new Error(errorData.message || 'Failed to fetch lesson data.');
                 }
@@ -108,7 +113,7 @@ const StudentVideoSection = ({ lessonId, studentId }: { lessonId: string; studen
                 )}
             </Paper>
 
-            <Paper elevation={3} sx={{ padding: 4, borderRadius: 2 , marginBottom : '40px' }}>
+            <Paper elevation={3} sx={{ padding: 4, borderRadius: 2, marginBottom: '40px' }}>
                 <Typography variant="h5" gutterBottom>
                     {t('downloadFiles')}
                 </Typography>

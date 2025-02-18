@@ -31,6 +31,7 @@ const AdminCourse = async ({ params }: PageProps) => {
     });
 
     if (!res.ok) {
+        
         const error = await res.json();
         throw new Error(error.message || 'Failed to fetch courses');
     }

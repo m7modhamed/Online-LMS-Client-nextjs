@@ -10,6 +10,7 @@ const StatisticsDashboard = async () => {
     if (!session || !session?.user?.id) {
         return;
     }
+
     const res = await fetch(session.user.role === 'ROLE_INSTRUCTOR'
         ? API_ROUTES.COURSES.GET_INSTRUCTOR_DASHBOARD_INFO(session?.user?.id)
         : API_ROUTES.COURSES.GET_ADMIN_DASHBOARD_INFO, {

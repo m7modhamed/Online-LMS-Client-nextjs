@@ -21,7 +21,7 @@ const ReviewCourseList = () => {
     const [layout, setLayout] = useState<'grid' | 'list' | (string & Record<string, unknown>)>('grid');
     const [loading, setLoading] = useState(true);
     const [categories, setCategories] = useState<{ name: string; code: string }[]>([]); // State to store categories
-    const { data, status } = useSession();
+    const { data, status, update } = useSession();
     const [videoDuration, setVideoDuration] = useState('');
     const [selectedCategory, setSelectedCategory] = useState([]);
     const [pageData, setPageData] = useState<paginationResponse>();
@@ -85,6 +85,11 @@ const ReviewCourseList = () => {
                     cache: 'no-store'
                 });
                 if (!res.ok) {
+                    if (res.status === 401) {
+                        console.log("Session expired, updating...");
+                        await update();
+                        return;
+                    }
                     const error = await res.json();
                     throw new Error(error.message || 'Error fetching categories');
                 }
@@ -128,6 +133,11 @@ const ReviewCourseList = () => {
                 });
 
                 if (!res.ok) {
+                    if (res.status === 401) {
+                        console.log("Session expired, updating...");
+                        await update();
+                        return;
+                    }
                     const error = await res.json();
                     throw new Error(error.message);
                 }
@@ -193,8 +203,6 @@ const ReviewCourseList = () => {
                 </span>
 
                 <Dropdown className='w-2' id="language" name="language" value={fillterCriteria.language} options={[{ label: 'All', value: 'all' }, ...languages]} onChange={handleLanguageChange} placeholder={t('language')} />
-
-
 
                 <MultiSelect value={selectedCategory}
                     onChange={(e) => onSelectCategory(e)}

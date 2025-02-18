@@ -12,7 +12,7 @@ import { useRouter } from '@/i18n/routing';
 
 //{params} : {params : Promise<{courseId : string}>}
 const InstructorCourse = () => {
-    const { data, status } = useSession();
+    const { data, status ,update } = useSession();
     const [course, setCourse] = useState<Course | null>(null);
     const [loading, setLoading] = useState(true);
     const { courseId }: { courseId: string } = useParams();
@@ -37,6 +37,11 @@ const InstructorCourse = () => {
                 });
 
                 if (!res.ok) {
+                    if (res.status === 401) {
+                        console.log("Session expired, updating...");
+                        await update();
+                        return;
+                    }
                     const error = await res.json();
                     throw new Error(error.message);
                 }

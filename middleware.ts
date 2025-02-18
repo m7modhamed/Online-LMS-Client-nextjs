@@ -3,12 +3,11 @@ import { getToken } from 'next-auth/jwt';
 import { decodeToken, isTokenValid } from './app/lib/jwtDecode';
 import createMiddleware from 'next-intl/middleware';
 import { routing } from './i18n/routing';
-import { getLocale } from 'next-intl/server';
 
 // Create intl middleware
 const intlMiddleware = createMiddleware(routing);
 
-export async function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest, response: NextResponse) {
   // Run the internationalization middleware first
   const intlResponse = intlMiddleware(request);
 
@@ -30,14 +29,10 @@ export async function middleware(request: NextRequest) {
   };
 
   const protectedRoutes = [...routes.admin, ...routes.instructor, ...routes.student];
-
-  // Authentication-related routes
   const isAllowedRoute = !protectedRoutes.some((route) => pathName.includes(route));
-
   const isAccessRoute = pathName.startsWith(`/${langPrefix}/auth/access`);
   const isAuthRoute = pathName.startsWith(`/${langPrefix}/auth`) && !isAccessRoute;
   const isProtectedRoute = protectedRoutes.some((route) => pathName.startsWith(route));
-
   const isAdminRoute = routes.admin.some((route) => pathName.startsWith(route));
   const isInstructorRoute = routes.instructor.some((route) => pathName.startsWith(route));
   const isStudentRoute = routes.student.some((route) => pathName.startsWith(route));
@@ -45,9 +40,8 @@ export async function middleware(request: NextRequest) {
   // Get session from next-auth
   const session = await getToken({ req: request });
   const token = session?.accessToken as string;
-  const isValidToken = isTokenValid(token);
   // Decode token and determine user role
-  const decodedToken = isValidToken ? decodeToken(token) : null;
+  const decodedToken = decodeToken(token);
   const userRole = decodedToken?.role || null;
 
 
@@ -56,30 +50,14 @@ export async function middleware(request: NextRequest) {
     console.log('User not authenticated. Redirecting to /auth/login.');
     return NextResponse.redirect(new URL(`/${langPrefix}/auth/login`, request.url));
   }
-  // console.log('isValidToken' , isValidToken)
-  // console.log('isProtectedRoute' , isProtectedRoute)
-  // console.log('pathName' ,pathName)
-  //console.log('langPrefix' ,langPrefix)
 
-  // If the token is invalid and it's not an authentication route, redirect to login
-  if (!isValidToken && isProtectedRoute) {
-    console.log(`Invalid token detected. Redirecting to ${langPrefix}/auth/login.`);
-    const response = NextResponse.redirect(new URL(`/${langPrefix}/auth/login?error=invalid-token`, request.url));
-
-    response.cookies.delete('next-auth.session-token');
-    response.cookies.delete('__Secure-next-auth.session-token');
-    response.cookies.delete('next-auth.csrf-token');
-    response.cookies.delete('next-auth.callback-url');
-    return response;
-  }
-
-
-  // Redirect authenticated users from auth routes to their dashboards
+  //Redirect authenticated users from auth routes to their dashboards
   if (isAuthRoute) {
     return handleAuthRouteRedirection(userRole, request, langPrefix);
   }
 
   if (!isAllowedRoute) {
+
     const isAuthorized = validateRoleAccess(userRole, {
       isAdminRoute,
       isInstructorRoute,
@@ -90,10 +68,25 @@ export async function middleware(request: NextRequest) {
       console.log(`Unauthorized access to ${pathName}. Redirecting to /auth/access.`);
       return NextResponse.redirect(new URL(`/${langPrefix}/auth/access`, request.url));
     }
+
   }
 
+  if (session?.error || (session && !isTokenValid(session.refreshToken as string))) {
+    console.log(`Invalid refresh token detected. Redirecting to ${langPrefix}/auth/login.`);
+    const response = NextResponse.redirect(new URL(`/${langPrefix}/auth/login?error=invalid-token`, request.url));
+
+    response.cookies.delete('next-auth.session-token');
+    response.cookies.delete('__Secure-next-auth.session-token');
+    response.cookies.delete('next-auth.csrf-token');
+    response.cookies.delete('next-auth.callback-url');
+    return response;
+  }
   return intlResponse || NextResponse.next();
 }
+
+
+// helper functions 
+//********************************************/
 
 // Function to handle redirecting authenticated users to their dashboards
 function handleAuthRouteRedirection(role: string | null, request: NextRequest, langPrefix: string) {

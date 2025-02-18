@@ -7,6 +7,8 @@ import { API_ROUTES } from "@/app/api/apiRoutes";
 import { useSession } from "next-auth/react";
 import { IUserData } from "@/app/interfaces/interfaces";
 import { useTranslations } from "next-intl";  // Import the hook for translations
+import { isTokenValid } from "@/app/lib/jwtDecode";
+import { Session } from "next-auth/core/types";
 
 export default function BlockUserDialog({
     show,
@@ -26,7 +28,7 @@ export default function BlockUserDialog({
     setUsers: React.Dispatch<React.SetStateAction<IUserData[]>>
 }) {
     const [isBlocked, setIsBlocked] = useState(initialIsBlocked);
-    const { data } = useSession();
+    const { data, update } = useSession();
     const t = useTranslations("blockUserDialog");
 
     // Toggle block/unblock state
@@ -41,13 +43,23 @@ export default function BlockUserDialog({
             return;
         }
 
+        let session: Session | null = data;
+        if (!isTokenValid(data.accessToken)) {
+            console.log("Session expired x, updating...");
+            session = await update();
+        }
         const res = await fetch(API_ROUTES.USERS.TOGGLE_BLOCK(userId), {
             headers: {
-                Authorization: `Bearer ${data?.accessToken}`
+                Authorization: `Bearer ${session?.accessToken}`
             }
         });
 
         if (!res.ok) {
+            if (res.status === 401) {
+                console.log("Session expired, updating...");
+                await update();
+                return;
+            }
             const error = await res.json();
             throw new Error(error.message || 'Error fetching categories');
         }

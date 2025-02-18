@@ -27,7 +27,7 @@ export default function UserTableList() {
         sortDirection: ''
     });
     const [loading, setLoading] = useState<boolean>(true);
-    const { data } = useSession();
+    const { data, update } = useSession();
     const [dialogData, setDialogData] = useState<{
         fullName: string,
         imageUrl: string,
@@ -56,6 +56,11 @@ export default function UserTableList() {
                     }
                 });
                 if (!res.ok) {
+                    if (res.status === 401) {
+                        console.log("Session expired, updating...");
+                        await update();
+                        return;
+                    }
                     const error = await res.json();
                     throw new Error(error.message || 'Error fetching categories');
                 }

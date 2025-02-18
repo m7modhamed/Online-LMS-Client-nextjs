@@ -13,6 +13,8 @@ import { useDropzone } from 'react-dropzone';
 import { UpdateBusinessValidationSchema } from './ValidationSchema';
 import { Toast } from 'primereact/toast';
 import Loading from '@/app/loading';
+import { isTokenValid } from '@/app/lib/jwtDecode';
+import { Session } from 'next-auth/core/types';
 
 const initialState = {
     firstName: '',
@@ -53,6 +55,11 @@ const UpdateUserPage = () => {
             })
 
             if (!res.ok) {
+                if (res.status === 401) {
+                    console.log("Session expired, updating...");
+                    await update();
+                    return;
+                }
                 const error = await res.json();
                 throw new Error(error.message);
             }
@@ -143,16 +150,23 @@ const UpdateUserPage = () => {
             if (profileImage) {
                 formData.append('image', profileImage);
             }
+            let session: Session | null = data;
+            if (!isTokenValid(data.accessToken)) {
+                console.log("Session expired x, updating...");
+                session = await update();
+            }
+
             // Call API if validation passes
             const res = await fetch(API_ROUTES.USERS.UPDATE_INSTRUCTOR_INFO(data.user?.id), {
                 headers: {
-                    Authorization: `Bearer ${data.accessToken}`
+                    Authorization: `Bearer ${session?.accessToken}`
                 },
                 method: "PUT",
                 body: formData
             });
 
             if (!res.ok) {
+
                 const error = await res.json();
                 throw new Error(error.message);
             }

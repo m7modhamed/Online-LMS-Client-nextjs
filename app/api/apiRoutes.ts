@@ -59,7 +59,8 @@ export const API_ROUTES = {
         UPDATE_ADMIN_INFO: (adminId: string) => `${API_BASE_URL}/admins/${adminId}/update`,
         GET_USERS: (adminId: string, offset: number, pageSize: number, sortBy = 'createdAt', sortDirection = 'ASC') =>
             `${API_BASE_URL}/admins/${adminId}/users?offset=${offset}&pageSize=${pageSize}&sortBy=${sortBy}&sortDirection=${sortDirection}`,
-        TOGGLE_BLOCK: (userId: string) => `${API_BASE_URL}/users/${userId}/toggleBlock`
+        TOGGLE_BLOCK: (userId: string) => `${API_BASE_URL}/users/${userId}/toggleBlock`,
+        REFRESH_TOKEN: `${API_BASE_URL}/refresh_Token`
 
     },
 };

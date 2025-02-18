@@ -12,6 +12,8 @@ import { Toast } from 'primereact/toast';
 import { useSession } from 'next-auth/react';
 import { DeleteDialog } from '@/demo/components/DeleteDialog';
 import { useTranslations } from 'next-intl';
+import { Session } from 'next-auth/core/types';
+import { isTokenValid } from '@/app/lib/jwtDecode';
 
 const InstructorLesson = () => {
     const toast = useRef<Toast>(null);
@@ -26,7 +28,7 @@ const InstructorLesson = () => {
     const [fileToDelete, setFileToDelete] = useState<File | IFile | null>(null);
     const [displayConfirmation, setDisplayConfirmation] = useState(false);
     const [loading, setLoading] = useState(true);
-    const { data, status } = useSession();
+    const { data, status, update } = useSession();
     const t = useTranslations('instructorLesson');
 
 
@@ -34,6 +36,7 @@ const InstructorLesson = () => {
     useEffect(() => {
         const fetchLesson = async () => {
             if (status === 'loading' || !data?.accessToken) return;
+
             try {
                 const response = await fetch(API_ROUTES.LESSONS.GET_LESSON(lessonId), {
                     headers: { Authorization: `Bearer ${data.accessToken}` },
@@ -42,6 +45,11 @@ const InstructorLesson = () => {
                     }
                 });
                 if (!response.ok) {
+                    if (response.status === 401) {
+                        console.log("Session expired, updating...");
+                        await update();
+                        return;
+                    }
                     const error = await response.json();
                     throw new Error(error.message);
                 }
@@ -56,7 +64,7 @@ const InstructorLesson = () => {
             }
         };
         fetchLesson();
-    }, [lessonId, data , status]);
+    }, [lessonId, data, status]);
 
     if (loading) {
         return <Loading />;
@@ -98,10 +106,18 @@ const InstructorLesson = () => {
         formData.append('file', videoFile);
 
         try {
+            if (!data) {
+                return;
+            }
+            let session: Session | null = data;
+            if (!isTokenValid(data.accessToken)) {
+                console.log("Session expired x, updating...");
+                session = await update();
+            }
             setIsSavingVideo(true);
             const res = await fetch(API_ROUTES.MEDIA.ADD_VIDEO(lessonId), {
                 method: 'POST',
-                headers: { Authorization: `Bearer ${data?.accessToken}` },
+                headers: { Authorization: `Bearer ${session?.accessToken}` },
                 body: formData,
             });
 
@@ -137,18 +153,27 @@ const InstructorLesson = () => {
         validFiles.forEach((file) => {
             formData.append('files', file);
         });
+        if (!data) {
+            return;
+        }
 
         try {
+            let session: Session | null = data;
+            if (!isTokenValid(data.accessToken)) {
+                console.log("Session expired x, updating...");
+                session = await update();
+            }
             setIsSavingFiles(true);
             const res = await fetch(API_ROUTES.MEDIA.ADD_FILES(lessonId), {
                 method: 'POST',
                 headers: {
-                    Authorization: `Bearer ${data?.accessToken}`,
+                    Authorization: `Bearer ${session?.accessToken}`,
                 },
                 body: formData,
             });
 
             if (!res.ok) {
+
                 const error = await res.json();
                 throw new Error(error.message || 'Failed to upload files');
             }
@@ -176,15 +201,23 @@ const InstructorLesson = () => {
         setVideoPreview(null);
         setIsVideoUploaded(false);
         setVideoFile(null);
-
+        if (!data) {
+            return;
+        }
+        let session: Session | null = data;
+        if (!isTokenValid(data.accessToken)) {
+            console.log("Session expired x, updating...");
+            session = await update();
+        }
         try {
             const res = await fetch(API_ROUTES.MEDIA.DELETE_VIDEO(lessonId), {
                 method: 'DELETE',
                 headers: {
-                    Authorization: `Bearer ${data?.accessToken}`,
+                    Authorization: `Bearer ${session?.accessToken}`,
                 },
             });
             if (!res.ok) {
+
                 const error = await res.json();
                 throw new Error(error.message || 'Failed to delete video');
             }
@@ -228,12 +261,19 @@ const InstructorLesson = () => {
             setAdditionalFiles(additionalFiles.filter((file) => file !== fileToDelete));
             setFileToDelete(null);
             setDisplayConfirmation(false);
-
+            if (!data) {
+                return;
+            }
+            let session: Session | null = data;
+            if (!isTokenValid(data.accessToken)) {
+                console.log("Session expired x, updating...");
+                session = await update();
+            }
             if (fileToDelete && 'id' in fileToDelete) {
                 const res = await fetch(API_ROUTES.MEDIA.DELETE_FILE(lessonId, String(fileToDelete?.id)), {
                     method: 'DELETE',
                     headers: {
-                        Authorization: `Bearer ${data?.accessToken}`,
+                        Authorization: `Bearer ${session?.accessToken}`,
                     },
                 });
 
